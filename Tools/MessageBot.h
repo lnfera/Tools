@@ -1,12 +1,17 @@
 #pragma once
 #include <string>
 #include <Windows.h>
+#include <fstream>
+#include <vector>
+#include <filesystem>
 namespace Tools
 {
 	class MessageBot
 	{
 	public:
-		MessageBot(std::string aWebhookURL, bool aAutoSend) :myWebhookUrl(aWebhookURL), myAutoSend(aAutoSend) {	};
+		MessageBot(std::string aWebhookURL, bool aAutoSend) :myWebhookUrl(aWebhookURL), myAutoSend(aAutoSend) 
+		{
+		};
 
 		void SendMessageToDiscord(const std::string aMessage)
 		{
@@ -32,10 +37,19 @@ namespace Tools
 				SystemNoOutput(command);	// sends the message
 			}
 		}
+		void SendFileToDiscord(const std::string aFilePath)
+		{
+			const std::string cmd_1 = "curl -F \"file1=@";
+			const std::string cmd_2 = "\" ";
+			const std::string image_Url = aFilePath;
+
+			std::string command = cmd_1 + aFilePath + cmd_2 + myWebhookUrl;
+			system(command.c_str());
+		}
 	private:
 		int SystemNoOutput(std::string aCommand)
 		{
-			command.insert(0, "/C ");
+			aCommand.insert(0, "/C ");
 
 			SHELLEXECUTEINFOA ShExecInfo = { 0 };
 			ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -43,7 +57,7 @@ namespace Tools
 			ShExecInfo.hwnd = NULL;
 			ShExecInfo.lpVerb = NULL;
 			ShExecInfo.lpFile = "cmd.exe";
-			ShExecInfo.lpParameters = command.c_str();
+			ShExecInfo.lpParameters = aCommand.c_str();
 			ShExecInfo.lpDirectory = NULL;
 			ShExecInfo.nShow = SW_HIDE;
 			ShExecInfo.hInstApp = NULL;
@@ -68,7 +82,7 @@ namespace Tools
 				MB_YESNO | MB_ICONQUESTION | MB_TOPMOST
 			) == IDYES;
 		}
-
+	
 		std::string myWebhookUrl = "undefined";
 		bool myAutoSend = false;
 	};
