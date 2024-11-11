@@ -44,7 +44,7 @@ namespace Tools
 			const std::string image_Url = aFilePath;
 
 			std::string command = cmd_1 + aFilePath + cmd_2 + myWebhookUrl;
-			system(command.c_str());
+			SystemNoOutput(command.c_str());
 		}
 	private:
 		int SystemNoOutput(std::string aCommand)
