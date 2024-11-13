@@ -3,8 +3,8 @@
 #include <fstream>
 #include <filesystem>
 
-/* 
-	To save a custom class it has to have a default constructor aswell as a 
+/*
+	To save a custom class it has to have a default constructor aswell as a
 	from_json + to_json function
 
 	Example:
@@ -47,6 +47,7 @@ namespace Tools
 	class SaveManager
 	{
 	public:
+		//Sets the directory path that the files will be read from and put in when EndSave() is called.
 		SaveManager(std::string aDirectoryPath) : myDirectoryPath(aDirectoryPath)
 		{
 			EnsureDirectoryExists();
@@ -60,12 +61,13 @@ namespace Tools
 			}
 		}
 
+		//Saves a variable in the temporary data file. Permanently save using EndSave when all saves have been declared.
 		template<typename T>
 		void SaveData(const std::string& aKey, const T& aValue)
 		{
 			(*myData)[aKey] = aValue;
 		}
-
+		//Opens a document that GetData reads from and EndSave writes to.
 		void LoadOrCreate(std::string aFileName)
 		{
 			if (myData == nullptr)
@@ -76,24 +78,22 @@ namespace Tools
 
 			LoadJsonFromFile(ConstructFilePath(myFileName), *myData);
 		}
+		//Pushes the saved data to the file opened with LoadOrCreate(...).
 		void EndSave()
 		{
 			SaveJsonToFile(ConstructFilePath(myFileName), *myData);
 			delete myData;
 			myData = nullptr;
 		}
-
+		//Reads data from the json data file created with LoadOrCreate(...).
 		template<typename T>
-		T GetData(std::string aKey)
+		[[nodiscard]]T GetData(std::string aKey)
 		{
-			if (myData && myData->contains(aKey))
-			{
-				auto& value = (*myData)[aKey];
+			auto& value = (*myData)[aKey];
 
-				if (!value.is_null())
-				{
-					return (*myData)[aKey].get<T>();
-				}
+			if (!value.is_null())
+			{
+				return (*myData)[aKey].get<T>();
 			}
 			return T();
 		}
@@ -141,7 +141,7 @@ namespace Tools
 
 	private:
 		std::string myDirectoryPath = " ";
-		std::string myFileName = "none";
+		std::string myFileName = "ERROR_NO_NAME_SET";
 		json* myData = nullptr;
 	};
 

@@ -24,24 +24,15 @@ namespace Tools
         return wideStr;
     }
 
-    void ShowNotification(const std::wstring& message) {
-        MessageBoxW(NULL, message.c_str(), L"Notification", MB_OK);
-    }
-
-    void MinimizeAllWindows() {
-        ShowWindow(GetConsoleWindow(), SW_MINIMIZE);
-    }
-
     bool SetWallpaper(const char* aWallpaperPath) 
     {
-      
         LPWSTR lpwstr = ConvertToLPWSTR(aWallpaperPath);
         return SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, lpwstr, SPIF_UPDATEINIFILE);
     }
 
     bool OpenLink(const char* aURLPath)
     {
-        return ShellExecuteW(0, 0, ConvertToLPWSTR(aURLPath), 0, 0, SW_SHOW);
+        return ShellExecuteW(0, 0, ConvertToLPWSTR(aURLPath), 0, 0, SW_HIDE);
     }
 
     void ShutdownComputer() {
