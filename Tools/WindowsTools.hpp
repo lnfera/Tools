@@ -38,4 +38,9 @@ namespace Tools
     void ShutdownComputer() {
         system("shutdown /s /t 0");
     }
+
+    void PutScreenInPowerSaveMode() {
+        // Sends a message to turn off the monitor (put it into power-saving mode)
+        SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
+    }
 }
