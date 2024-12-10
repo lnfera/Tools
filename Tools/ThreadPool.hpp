@@ -29,6 +29,14 @@ namespace Tools
 			}
 			myReleaseCondition.notify_one();  // Notify one worker thread
 		}
+		inline void EnqueTask(std::function<void()> aTask)
+		{
+			{
+				std::lock_guard<std::mutex> lock(myMtx);
+				myTasks.push(aTask);
+			}
+			myReleaseCondition.notify_one();
+		}
 
 		inline void WaitForTasksToFinish();
 
@@ -44,6 +52,7 @@ namespace Tools
 		std::vector<std::thread> myWorkers;
 		std::queue<std::function<void()>> myTasks;
 		std::condition_variable myReleaseCondition;
+		std::condition_variable myWaitForAllTasksCondition;
 		std::mutex myMtx;
 		bool myShouldStop = false;
 		std::atomic<int> myActiveTasks = 0;
@@ -68,10 +77,8 @@ namespace Tools
 
 	inline void ThreadPool::WaitForTasksToFinish()
 	{
-		while ((myActiveTasks > 0 && myTasks.empty()) == false)
-		{
-
-		}
+		std::unique_lock<std::mutex> lock(myMtx);
+		myWaitForAllTasksCondition.wait(lock, [this]() {return myTasks.empty()&& myActiveTasks <= 0; });
 	}
 
 	inline void ThreadPool::WorkerThread()
@@ -87,7 +94,7 @@ namespace Tools
 				if (myShouldStop && myTasks.empty()) return;
 
 				task = std::move(myTasks.front());	// Get task from queue
-				myTasks.pop();	// removes task from queue
+				myTasks.pop();
 			}
 
 			if (task)
@@ -96,6 +103,8 @@ namespace Tools
 				task();  // Execute the task
 				myActiveTasks--;
 			}
+
+			myWaitForAllTasksCondition.notify_all();
 		}
 	}
 
