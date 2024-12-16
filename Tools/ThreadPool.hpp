@@ -22,7 +22,7 @@ namespace Tools
 
 				auto argsTuple = std::make_tuple(std::forward<Args>(args)...);
 
-				// Capture `args...` by perfect forwarding within the lambda
+				// Capture "args..." by perfect forwarding within the lambda
 				myTasks.push([obj, func, ...capturedArgs = std::forward<Args>(args)]() mutable {
 					CallFunction(obj, func, std::forward<decltype(capturedArgs)>(capturedArgs)...);
 					});
@@ -60,7 +60,9 @@ namespace Tools
 
 	ThreadPool::ThreadPool(size_t aNumOfThreads)
 	{
-		for (size_t i = 0; i < aNumOfThreads; ++i) {
+		int threadCount = (int)aNumOfThreads < (int)std::thread::hardware_concurrency() ? aNumOfThreads : (int)std::thread::hardware_concurrency();
+
+		for (size_t i = 0; i < threadCount; ++i) {
 			myWorkers.emplace_back(&ThreadPool::WorkerThread, this);
 		}
 	}
