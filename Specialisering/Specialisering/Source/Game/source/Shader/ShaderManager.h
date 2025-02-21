@@ -15,9 +15,7 @@ namespace Tga
 		ShaderManager();
 		~ShaderManager();
 
-		/// <summary>
-		/// Compiles all the shaders from the scripted jsonfolder
-		/// </summary>
+		
 		void Init();
 
 		void Recompile();

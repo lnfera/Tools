@@ -176,23 +176,15 @@ std::string Tga::ScriptExecutionContext::ParseFromPin(/*ShaderParseCompiler& aCo
 	if (myShaderParseCompiler->isVariableRegistered(shaderSource))
 	{
 		// substitute with registered variable name
-		return myShaderParseCompiler->GetRegisteredVariableName(shaderSource);
 	}
 	else
 	{
 		ParsedData parseNodeData = node.ParseInputPin(executionContext, sourcePinId);
 		myShaderParseCompiler->RegisterVariable((ShaderSource)&sourcePin, parseNodeData.first, parseNodeData.second);
 
-		output = myShaderParseCompiler->GetRegisteredVariableName((ShaderSource)&sourcePin);
 	}
+	return myShaderParseCompiler->GetRegisteredVariableName(shaderSource);
 
-
-
-	//Reads from diffrent node
-	//myShaderParseCompiler->AddVariable((ShaderSource)&sourcePin, VAR(output));
-	//myShaderParseCompiler->AddConnection((ShaderSource)&GetPin(link.targetPinId), (ShaderSource)&sourcePin);
-
-	return output;
 }
 
 const ScriptPin& Tga::ScriptExecutionContext::GetPin(ScriptPinId aID)

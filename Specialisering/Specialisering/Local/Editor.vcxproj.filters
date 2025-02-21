@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{16CF2D0E-82E3-55BF-4B65-F91EB73852F0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Commands">
+      <UniqueIdentifier>{17C3D0D3-0391-C4D9-EC24-3500D891A03E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Gizmo">
+      <UniqueIdentifier>{2B3271A3-97E7-E998-20DC-E36F8C90E09C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\SharedSystem">
+      <UniqueIdentifier>{219EFD0D-0D82-BE63-76E2-B8B662E5A8E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget">
+      <UniqueIdentifier>{E97974DA-D51B-9FB0-BED6-B204AA172601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget\Widgets">
+      <UniqueIdentifier>{4F827A6A-3B50-6E70-24E4-DE9610514AD5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widget\Widgets\NodeScripting">
+      <UniqueIdentifier>{D7B6BE40-C371-AEEC-6C29-273758C3F87C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Source\Editor\Editor.h" />
+    <ClInclude Include="..\Source\Editor\EditorCommon.h" />
+    <ClInclude Include="..\Source\Editor\Tools\Commands\AbstractCommand.h">
+      <Filter>Tools\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Tools\Commands\CommandManager.h">
+      <Filter>Tools\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Tools\Commands\TransformCommand.h">
+      <Filter>Tools\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Tools\ConsoleSystem.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Tools\Gizmo\Gizmo.h">
+      <Filter>Tools\Gizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Tools\ImGuiFunctions.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Tools\Selection.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Tools\SharedSystem\AssetBank.h">
+      <Filter>Tools\SharedSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widget.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\AssetBrowser.h">
+      <Filter>Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\ConsoleWidget.h">
+      <Filter>Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\Hierarchy.h">
+      <Filter>Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\Inspector.h">
+      <Filter>Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\CreateLinkCommand.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\CreateNodeCommand.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\DestroyNodeAndLinksCommand.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\FixupSelectionCommand.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\MoveNodesCommand.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\NodeEditorCommon.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\ScriptEditorCommand.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\ScriptEditorSelection.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\NodeScripting\SetOverridenValueCommand.h">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\ScriptEditor.h">
+      <Filter>Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Editor\Widget\Widgets\Viewport.h">
+      <Filter>Widget\Widgets</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Source\Editor\Editor.cpp" />
+    <ClCompile Include="..\Source\Editor\Tools\Commands\CommandManager.cpp">
+      <Filter>Tools\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Tools\Commands\TransformCommand.cpp">
+      <Filter>Tools\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Tools\ConsoleSystem.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Tools\Gizmo\Gizmo.cpp">
+      <Filter>Tools\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Tools\Selection.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\AssetBrowser.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\ConsoleWidget.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\Hierarchy.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\Inspector.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\NodeScripting\CreateLinkCommand.cpp">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\NodeScripting\CreateNodeCommand.cpp">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\NodeScripting\DestroyNodeAndLinksCommand.cpp">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\NodeScripting\FixUpSelectionCommand.cpp">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\NodeScripting\MoveNodesCommand.cpp">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\NodeScripting\ScriptEditorCommand.cpp">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\NodeScripting\SetOverridenValueCommand.cpp">
+      <Filter>Widget\Widgets\NodeScripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\ScriptEditor.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\Widget\Widgets\Viewport.cpp">
+      <Filter>Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Editor\main.cpp" />
+  </ItemGroup>
+</Project>

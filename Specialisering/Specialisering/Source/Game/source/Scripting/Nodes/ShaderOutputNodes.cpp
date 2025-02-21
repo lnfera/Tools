@@ -138,7 +138,7 @@ ScriptNodeResult Tga::ImageNode::Execute(ScriptExecutionContext& /*aContext*/, S
 }
 void Tga::ImageNode::CustomUi(float aSize)
 {
-	float size = 50.f * aSize;
+	float size = 100.f * aSize;
 	ImGui::Image((ImTextureID)myTextureResource, ImVec2(size, size));
 
 	if (ImGui::BeginDragDropTarget())

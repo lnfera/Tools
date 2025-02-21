@@ -35,11 +35,7 @@ namespace Tga
 		std::string GenerateVariables();
 
 	private:
-		std::unordered_map<ShaderSource, ShaderSource> myConnections;
-
 		std::vector<std::string >myVariables;
-
-		//std::unordered_map<ShaderSource, std::string> myVariables;
 
 		int myUniqueVariableId = 0;
 		std::unordered_map<ShaderSource, std::string> myRegisteredVariables;

@@ -23,19 +23,7 @@ void Tga::ShaderParseCompiler::PrintParsedData()
 	}
 
 	std::cout << "\033[33m Connections: \033[0m\n";
-	for (auto& data : myConnections)
-	{
 
-		std::cout << "Reciever: " << data.first << " Source: " << data.second;
-
-		if (data.second == nullptr)
-		{
-			std::cout << "\033[32m LEAF: \033[0m";
-		}
-
-		std::cout << '\n';
-
-	}
 	std::cout << "\033[33m Registered Variables : \033[0m\n";
 
 	for (auto& data : myRegisteredVariables)
@@ -88,15 +76,6 @@ std::string Tga::ShaderParseCompiler::GenerateVariables()
 
 		output += myVariables[i] + ";//\n";
 	}
-
-	//for (auto& variable : myRegisteredVariables)
-	//{
-	//	int itr = (int)variable.second.find_first_of("e") + 1;
-
-	//	variable.second.insert(variable.second.begin() + itr, '=');
-
-	//	output += variable.second + ";//\n";
-	//}
 
 	return output;
 }
