@@ -10,3 +10,6 @@
 /Bin/*
 !/Bin/Json/
 !/Bin/Scripts/
+
+!/*.txt
+!/*.bat
