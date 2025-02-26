@@ -1,5 +1,6 @@
 #pragma once
 #include <Scripting/Nodes/ScriptNodeBase.h>
+#include <string>
 namespace Tga
 {
 	void RegisterMathNodes();
@@ -11,7 +12,31 @@ namespace Tga
 		void Init(const ScriptCreationContext& aContext) override;
 		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
+	};
 
+	class BlendFloatNode : public ScriptNodeBase
+	{
+	protected:
+		std::string myType = "";
+		ScriptPinId myInputBlendFactor;
+		ScriptPinId myInput_A;
+		ScriptPinId myInput_B;
+	public:
+		virtual void Init(const ScriptCreationContext& aContext) override;
+		virtual ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		virtual ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
+	};
+	class BlendFloat4Node : public ScriptNodeBase
+	{
+	protected:
+		std::string myType = "";
+		ScriptPinId myInputBlendFactor;
+		ScriptPinId myInput_A;
+		ScriptPinId myInput_B;
+	public:
+		virtual void Init(const ScriptCreationContext& aContext) override;
+		virtual ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		virtual ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 	};
 
 	enum ConverterMode
@@ -47,11 +72,7 @@ namespace Tga
 	public:
 		void Init(const ScriptCreationContext& aContext) override;
 		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
-		//std::string ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 
-		//virtual void LoadFromJson(const ScriptJson&);
-		//virtual void WriteToJson(ScriptJson&) const;
-		//virtual void CustomUi(float aSizeMod);
 	};
 
 	class Vector4ToFloatNode : public ScriptNodeBase
@@ -64,5 +85,20 @@ namespace Tga
 	public:
 		void Init(const ScriptCreationContext& aContext) override;
 		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+
+	};
+	class Vector4fNode : public ScriptNodeBase
+	{
+		ScriptPinId myOutputPin;
+		ScriptPinId myInput_X;
+		ScriptPinId myInput_Y;
+		ScriptPinId myInput_Z;
+		ScriptPinId myInput_W;
+	public:
+		void Init(const ScriptCreationContext& aContext) override;
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+
 	};
 }

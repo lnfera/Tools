@@ -58,8 +58,8 @@ ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext
 	std::string variables = compiler.GenerateVariables();
 
 	//compiler.PrintParsedData();
-	std::cout << variables;
-	std::cout << "\n\n\n";
+	//std::cout << variables;
+	//std::cout << "\n\n\n";
 
 
 	//compiler.PrintParsedData();
