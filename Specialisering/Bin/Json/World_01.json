@@ -1,0 +1,268 @@
+{
+    "Objects": [
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
+                    "normal": "none",
+                    "shader": "none"
+                }
+            ],
+            "name": "SM_Plane",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.5,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.5,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.5,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "../EngineAssets/Sprites/printable-bricks-coloring-pagen_6503.jpg",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
+                    "normal": "none",
+                    "shader": "none"
+                }
+            ],
+            "name": "SM_Chest",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.05000000074505806,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.05000000074505806,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.05000000074505806,
+                    0.0
+                ],
+                [
+                    null,
+                    -9.500001907348633,
+                    0.0,
+                    -20.999998092651367,
+                    0.9999997615814209
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/TGE.fbx",
+                    "normal": "none",
+                    "shader": "Magic_Cosinus_Shader"
+                }
+            ],
+            "name": "TGA_LOGO",
+            "tranform": [
+                null,
+                [
+                    null,
+                    10.950000762939453,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    10.950000762939453,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    10.950000762939453,
+                    0.0
+                ],
+                [
+                    null,
+                    19.499998092651367,
+                    0.0,
+                    -28.999971389770508,
+                    0.9999998807907104
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Sphere.fbx",
+                    "normal": "none",
+                    "shader": "Magic_Cosinus_Shader"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.15000000596046448,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.15000000596046448,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.15000000596046448,
+                    0.0
+                ],
+                [
+                    null,
+                    36.49997329711914,
+                    2.136230432370212e-05,
+                    11.501267433166504,
+                    0.9999997615814209
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "../EngineAssets/Sprites/dog.jpg",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/SM_SomeGuy.fbx",
+                    "normal": "none",
+                    "shader": ""
+                }
+            ],
+            "name": "SM_Morris",
+            "tranform": [
+                null,
+                [
+                    null,
+                    -0.28718310594558716,
+                    2.487727215338964e-07,
+                    0.24114486575126648,
+                    0.0
+                ],
+                [
+                    null,
+                    1.1595211191206545e-07,
+                    0.3749999403953552,
+                    -2.4877209625628893e-07,
+                    0.0
+                ],
+                [
+                    null,
+                    -0.24114486575126648,
+                    -1.159523037586041e-07,
+                    -0.28718310594558716,
+                    0.0
+                ],
+                [
+                    null,
+                    -38.648231506347656,
+                    1.1722884885045914e-09,
+                    39.45643615722656,
+                    0.9999998807907104
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
+                    "normal": "none",
+                    "shader": "PixelShader"
+                }
+            ],
+            "name": "Magic_Chest",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.008706513792276382,
+                    0.0,
+                    0.04923614487051964,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.049999967217445374,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    -0.049236129969358444,
+                    0.0,
+                    0.008706512860953808,
+                    0.0
+                ],
+                [
+                    null,
+                    12.366140365600586,
+                    -6.103515625e-05,
+                    -4.725674152374268,
+                    0.9999998807907104
+                ]
+            ]
+        }
+    ]
+}

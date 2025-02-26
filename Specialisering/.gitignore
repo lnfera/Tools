@@ -6,7 +6,11 @@
 /Lib/
 /*.sln
 
-/Bin/
+# Ignore everything in Bin except for select subdirectories.
+/Bin/*
+!/Bin/Json/
+!/Bin/Scripts/
+
 /Dependencies/
 /EngineAssets/
 /CommonUtilities/
