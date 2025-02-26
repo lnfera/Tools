@@ -10,6 +10,3 @@
 /Bin/*
 !/Bin/Json/
 !/Bin/Scripts/
-
-/EngineAssets/
-/CommonUtilities/
