@@ -22,7 +22,8 @@
 //Editor 
 #include <Tools/Selection.h>
 #include <Tools/ConsoleSystem.h>
-
+#include <Tools/Commands/RemoveCommand.h>
+#include <Tools/Commands/CommandManager.h>
 
 struct IdConstantBuffer
 {
@@ -115,6 +116,8 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 
 		//todo fix on begin over and release
 
+		UpdateShortcuts(aContext);
+
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
 		{
 			Vector3f moveDir = 0;
@@ -130,7 +133,6 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 			if (ImGui::IsKeyDown(ImGuiKey_S))
 			{
 				moveDir -= trans.GetForward();
-
 			}
 			if (ImGui::IsKeyDown(ImGuiKey_D))
 			{
@@ -149,7 +151,7 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 			{
 				moveSpeed += ImGui::GetIO().MouseWheel * 5.f;
 				moveSpeed = moveSpeed < 0.1f ? 0.1f : moveSpeed;
-				moveSpeed = moveSpeed > 200.f ? 200.f : moveSpeed ;
+				moveSpeed = moveSpeed > 200.f ? 200.f : moveSpeed;
 			}
 
 			trans.SetPosition(trans.GetPosition() + (moveDir * aContext.deltaTime * moveSpeed));
@@ -215,6 +217,25 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 	ImGui::End();
 
 	return myIsOpen;
+
+}
+
+void Tga::Viewport::UpdateShortcuts(EditorContext& aContext)
+{
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Delete) &&
+		ImGui::IsAnyItemActive() == false &&
+		ImGui::IsWindowFocused()
+		)
+	{
+		auto selection = Tga::Selection::GetSelection();
+		if(!selection.empty())
+		{
+			Tga::CommandManager::DoCommand(std::make_shared<Tga::RemoveCommand>(aContext.currentScene, selection));
+			selection.clear();
+			Tga::Selection::ClearSelection();
+		}
+	}
 
 }
 

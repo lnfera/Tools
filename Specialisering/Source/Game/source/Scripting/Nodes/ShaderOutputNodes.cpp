@@ -72,6 +72,7 @@ ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext
 		parsedCode +
 		SHADER::PixelEnd;
 
+	std::cout << hlslCode;
 
 	//Assign Shader
 	const ShaderCompileContext& compileContext = static_cast<const ShaderCompileContext&>(aContext.GetUpdateContext());

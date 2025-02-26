@@ -315,6 +315,7 @@ void Tga::ScriptEditor::RenderTopRow(EditorContext& /*aContext*/)
 	}
 }
 
+
 void Tga::ScriptEditor::RenderEditor(EditorContext& aContext)
 {
 	if (myActiveScript.empty()) return;
@@ -708,7 +709,7 @@ void Tga::ScriptEditor::RenderEditor(EditorContext& aContext)
 
 	//Delete links and nodes if non imgui is active
 	if ((ImGui::IsKeyPressed(ImGuiKey_Delete) || ImGui::IsKeyPressed(ImGuiKey_Backspace))
-		&& !ImGui::IsAnyItemActive())
+		&& (!ImGui::IsAnyItemActive()))
 	{
 		int numSelectedLinks = ImNodes::NumSelectedLinks();
 		int numSelectedNodes = ImNodes::NumSelectedNodes();

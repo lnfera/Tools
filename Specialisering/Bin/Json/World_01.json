@@ -4,50 +4,6 @@
             "Components": [
                 {
                     "Type": "Tga::RenderComponent",
-                    "albedo": "none",
-                    "material": "none",
-                    "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
-                    "normal": "none",
-                    "shader": "none"
-                }
-            ],
-            "name": "SM_Plane",
-            "tranform": [
-                null,
-                [
-                    null,
-                    0.5,
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                [
-                    null,
-                    0.0,
-                    0.5,
-                    0.0,
-                    0.0
-                ],
-                [
-                    null,
-                    0.0,
-                    0.0,
-                    0.5,
-                    0.0
-                ],
-                [
-                    null,
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ]
-            ]
-        },
-        {
-            "Components": [
-                {
-                    "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Sprites/printable-bricks-coloring-pagen_6503.jpg",
                     "material": "none",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
@@ -140,7 +96,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Sphere.fbx",
                     "normal": "none",
-                    "shader": "Magic_Cosinus_Shader"
+                    "shader": "Party_mode"
                 }
             ],
             "name": "",
@@ -257,10 +213,54 @@
                 ],
                 [
                     null,
-                    12.366140365600586,
+                    4.2271647453308105,
                     -6.103515625e-05,
-                    -4.725674152374268,
+                    -4.80971622467041,
                     0.9999998807907104
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
+                    "normal": "none",
+                    "shader": ""
+                }
+            ],
+            "name": "SM_Plane",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.5,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.5,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.5,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
                 ]
             ]
         }

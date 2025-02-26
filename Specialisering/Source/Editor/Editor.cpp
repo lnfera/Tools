@@ -306,17 +306,7 @@ void Tga::Editor::RenderWidgets(EditorContext& aContext)
 void Tga::Editor::UpdateShortcuts(EditorContext& /*aContext*/)
 {
 	// Control Commands
-	if (ImGui::IsKeyPressed(ImGuiKey_Delete) && ImGui::IsAnyItemActive() == false && ImNodes::IsEditorHovered() == false)
-	{
-		auto selection = Tga::Selection::GetSelection();
-		for (int i = 0; i < selection.size(); i++)
-		{
-			Tga::CommandManager::DoCommand(std::make_shared<Tga::RemoveCommand>(myScene, Tga::Selection::GetSelection()));
 
-			//aContext.currentScene->RemoveObject(selection[i]);
-		}
-		selection.clear();
-	}
 
 
 	if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))

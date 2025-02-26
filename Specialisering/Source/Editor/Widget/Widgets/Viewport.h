@@ -28,6 +28,7 @@ namespace Tga
 		const bool ViewportNeedsResize();
 		const Vector2ui& GetViewportSize();
 	private:
+		void UpdateShortcuts(EditorContext&);
 		void RenderSceneToTarget(EditorContext& aContext);
 		void Resize(const Tga::Vector2ui& aSize);
 
