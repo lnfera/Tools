@@ -302,10 +302,11 @@ void Tga::Editor::RenderWidgets(EditorContext& aContext)
 		}
 	}
 }
+#include <imnodes/imnodes.h>
 void Tga::Editor::UpdateShortcuts(EditorContext& /*aContext*/)
 {
 	// Control Commands
-	if (ImGui::IsKeyPressed(ImGuiKey_Delete) && ImGui::IsAnyItemActive() == false)
+	if (ImGui::IsKeyPressed(ImGuiKey_Delete) && ImGui::IsAnyItemActive() == false && ImNodes::IsEditorHovered() == false)
 	{
 		auto selection = Tga::Selection::GetSelection();
 		for (int i = 0; i < selection.size(); i++)
