@@ -1,0 +1,12 @@
+!*
+
+/.vs/
+/Local/
+/Temp/
+/Lib/
+/*.sln
+
+/Bin/
+/Dependencies/
+/EngineAssets/
+/CommonUtilities/
