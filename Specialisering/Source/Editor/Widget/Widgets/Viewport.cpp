@@ -296,9 +296,9 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 	{
 		myDepth.Clear();
 		myRenderTargetColor.Clear(TGE_I()->GetClearColor().AsVec4());
-		//myRenderTargetColor.Clear({0.2f, 0.2f, 0.7f,1.f});
 		myRenderTargetColor.SetAsActiveTarget(&myDepth);
-
+		gss.SetBlendState(Tga::BlendState::AlphaBlend);
+		gss.Push();
 		for (auto* obj : aContext.currentScene->GetGameObjects())
 		{
 			if (auto* comp = obj->GetComponent<Tga::RenderComponent>())
@@ -306,7 +306,7 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 				comp->Update(0.1f);
 			}
 		}
-
+		gss.Pop();
 		myGrid.Render(myCamera->GetTransform().GetPosition());
 
 		myRenderTargetId.SetAsResourceOnSlot(0);
