@@ -91,6 +91,7 @@ namespace Tools
 		template<typename T>
 		NO_DISCARD T GetData(std::string aKey);
 
+		const json& GetDocument() { return *myData; }
 	private:
 		bool SaveJsonToFile(std::string aFileName, const json& aData);
 
@@ -107,11 +108,11 @@ namespace Tools
 	};
 
 	//###############   [ PUBLIC FUNCTIONS ]   ###############
-	SaveManager::SaveManager(std::string aDirectoryPath) : myDirectoryPath(aDirectoryPath)
+	inline SaveManager::SaveManager(std::string aDirectoryPath) : myDirectoryPath(aDirectoryPath)
 	{
 		CreateDirectoryIfNoExist();
 	};
-	SaveManager::~SaveManager()
+	inline SaveManager::~SaveManager()
 	{
 		if (myData)
 		{
@@ -120,7 +121,7 @@ namespace Tools
 		}
 	}
 
-	void SaveManager::LoadOrCreate(std::string aFileName)
+	inline void SaveManager::LoadOrCreate(std::string aFileName)
 	{
 		if (myData == nullptr)
 		{
@@ -131,7 +132,7 @@ namespace Tools
 		LoadJsonFromFile(ConstructFilePath(myFileName), *myData);
 	}
 
-	void SaveManager::EndSave()
+	inline void SaveManager::EndSave()
 	{
 		SaveJsonToFile(ConstructFilePath(myFileName), *myData);
 		delete myData;
@@ -139,13 +140,13 @@ namespace Tools
 	}
 
 	template<typename T>
-	void SaveManager::SaveData(const std::string& aKey, const T& aValue)
+	inline void SaveManager::SaveData(const std::string& aKey, const T& aValue)
 	{
 		(*myData)[aKey] = aValue;
 	}
 
 	template<typename T>
-	T SaveManager::GetData(std::string aKey)
+	inline T SaveManager::GetData(std::string aKey)
 	{
 		auto& value = (*myData)[aKey];
 
@@ -158,7 +159,7 @@ namespace Tools
 
 
 	//###############	[ PRIVATE FUNCTIONS ]   ###############
-	bool SaveManager::SaveJsonToFile(std::string aFileName, const json& aData)
+	inline bool SaveManager::SaveJsonToFile(std::string aFileName, const json& aData)
 	{
 		std::ofstream outFile(aFileName);
 
@@ -172,7 +173,7 @@ namespace Tools
 		return false;
 	}
 
-	bool SaveManager::LoadJsonFromFile(std::string aFileName, json& aData)
+	inline bool SaveManager::LoadJsonFromFile(std::string aFileName, json& aData)
 	{
 		std::ifstream inFile(aFileName);
 		if (inFile.is_open())
@@ -184,12 +185,12 @@ namespace Tools
 		return false;
 	}
 
-	std::string SaveManager::ConstructFilePath(const std::string& aFileName) const
+	inline std::string SaveManager::ConstructFilePath(const std::string& aFileName) const
 	{
 		return myDirectoryPath + "/" + aFileName;
 	}
 
-	void SaveManager::CreateDirectoryIfNoExist()
+	inline void SaveManager::CreateDirectoryIfNoExist()
 	{
 		if (!fs::exists(myDirectoryPath))
 		{
