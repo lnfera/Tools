@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 namespace Tga
 {
 
@@ -18,6 +19,7 @@ namespace Tga
 	{
 		std::string compilingScriptName = "x";
 		ModelShader* compilingModelShader = nullptr;
+		std::string* hlslCode = nullptr;
 	};
 
 }

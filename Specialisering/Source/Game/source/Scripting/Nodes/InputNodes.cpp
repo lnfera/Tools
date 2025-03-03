@@ -8,7 +8,8 @@ using namespace Tga;
 void Tga::RegisterInputNodes()
 {
 	//Tga::ScriptNodeTypeRegistry::RegisterType<FresnelNode>("Input/Fresnel", "Creates values using the viewing direction of the object");
-	Tga::ScriptNodeTypeRegistry::RegisterType<PixelInputNodes>("Input/PixelInput", "Reads the input data from the pixel");
+	Tga::ScriptNodeTypeRegistry::RegisterType<PixelInputNode>("Input/PixelInput", "Reads the input data from the pixel");
+	Tga::ScriptNodeTypeRegistry::RegisterType<TextureCoordinateNode>("Input/TextureCoords", "Reads uv values");
 }
 
 #pragma region FresnelNode
@@ -43,7 +44,7 @@ void Tga::RegisterInputNodes()
 
 #pragma endregion
 
-void Tga::PixelInputNodes::Init(const Tga::ScriptCreationContext& aContext)
+void Tga::PixelInputNode::Init(const Tga::ScriptCreationContext& aContext)
 {
 	// Out 4
 	{
@@ -87,7 +88,7 @@ void Tga::PixelInputNodes::Init(const Tga::ScriptCreationContext& aContext)
 	}
 }
 
-ParsedData Tga::PixelInputNodes::ParseInputPin(Tga::ScriptExecutionContext& /*aContext*/, ScriptPinId aPin) const
+ParsedData Tga::PixelInputNode::ParseInputPin(Tga::ScriptExecutionContext& /*aContext*/, ScriptPinId aPin) const
 {
 
 	if (aPin == myDepthOut_Id)
@@ -105,6 +106,43 @@ ParsedData Tga::PixelInputNodes::ParseInputPin(Tga::ScriptExecutionContext& /*aC
 	if (aPin == myNormalOut_Id)
 	{
 		return ParsedData("float4", "input.normal.xyzz");
+	}
+
+	return ParsedData();
+}
+
+void Tga::TextureCoordinateNode::Init(const Tga::ScriptCreationContext& aContext)
+{
+	{
+		ScriptPin outputPin = {};
+		outputPin.dataType = ScriptLinkDataType::Float2;
+		outputPin.node = aContext.GetNodeId();
+		outputPin.role = ScriptPinRole::Output;
+		outputPin.defaultValue = { Vector2f()};
+
+		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("UV");
+		myScaledUVOutput = aContext.FindOrCreatePin(outputPin);
+
+		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("ScreenPos");
+		myScreenPosOutput = aContext.FindOrCreatePin(outputPin);
+	}
+}
+
+ScriptLinkData Tga::TextureCoordinateNode::ReadPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
+{
+	aPin;
+	return { Vector2f() };
+}
+
+ParsedData Tga::TextureCoordinateNode::ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
+{
+	if (aPin == myScaledUVOutput)
+	{
+		return { "float2", "scaledUV"};
+	}
+	if (aPin == myScreenPosOutput)
+	{
+		return { "float2", "float2(input.position.xy / Resolution.xy)"};
 	}
 
 	return ParsedData();

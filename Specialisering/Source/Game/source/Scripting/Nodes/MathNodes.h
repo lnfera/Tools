@@ -14,6 +14,7 @@ namespace Tga
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 	};
 
+
 	class BlendFloatNode : public ScriptNodeBase
 	{
 	protected:
@@ -39,6 +40,15 @@ namespace Tga
 		virtual ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 	};
 
+	class SaturateNode : public ScriptNodeBase
+	{
+		ScriptPinId myInput_Id;
+	public:
+		void Init(const ScriptCreationContext& aContext) override;
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
+	};
+
 	enum ConverterMode
 	{
 		Add = 0,
@@ -47,9 +57,9 @@ namespace Tga
 		Divide,
 		Max,
 		Min,
+		Step,
 		COUNT
 	};
-
 	class Converter : public ScriptNodeBase
 	{
 	protected:
@@ -66,7 +76,13 @@ namespace Tga
 		virtual void WriteToJson(ScriptJson&) const;
 		virtual void CustomUiBelow(float aSizeMod);
 	};
+	class Converter2 : public Converter
+	{
+	public:
+		void Init(const ScriptCreationContext& aContext) override;
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
 
+	};
 	class Converter4 : public Converter
 	{
 	public:
@@ -74,7 +90,7 @@ namespace Tga
 		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
 
 	};
-
+#pragma region Splitters
 	class Vector4ToFloatNode : public ScriptNodeBase
 	{
 		ScriptPinId myInputPin;
@@ -88,6 +104,19 @@ namespace Tga
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
 
 	};
+	class Vector2ToFloatNode : public ScriptNodeBase
+	{
+		ScriptPinId myInputPin;
+		ScriptPinId myOutput_X;
+		ScriptPinId myOutput_Y;
+	public:
+		void Init(const ScriptCreationContext& aContext) override;
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+
+	};
+#pragma endregion
+#pragma region Variables
 	class Vector4fNode : public ScriptNodeBase
 	{
 		ScriptPinId myOutputPin;
@@ -101,4 +130,26 @@ namespace Tga
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
 
 	};
+	class Vector2fNode : public ScriptNodeBase
+	{
+		ScriptPinId myOutputPin;
+		ScriptPinId myInput_X;
+		ScriptPinId myInput_Y;
+	public:
+		void Init(const ScriptCreationContext& aContext) override;
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+
+	};
+	class FloatNode : public ScriptNodeBase
+	{
+		ScriptPinId myOutputPin;
+		ScriptPinId myInputPin;
+	public:
+		void Init(const ScriptCreationContext& aContext) override;
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+
+	};
+#pragma endregion
 }

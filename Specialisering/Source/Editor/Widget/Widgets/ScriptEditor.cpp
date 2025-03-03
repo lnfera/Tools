@@ -21,6 +21,7 @@
 #include "NodeScripting/MoveNodesCommand.h"	
 #include "NodeScripting/CreateLinkCommand.h"	
 #include "NodeScripting/CreateNodeCommand.h"	
+#include <Tools/ImGuiFunctions.h>
 //Game
 #include <Scripting/Nodes/CommonNodes.h>
 #include <Scripting/Nodes/DebugNodes.h>
@@ -120,6 +121,7 @@ bool Tga::ScriptEditor::Update(EditorContext& aContext)
 
 		RenderTopRow(aContext);
 		RenderEditor(aContext);
+		RenderPopups(aContext);
 	}
 	ImGui::End();
 
@@ -267,6 +269,13 @@ void Tga::ScriptEditor::RenderTopRow(EditorContext& /*aContext*/)
 
 		ImGui::SameLine();
 
+		if (ImGui::Button("Export"))
+		{
+			ImGui::OpenPopup("ExportPopup");
+		}
+
+		ImGui::SameLine();
+
 		if (ImGui::Button("Revert"))
 		{
 			std::string basePath = std::filesystem::current_path().generic_string() + locScriptPath;
@@ -364,6 +373,7 @@ void Tga::ScriptEditor::RenderEditor(EditorContext& aContext)
 	{
 		bool isNodeHighlighted = ImNodes::IsNodeSelected(currentNodeId.id) || activeScript.hoveredNode == currentNodeId;
 
+		auto* currentNode = GetNode(currentNodeId.id);
 		//todo add custom colors on node registry
 
 		ImNodes::BeginNode(currentNodeId.id);
@@ -372,11 +382,44 @@ void Tga::ScriptEditor::RenderEditor(EditorContext& aContext)
 			{
 				ImNodes::BeginNodeTitleBar();
 
-				ScriptNodeTypeId dataTypeId = script.GetType(currentNodeId);
-				std::string_view string = ScriptNodeTypeRegistry::GetNodeTypeShortName(dataTypeId);
-				ImGui::TextUnformatted(string.data());
-
+				//Check for custom name
+				if (!currentNode->myNodeCustomName.empty())
+				{
+					ImGui::TextUnformatted(currentNode->myNodeCustomName.data());
+				}
+				else
+				{
+					ScriptNodeTypeId dataTypeId = script.GetType(currentNodeId);
+					std::string_view string = ScriptNodeTypeRegistry::GetNodeTypeShortName(dataTypeId);
+					ImGui::TextUnformatted(string.data());
+				}
 				ImNodes::EndNodeTitleBar();
+
+				if (ImGui::IsItemHovered() 
+					&& ImGui::IsMouseClicked(ImGuiMouseButton_Middle))
+				{
+					ImGui::OpenPopup("EditNodePresets");
+				}
+
+
+				if (ImGui::BeginPopup("EditNodePresets"))
+				{
+					//Name
+					std::string title = currentNode->myNodeCustomName;
+					{
+						if (title.empty())
+						{
+							ScriptNodeTypeId dataTypeId = script.GetType(currentNodeId);
+							title = ScriptNodeTypeRegistry::GetNodeTypeShortName(dataTypeId).data();
+						}
+						if (TextInputFix("## Name", &title))
+						{
+							currentNode->myNodeCustomName = title;
+						}
+					}
+					ImGui::EndPopup();
+				}
+
 			}
 			GetNode(currentNodeId.id)->CustomUiAbove(mySizeMod);
 			ImVec2 cursorPos = ImGui::GetCursorPos();
@@ -750,7 +793,7 @@ void Tga::ScriptEditor::RenderEditor(EditorContext& aContext)
 	{
 		bool showAddNodeUI = ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsMouseClicked(1); // right mouse button
 
-		if (showAddNodeUI)
+		if (showAddNodeUI && !ImGui::IsPopupOpen("EditNodePresets"))
 		{
 			ImGui::OpenPopup("Node Type Selection");
 		}
@@ -781,6 +824,32 @@ void Tga::ScriptEditor::RenderEditor(EditorContext& aContext)
 		}
 	}
 }
+
+
+void Tga::ScriptEditor::RenderPopups(EditorContext& /*aContext*/)
+{
+	if (ImGui::BeginPopup("ExportPopup"))
+	{
+		if (ImGui::Selectable("Export to Console"))
+		{
+			MainSingleton::GetInstance().GetShaderManager()->
+				ExportHLSLCodeToConsole(myActiveScript.data());
+		}
+		if (ImGui::Selectable("Export to ClipBoard"))
+		{
+			MainSingleton::GetInstance().GetShaderManager()->
+				ExportHLSLCodeToClipBoard(myActiveScript.data());
+		}
+		if (ImGui::Selectable("Export to HLSL File"))
+		{
+			MainSingleton::GetInstance().GetShaderManager()->
+				ExportHLSLToFile(myActiveScript.data());
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
 
 ScriptNodeTypeId ShowNodeTypeSelectorForCategory(const ScriptNodeTypeRegistry::CategoryInfo& aCategory)
 {
@@ -865,3 +934,4 @@ Tga::ScriptNodeBase* Tga::ScriptEditor::GetNode(int aID)
 	id.id = aID;
 	return &myOpenScripts[myActiveScript].script->GetNode(id);
 }
+

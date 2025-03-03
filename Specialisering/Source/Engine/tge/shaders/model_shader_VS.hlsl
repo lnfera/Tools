@@ -22,6 +22,8 @@ ModelVertexToPixel main(ModelVertexInput input)
 	output.texCoord1 = input.texCoord1;
 	output.texCoord2 = input.texCoord2;
 	output.texCoord3 = input.texCoord3;
-
+	
+    output.depth = GetLinDepth(vertexWorldPos);
+	
     return output;  
 }

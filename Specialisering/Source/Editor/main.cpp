@@ -4,12 +4,22 @@
 #include <tge/engine.h>
 #include <tge/io/Input.h>
 #include <Core/MainSingleton.h>
+
+#include <tge/util/ExceptionHandler.hpp>
 void Go(void);
 
 int main(const int /*argc*/, const char* /*argc*/[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	Go();
+
+	__try
+	{
+		Go();
+	}
+	__except (ExceptionFilterFunction(GetExceptionInformation()))
+	{
+
+	}
 	return 0;
 }
 
@@ -65,7 +75,6 @@ void Go()
 	}
 
 	{
-
 		Tga::MainSingleton& mSingleton = Tga::MainSingleton::GetInstance();
 		mSingleton.Init();
 

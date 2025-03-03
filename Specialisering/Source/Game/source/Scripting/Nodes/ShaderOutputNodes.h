@@ -27,20 +27,21 @@ namespace Tga
 		mutable Tga::TextureResource* myTextureResource = nullptr;
 		mutable std::string myTexturePath = "";
 
-		ScriptPinId myFloat4Out_ID;
+		ScriptPinId myUVIn_ID;
+
 		ScriptPinId myXOut_ID;
 		ScriptPinId myYOut_ID;
 		ScriptPinId myZOut_ID;
 		ScriptPinId myWOut_ID;
-		ScriptPinId myColOut_ID;
 
+		ScriptPinId myColOut_ID;
 
 	public:
 		void Init(const ScriptCreationContext& aContext) override;
 		ScriptNodeResult Execute(ScriptExecutionContext& aContext, ScriptPinId) const override;
-		bool ShouldExecuteAtStart() const override { return true; }
 		void CustomUiOverlaped(float aSize) override;
 
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 
 		void LoadFromJson(const ScriptJson&) override;

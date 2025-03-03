@@ -63,13 +63,13 @@ std::string Tga::ShaderParseCompiler::GetRegisteredVariableName(const ShaderSour
 	return myRegisteredVariablesNames[aSource];
 }
 
-std::string Tga::ShaderParseCompiler::GetOrRegisterImage(const ShaderSource aSource, TextureResource* aTexture)
+std::string Tga::ShaderParseCompiler::GetOrRegisterImage(const ShaderSource aSource, TextureResource* aTexture, std::string aUV)
 {
 	if(myRegisteredVariables.find(aSource) == myRegisteredVariables.end())
 	{
 		int imgId = myUniqueImageId++;
 		std::string uniqueVarName = "image" + std::to_string(imgId)+"z";
-		std::string reg = "float4 " + uniqueVarName + " imageText" + std::to_string(imgId) + "z.Sample(defaultSampler, scaledUV).rgba";
+		std::string reg = "float4 " + uniqueVarName + " imageText" + std::to_string(imgId) + "z.Sample(defaultSampler, "+ aUV +".xy).rgba";
 
 		myVariables.push_back(reg);
 		myRegisteredVariables[aSource] = reg;

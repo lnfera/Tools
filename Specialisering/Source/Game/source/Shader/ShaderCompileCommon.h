@@ -82,7 +82,6 @@ struct SpriteVertexToPixel
 	float4 color			: TEXCOORD2;
 	float3 normal			:	NORMAL;
 };
-
 struct ModelVertexInput
 {
 	float4 position	    :	POSITION;

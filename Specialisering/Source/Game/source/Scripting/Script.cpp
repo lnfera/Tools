@@ -51,6 +51,7 @@ void Tga::Script::LoadFromJson(const ScriptJson& aData)
 		Vector2 pos = { posArray[0].get<float>(), posArray[1].get<float>() };
 		std::string typeName = nodeData["type"];
 		std::string instanceName = nodeData["name"];
+		std::string customName = nodeData["customName"];
 		const json& customNodeData = nodeData["customData"];
 
 		ScriptNodeTypeId typeId = ScriptNodeTypeRegistry::GetTypeId(typeName);
@@ -61,6 +62,7 @@ void Tga::Script::LoadFromJson(const ScriptJson& aData)
 			SetName(id, ScriptStringRegistry::RegisterOrGetString(instanceName));
 
 		node.LoadFromJson({ customNodeData });
+		node.myNodeCustomName = customName;
 	}
 
 	for (json::const_iterator it = pins.begin(); it != pins.end(); ++it)
@@ -134,6 +136,7 @@ void Tga::Script::WriteToJson(ScriptJson& aJsonData)
 		// The data that we save
 		nodes.push_back(
 			{
+				{"customName", GetNode(nodeId).myNodeCustomName},
 				{"id", nodeId.id},
 				{"type", ScriptNodeTypeRegistry::GetNodeTypeShortName(type).data()},
 				{"name", name.id != ScriptStringId::InvalidId ? ScriptStringRegistry::GetStringFromStringId(name).data() : ""},

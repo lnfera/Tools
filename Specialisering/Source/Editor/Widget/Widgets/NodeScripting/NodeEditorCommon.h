@@ -10,8 +10,9 @@ namespace Tga
 		{185, 185, 185},	// Flow
 		{126, 0,0},			// Bool
 		{130, 206, 151},	// Int
-		{137, 235, 043},	// Float	
+		{37, 93, 140},		// Float	
 		{206, 43, 206},		// String
+		{206, 0, 206},		// Float2
 		{206, 43, 100},		// Float4
 	};
 	constexpr uint8_t ScriptLinkHoverColors[(size_t)ScriptLinkDataType::COUNT][3] =
@@ -20,8 +21,9 @@ namespace Tga
 		{255, 255, 255},	// Flow
 		{196, 50, 50},		// Bool
 		{83, 255, 221},		// Int
-		{207, 255, 113},	// Float
+		{37, 120, 200},		// Float	
 		{255, 113, 255},	// String
+		{255, 0, 255},		// Float2
 		{236, 63, 130},		// Float4
 
 	};
@@ -31,8 +33,9 @@ namespace Tga
 		{255, 255, 255},	// Flow
 		{196, 50, 50},		// Bool
 		{83, 255, 221},		// Int
-		{207, 255, 113},	// Float
+		{37, 150, 230},		// Float	
 		{255, 113, 255},	// String
+		{255, 0, 255},		// Float2
 		{246, 73, 140},		// Float4
 
 	};

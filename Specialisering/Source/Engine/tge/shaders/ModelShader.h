@@ -8,6 +8,8 @@
 #include <tge/model/model.h>
 
 constexpr int NUM_SHADER_SLOTS = 15;
+constexpr int REG_TEXT_OFFSET = 4;
+constexpr int NUM_CUSTOM_SHADER_SLOTS = NUM_SHADER_SLOTS - REG_TEXT_OFFSET;
 
 namespace Tga
 {

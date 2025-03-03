@@ -37,7 +37,7 @@ namespace Tga
 		bool isVariableRegistered(const ShaderSource aSource);
 
 		std::string GetRegisteredVariableName(const ShaderSource aSource);
-		std::string GetOrRegisterImage(const ShaderSource aSource, TextureResource* aTexture);
+		std::string GetOrRegisterImage(const ShaderSource aSource, TextureResource* aTexture, std::string aUV);
 
 		std::string GenerateVariables();
 		std::vector<TextureResource*> GetImages() { return myImages; }

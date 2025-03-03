@@ -74,10 +74,80 @@ void Tga::ShaderManager::Recompile()
 	Tga::ShaderCompileContext compileContext;
 	for (auto& pair : myScripts)
 	{
+
+		std::string hlslCode = "";
+
 		//Shaders are assigned withing the update function
 		compileContext.compilingScriptName = pair.first;
 		compileContext.compilingModelShader = myShaders[pair.first];
+		compileContext.hlslCode = &hlslCode;
+
 		myScripts[pair.first]->Update(compileContext);
+		
+		myHLSLCode[pair.first] = hlslCode;
+	}
+}
+
+void Tga::ShaderManager::ExportHLSLCodeToConsole(const std::string& aShaderName)
+{
+	if (myHLSLCode.find(aShaderName) != myHLSLCode.end())
+	{
+		std::cout << myHLSLCode[aShaderName] << '\n';
+	}
+}
+void Tga::ShaderManager::ExportHLSLCodeToClipBoard(const std::string& aShaderName)
+{
+	if (myHLSLCode.find(aShaderName) != myHLSLCode.end())
+	{
+		if (myHLSLCode[aShaderName].empty())
+			return;
+
+		// Allocate global memory for the clipboard
+		HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, myHLSLCode[aShaderName].size() + 1);
+		if (!hMem)
+			return;
+
+		// Lock the memory and copy the string
+		memcpy(GlobalLock(hMem), myHLSLCode[aShaderName].c_str(), myHLSLCode[aShaderName].size() + 1);
+		GlobalUnlock(hMem);
+
+		// Open the clipboard and empty it
+		if (OpenClipboard(nullptr))
+		{
+			EmptyClipboard();
+			SetClipboardData(CF_TEXT, hMem);
+			CloseClipboard();
+		}
+		else
+		{
+			GlobalFree(hMem);
+		}
+	}
+}
+
+#include <fstream>
+#include <filesystem>
+void Tga::ShaderManager::ExportHLSLToFile(const std::string& aShaderName)
+{
+	if (myHLSLCode.find(aShaderName) != myHLSLCode.end())
+	{
+		std::string dirPath = std::filesystem::current_path().generic_string() + "/Exports/";
+		
+		if (!std::filesystem::exists(dirPath))
+		{
+			std::filesystem::create_directories(dirPath);
+		}
+		
+		std::string p = dirPath + aShaderName + ".hlsl";
+
+		std::ofstream file;
+		file.open(p);
+
+		if (file.is_open())
+		{
+			file << myHLSLCode[aShaderName];
+		}
+		file.close();
 	}
 }
 

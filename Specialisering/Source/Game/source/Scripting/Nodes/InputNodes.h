@@ -17,7 +17,7 @@ namespace Tga
 
 	//};
 
-	class PixelInputNodes : public ScriptNodeBase
+	class PixelInputNode : public ScriptNodeBase
 	{
 		Tga::ScriptPinId myPositionOut_Id;
 		Tga::ScriptPinId myWorldPositionOut_Id;
@@ -25,6 +25,15 @@ namespace Tga
 		Tga::ScriptPinId myNormalOut_Id;
 	public:
 		void Init(const Tga::ScriptCreationContext& aContext);
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
+	};
+	class TextureCoordinateNode : public ScriptNodeBase
+	{
+		Tga::ScriptPinId myScaledUVOutput;
+		Tga::ScriptPinId myScreenPosOutput;
+	public:
+		void Init(const Tga::ScriptCreationContext& aContext);
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 	};
 }

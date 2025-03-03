@@ -38,14 +38,14 @@ void Tga::ShaderOutputNode::Init(const ScriptCreationContext& aContext)
 	inputPin.dataType = ScriptLinkDataType::Float4;
 	inputPin.node = aContext.GetNodeId();
 	inputPin.role = ScriptPinRole::Input;
-	inputPin.defaultValue = { Vector4f()};
+	inputPin.defaultValue = { Vector4f() };
 
 	{
 		inputPin.name = ScriptStringRegistry::RegisterOrGetString("Albedo");
 		myColorIdIn_Id = aContext.FindOrCreatePin(inputPin);
 	}
 }
-ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext, ScriptPinId ) const
+ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext, ScriptPinId) const
 {
 	// Create parsing context 
 	Tga::ShaderParseCompiler compiler;
@@ -57,18 +57,11 @@ ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext
 
 	std::string variables = compiler.GenerateVariables();
 
-	//compiler.PrintParsedData();
-	//std::cout << variables;
-	//std::cout << "\n\n\n";
-
-
-	//compiler.PrintParsedData();
-
 	std::string hlslCode =
 		SHADER::BuffersHLSLI +
 		SHADER::StructsHLSLI +
 		SHADER::PixelStart +
-		variables+
+		variables +
 		parsedCode +
 		SHADER::PixelEnd;
 
@@ -80,9 +73,10 @@ ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext
 	//Set somewhere
 	ID3D11PixelShader* ps = CreatePixelShaderFromString(hlslCode);
 
-	if(compileContext.compilingModelShader)
+	if (compileContext.compilingModelShader)
 	{
 		compileContext.compilingModelShader->myPixelShader = ps;
+		*compileContext.hlslCode = hlslCode;
 
 		auto images = compiler.GetImages();
 		compileContext.compilingModelShader->ResetTextureResource();
@@ -116,36 +110,53 @@ void Tga::ShaderOutputNode::CustomUiBelow(float /*aSize*/)
 #pragma region ImageNode
 void Tga::ImageNode::Init(const ScriptCreationContext& aContext)
 {
-	ScriptPin inputPin = {};
-	inputPin.node = aContext.GetNodeId();
-	inputPin.role = ScriptPinRole::Output;
-
+	// Input
 	{
-		inputPin.dataType = ScriptLinkDataType::Float4;
+		ScriptPin inputPin = {};
+		inputPin.node = aContext.GetNodeId();
+		inputPin.role = ScriptPinRole::Output;
+
+		{
+			inputPin.dataType = ScriptLinkDataType::Float4;
+			inputPin.defaultValue = { 0.f };
+
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("Col");
+			myColOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+
+		inputPin.dataType = ScriptLinkDataType::Float;
 		inputPin.defaultValue = { 0.f };
 
-		inputPin.name = ScriptStringRegistry::RegisterOrGetString("Col");
-		myColOut_ID = aContext.FindOrCreatePin(inputPin);
+		{
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("R");
+			myXOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+		{
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("G");
+			myYOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+		{
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("B");
+			myZOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+		{
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("A");
+			myWOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
 	}
 
-	inputPin.dataType = ScriptLinkDataType::Float;
-	inputPin.defaultValue = { 0.f };
+	// Output
+	{
 
-	{
-		inputPin.name = ScriptStringRegistry::RegisterOrGetString("R");
-		myXOut_ID = aContext.FindOrCreatePin(inputPin);
-	}
-	{
-		inputPin.name = ScriptStringRegistry::RegisterOrGetString("G");
-		myYOut_ID = aContext.FindOrCreatePin(inputPin);
-	}
-	{
-		inputPin.name = ScriptStringRegistry::RegisterOrGetString("B");
-		myZOut_ID = aContext.FindOrCreatePin(inputPin);
-	}
-	{
-		inputPin.name = ScriptStringRegistry::RegisterOrGetString("A");
-		myWOut_ID = aContext.FindOrCreatePin(inputPin);
+		ScriptPin inputPin = {};
+		inputPin.node = aContext.GetNodeId();
+		inputPin.role = ScriptPinRole::Input;
+
+		inputPin.dataType = ScriptLinkDataType::Float2;
+		inputPin.defaultValue = { Vector2f(-1,-1)};
+
+		inputPin.name = ScriptStringRegistry::RegisterOrGetString("UV");
+		myUVIn_ID = aContext.FindOrCreatePin(inputPin);
 	}
 
 }
@@ -186,12 +197,34 @@ void Tga::ImageNode::CustomUiOverlaped(float aSize)
 
 }
 
+ScriptLinkData Tga::ImageNode::ReadPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
+{
+	if (aPin == myColOut_ID)
+	{
+		return { Vector4f() };
+	}
+
+	return {0};
+}
+
 ParsedData Tga::ImageNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId aID) const
 {
 	aContext;
 
-	std::string imageVar = aContext.GetShaderParseCompiler()->GetOrRegisterImage((ShaderSource)this, myTextureResource);
-	
+	Vector2f uv = std::get<Vector2f>(aContext.ReadInputPin(myUVIn_ID).data);
+	std::string uvToString;
+	if (uv.x == -1 && uv.y == -1)
+	{
+		uvToString = "scaledUV";
+	}
+	else
+	{
+		uvToString = aContext.ParseFromPin(myUVIn_ID);
+	}
+
+
+	std::string imageVar = aContext.GetShaderParseCompiler()->GetOrRegisterImage((ShaderSource)this, myTextureResource,uvToString);
+
 	//aContext.GetShaderParseCompiler().a
 
 	if (aID == myColOut_ID)

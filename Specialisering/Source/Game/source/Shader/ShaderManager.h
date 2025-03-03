@@ -20,16 +20,16 @@ namespace Tga
 
 		void Recompile();
 		ModelShader* GetShader(std::string aName);
-		//void AddShader();
-		//void GetShader();
+		
+		void ExportHLSLCodeToConsole(const std::string& aShaderName);
+		void ExportHLSLCodeToClipBoard(const std::string& aShaderName);
+		void ExportHLSLToFile(const std::string& aShaderName);
 
-		// Scripts
-		// ModelShaders
-		// 
-		//std::unordered_map<std::string, int> myNameToIndexes;
 		const std::unordered_map<std::string, ModelShader*>& GetShaderList() { return myShaders; }
 
-		std::unordered_map<std::string, ScriptRuntimeInstance*> myScripts;
+	private:
 		std::unordered_map<std::string, ModelShader*> myShaders;
+		std::unordered_map<std::string, std::string> myHLSLCode;
+		std::unordered_map<std::string, ScriptRuntimeInstance*> myScripts;
 	};
 }

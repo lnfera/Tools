@@ -1,6 +1,6 @@
 #include "Viewport.h"
 #include <string>
-
+#include <algorithm>
 //External
 #include <ImGuizmo/ImGuizmo.h>	
 
@@ -164,6 +164,9 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 
 			myCameraRotation.x += deltaX;
 			myCameraRotation.y += deltaY;
+
+			// Clamp it!
+			myCameraRotation.x = std::clamp(myCameraRotation.x, -90.f, 90.f);
 
 			trans.SetRotation(myCameraRotation);
 

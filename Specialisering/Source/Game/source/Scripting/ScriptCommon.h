@@ -29,6 +29,7 @@ namespace Tga
 		Int,
 		Float,
 		String,
+		Float2,
 		Float4,
 		COUNT
 	};
@@ -41,6 +42,7 @@ namespace Tga
 		"Int",
 		"Float",
 		"String",
+		"Float2",
 		"Float4"
 	};
 
@@ -74,11 +76,12 @@ namespace Tga
 			Int,
 			Float,
 			String,
+			Float2,
 			Float4,
 		};
 
 		// Add new data into this std::variant
-		std::variant<std::monostate, bool, int, float, ScriptStringId,Vector4f> data;
+		std::variant<std::monostate, bool, int, float, ScriptStringId, Vector2f, Vector4f> data;
 		void LoadFromJson(ScriptLinkDataType aType, const ScriptJson& aJsonData);
 		void WriteToJson(ScriptLinkDataType aType, ScriptJson& aJsonData) const;
 	};

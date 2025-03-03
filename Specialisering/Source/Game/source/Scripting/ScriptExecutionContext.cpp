@@ -98,6 +98,11 @@ ScriptLinkData ScriptExecutionContext::ReadInputPin(ScriptPinId aPinId)
 
 	const ScriptNodeBase& node = script.GetNode(nodeId);
 
+#ifdef _DEBUG
+	//Debug Only
+	std::string typen = typeid(node).name();
+	typen;
+#endif
 	return node.ReadPin(executionContext, sourcePinId);
 }
 
@@ -118,7 +123,7 @@ std::string Tga::ScriptExecutionContext::ParseFromPin(/*ShaderParseCompiler& aCo
 	{
 		const ScriptPin& pin = script.GetPin(aInputPin);
 
-		std::variant<std::monostate, bool, int, float, ScriptStringId, Vector4f> data;
+		std::variant<std::monostate, bool, int, float, ScriptStringId, Vector2f,Vector4f> data;
 
 
 		if (!std::holds_alternative<std::monostate>(pin.overridenValue.data))
@@ -140,6 +145,13 @@ std::string Tga::ScriptExecutionContext::ParseFromPin(/*ShaderParseCompiler& aCo
 		case Tga::ScriptLinkData::VariantType::Float:
 			output = std::to_string(std::get<float>(data));
 			myShaderParseCompiler->RegisterVariable((ShaderSource)&pin, "float", output);
+			break;
+		case Tga::ScriptLinkData::VariantType::Float2:
+		{
+			Vector2f val= std::get<Vector2f>(data);
+			output = "float2(" + std::to_string(val.x) + "f," + std::to_string(val.y) + "f)";
+			myShaderParseCompiler->RegisterVariable((ShaderSource)&pin, "float2", output);
+		}
 			break;
 		case Tga::ScriptLinkData::VariantType::Float4:
 		{

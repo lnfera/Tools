@@ -8,6 +8,11 @@ typedef std::pair<std::string, std::string> ParsedData;
 
 namespace Tga
 {
+	/*enum class ShaderNodeCategory
+	{
+
+	};*/
+
 	class ShaderParseCompiler;
 
 	class ScriptNodeRuntimeInstanceBase
@@ -29,7 +34,13 @@ namespace Tga
 		virtual void CustomUiOverlaped(float /*aSizeMod*/) { __noop; }
 		virtual void CustomUiBelow(float /*aSizeMod*/) 	{ __noop; }
 
-		virtual ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const { return {}; }
+		virtual ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const 
+		{ 
+			std::string msg = typeid(*this).name();
+			msg += " does not have a set function for reading pin!";
+			assert(false && msg.c_str()); 
+			return {}; 
+		}
 
 		/// <summary>
 		/// Returns a parsed version of the node for the shadercompie.
@@ -48,6 +59,8 @@ namespace Tga
 		Vector4f myTitleBarCol			= { 100.0f , 100.0f, 100.0f, 255.f};
 		Vector4f myTitleBarColHovered	= { 230.0f , 230.f, 230.f, 255.f};
 		Vector4f myTitleBarColSelected	= { 255.0f , 255.f, 255.f, 255.f};
+
+		std::string myNodeCustomName = "";
 
 	};
 }

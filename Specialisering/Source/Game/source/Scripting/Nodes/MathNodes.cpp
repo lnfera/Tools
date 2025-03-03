@@ -10,16 +10,21 @@ void Tga::RegisterMathNodes()
 {
 	// converters
 	Tga::ScriptNodeTypeRegistry::RegisterType<Converter>("Math/Converters/Converter", "Simple math functions float");
+	Tga::ScriptNodeTypeRegistry::RegisterType<Converter2>("Math/Converters/Converter2", "Simple math functions float2");
 	Tga::ScriptNodeTypeRegistry::RegisterType<Converter4>("Math/Converters/Converter4", "Simple math functions for float4");
-	
+
 	//Splitter
+	Tga::ScriptNodeTypeRegistry::RegisterType<Vector2ToFloatNode>("Math/Splitter/Vector2ToFloat", "Splits Vector2f into two floats");
 	Tga::ScriptNodeTypeRegistry::RegisterType<Vector4ToFloatNode>("Math/Splitter/Vector4ToFloat", "Splits Vector4f into four floats");
 	// variables
+	Tga::ScriptNodeTypeRegistry::RegisterType<FloatNode>("Math/Variables/Float", "A float on a node");
+	Tga::ScriptNodeTypeRegistry::RegisterType<Vector2fNode>("Math/Variables/Vector2f", "A Vector2 on a node");
 	Tga::ScriptNodeTypeRegistry::RegisterType<Vector4fNode>("Math/Variables/Vector4f", "A Vector4 on a node");
 	// functions
 	Tga::ScriptNodeTypeRegistry::RegisterType<BlendFloatNode>("Math/Functions/Blend", "Lerps between two values");
 	Tga::ScriptNodeTypeRegistry::RegisterType<BlendFloat4Node>("Math/Functions/Blend4", "Lerps between two values of a float4");
 	Tga::ScriptNodeTypeRegistry::RegisterType<CosNode>("Math/Functions/Cosinus", "It does the cosinus on input val");
+	Tga::ScriptNodeTypeRegistry::RegisterType<CosNode>("Math/Functions/Saturate", "Clamps the value between 1 and 0");
 }
 #pragma region Functions
 void Tga::CosNode::Init(const ScriptCreationContext& aContext)
@@ -119,7 +124,7 @@ ParsedData Tga::BlendFloatNode::ParseInputPin(Tga::ScriptExecutionContext& aCont
 	std::string valA = aContext.ParseFromPin(myInput_A);
 	std::string valB = aContext.ParseFromPin(myInput_B);
 
-	std::string out = "(1.0f - " + blendFactor + ") * "+  valA + " + " + blendFactor + "* "+ valB;
+	std::string out = "(1.0f - " + blendFactor + ") * " + valA + " + " + blendFactor + "* " + valB;
 
 	return { myType ,out };
 }
@@ -147,11 +152,11 @@ void Tga::BlendFloat4Node::Init(const ScriptCreationContext& aContext)
 			inputPin.node = aContext.GetNodeId();
 			inputPin.role = ScriptPinRole::Input;
 
-			inputPin.defaultValue = { Vector4f()};
+			inputPin.defaultValue = { Vector4f() };
 			inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("A");
 			myInput_A = aContext.FindOrCreatePin(inputPin);
 
-			inputPin.defaultValue = { Vector4f(1,1,1,1)};
+			inputPin.defaultValue = { Vector4f(1,1,1,1) };
 			inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("B");
 			myInput_B = aContext.FindOrCreatePin(inputPin);
 		}
@@ -162,13 +167,12 @@ void Tga::BlendFloat4Node::Init(const ScriptCreationContext& aContext)
 		inputPin.dataType = ScriptLinkDataType::Float4;
 		inputPin.node = aContext.GetNodeId();
 		inputPin.role = ScriptPinRole::Output;
-		inputPin.defaultValue = {  Vector4f() };
+		inputPin.defaultValue = { Vector4f() };
 		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Out");
 
 		aContext.FindOrCreatePin(inputPin);
 	}
 }
-
 Tga::ScriptLinkData Tga::BlendFloat4Node::ReadPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
 {
 	float blendFactor = std::get<float>(aContext.ReadInputPin(myInputBlendFactor).data);
@@ -176,11 +180,10 @@ Tga::ScriptLinkData Tga::BlendFloat4Node::ReadPin(Tga::ScriptExecutionContext& a
 	Vector4f valA = std::get<Vector4f>(aContext.ReadInputPin(myInput_A).data);
 	Vector4f valB = std::get<Vector4f>(aContext.ReadInputPin(myInput_B).data);
 
-	Vector4f out = (Vector4f(1,1,1,1) - valA) + blendFactor * valB;
+	Vector4f out = (Vector4f(1, 1, 1, 1) - valA) + blendFactor * valB;
 
 	return { out };
 }
-
 ParsedData Tga::BlendFloat4Node::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
 {
 	std::string blendFactor = "clamp(" + aContext.ParseFromPin(myInputBlendFactor) + ",0,1)";
@@ -193,6 +196,43 @@ ParsedData Tga::BlendFloat4Node::ParseInputPin(Tga::ScriptExecutionContext& aCon
 	return { myType ,out };
 }
 
+
+void Tga::SaturateNode::Init(const ScriptCreationContext& aContext)
+{
+	//Input
+	{
+		ScriptPin inputPin = {};
+		inputPin.dataType = ScriptLinkDataType::Float;
+		inputPin.node = aContext.GetNodeId();
+		inputPin.role = ScriptPinRole::Input;
+		inputPin.defaultValue = { 0.0f };
+		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("");
+
+		myInput_Id = aContext.FindOrCreatePin(inputPin);
+	}
+	//Output
+	{
+		ScriptPin inputPin = {};
+		inputPin.dataType = ScriptLinkDataType::Float;
+		inputPin.node = aContext.GetNodeId();
+		inputPin.role = ScriptPinRole::Output;
+		inputPin.defaultValue = { 0.0f };
+		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("");
+
+		myInput_Id = aContext.FindOrCreatePin(inputPin);
+	}
+}
+
+Tga::ScriptLinkData Tga::SaturateNode::ReadPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
+{
+	return {std::clamp<float>(std::get<float>(aContext.ReadInputPin(myInput_Id).data), 0.f, 1.f)};
+}
+
+ParsedData Tga::SaturateNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
+{
+	std::string out = "saturate(" + aContext.ParseFromPin(myInput_Id) + ")";
+	return ParsedData("float", out);
+}
 
 #pragma endregion // Functions
 
@@ -251,6 +291,9 @@ Tga::ScriptLinkData Tga::Converter::ReadPin(Tga::ScriptExecutionContext& aContex
 	case Tga::ConverterMode::Min:
 		return { std::min<float>(valA,valB) };
 		break;
+	case Tga::ConverterMode::Step:
+		return { valA >= valB };
+		break;
 	case Tga::ConverterMode::COUNT:
 		break;
 	default:
@@ -286,6 +329,9 @@ ParsedData Tga::Converter::ParseInputPin(Tga::ScriptExecutionContext& aContext, 
 	case Tga::ConverterMode::Max:
 		value = "max(" + valA + " ," + valB + ")";
 		break;
+	case Tga::ConverterMode::Step:
+		value = "step(" + valA + " ," + valB + ")";
+		break;
 	case Tga::ConverterMode::COUNT:
 	default:
 		value = "0";
@@ -317,7 +363,8 @@ void Tga::Converter::CustomUiBelow(float aSizeMod)
 			" Multiply",
 			" Divide",
 			" Max",
-			" Min"
+			" Min",
+			" Step"
 	};
 
 	//@todo add tooltip when selecting
@@ -344,7 +391,7 @@ void Tga::Converter4::Init(const ScriptCreationContext& aContext)
 	inputPin.dataType = ScriptLinkDataType::Float4;
 	inputPin.node = aContext.GetNodeId();
 	inputPin.role = ScriptPinRole::Input;
-	inputPin.defaultValue = { 0.f };
+	inputPin.defaultValue = { Vector4f() };
 	{
 		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("A");
 
@@ -361,7 +408,7 @@ void Tga::Converter4::Init(const ScriptCreationContext& aContext)
 		outputPin.dataType = ScriptLinkDataType::Float4;
 		outputPin.node = aContext.GetNodeId();
 		outputPin.role = ScriptPinRole::Output;
-		outputPin.defaultValue = { 0.f };
+		outputPin.defaultValue = { Vector4f()};
 		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Out");
 
 		aContext.FindOrCreatePin(outputPin);
@@ -391,6 +438,9 @@ Tga::ScriptLinkData Tga::Converter4::ReadPin(Tga::ScriptExecutionContext& aConte
 	case Tga::ConverterMode::Min:
 		return { Vector4f(std::min<float>(valA.x,valB.x),std::min<float>(valA.y,valB.y), std::min<float>(valA.z,valB.z),std::min<float>(valA.w,valB.w)) };
 		break;
+	case Tga::ConverterMode::Step:
+		return { Vector4f(valA.x >= valB.x , valA.y >= valB.y ,valA.z >= valB.z ,valA.w >= valB.w) };
+		break;
 	case Tga::ConverterMode::COUNT:
 		break;
 	default:
@@ -399,39 +449,79 @@ Tga::ScriptLinkData Tga::Converter4::ReadPin(Tga::ScriptExecutionContext& aConte
 	}
 	return { Vector4f() };
 }
-//std::string Tga::Converter4::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
-//{
-//	//auto* shaderContext = aContext.GetShaderParseCompiler();
-//
-//	std::string valA = VAR(aContext.ParseFromPin(myIn_A));
-//	std::string valB = VAR(aContext.ParseFromPin(myIn_B));
-//	switch (myConverterMode)
-//	{
-//	case Tga::ConverterMode::Add:
-//		return { valA + "+" + valB };
-//	case Tga::ConverterMode::Subtract:
-//		return { valA + "-" + valB };
-//	case Tga::ConverterMode::Multiply:
-//		return { valA + "*" + valB };
-//	case Tga::ConverterMode::Divide:
-//		return { valA + "/" + valB };
-//	case Tga::ConverterMode::Max:
-//		return {"max(" + valA + "," + valB + ")"};	
-//	case Tga::ConverterMode::Min:
-//		return {"min(" + valA + "," + valB + ")"};
-//	case Tga::ConverterMode::COUNT:
-//		break;
-//	default:
-//		std::cout << 
-//		break;
-//	}
-//	return "0";
-//}
 
+
+void Tga::Converter2::Init(const ScriptCreationContext& aContext)
+{
+	myType = "float2";
+	ScriptPin inputPin = {};
+	inputPin.dataType = ScriptLinkDataType::Float2;
+	inputPin.node = aContext.GetNodeId();
+	inputPin.role = ScriptPinRole::Input;
+	inputPin.defaultValue = { Vector2f()};
+	{
+		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("A");
+
+		myIn_A = aContext.FindOrCreatePin(inputPin);
+	}
+
+	{
+		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("B");
+
+		myIn_B = aContext.FindOrCreatePin(inputPin);
+	}
+	{
+		ScriptPin outputPin = {};
+		outputPin.dataType = ScriptLinkDataType::Float2;
+		outputPin.node = aContext.GetNodeId();
+		outputPin.role = ScriptPinRole::Output;
+		outputPin.defaultValue = { Vector2f() };
+		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Out");
+
+		aContext.FindOrCreatePin(outputPin);
+	}
+}
+Tga::ScriptLinkData Tga::Converter2::ReadPin(Tga::ScriptExecutionContext& aContext, Tga::ScriptPinId) const
+{
+	Vector2f valA = std::get<Vector2f>(aContext.ReadInputPin(myIn_A).data);
+	Vector2f valB = std::get<Vector2f>(aContext.ReadInputPin(myIn_B).data);
+	switch (myConverterMode)
+	{
+	case Tga::ConverterMode::Add:
+		return { valA + valB };
+		break;
+	case Tga::ConverterMode::Subtract:
+		return { valA - valB };
+		break;
+	case Tga::ConverterMode::Multiply:
+		return { valA * valB };
+		break;
+	case Tga::ConverterMode::Divide:
+		return { valA / valB };
+		break;
+	case Tga::ConverterMode::Max:
+		return { Vector2f(std::max<float>(valA.x,valB.x),std::max<float>(valA.y,valB.y)) };
+		break;
+	case Tga::ConverterMode::Min:
+		return { Vector2f(std::min<float>(valA.x,valB.x),std::min<float>(valA.y,valB.y)) };
+		break;
+	case Tga::ConverterMode::Step:
+		return { Vector2f(valA.x >= valB.x , valA.y >= valB.y) };
+		break;
+
+	case Tga::ConverterMode::COUNT:
+		break;
+	default:
+		return { 0 };
+		break;
+	}
+	return { Vector2f() };
+}
 
 
 #pragma endregion // Converter
 
+#pragma region Splitters
 void Tga::Vector4ToFloatNode::Init(const ScriptCreationContext& aContext)
 {
 	ScriptPin inputPin = {};
@@ -470,7 +560,6 @@ void Tga::Vector4ToFloatNode::Init(const ScriptCreationContext& aContext)
 		}
 	}
 }
-
 Tga::ScriptLinkData Tga::Vector4ToFloatNode::ReadPin(Tga::ScriptExecutionContext& aContext, ScriptPinId aPinId) const
 {
 	aContext; aPinId;
@@ -494,7 +583,6 @@ Tga::ScriptLinkData Tga::Vector4ToFloatNode::ReadPin(Tga::ScriptExecutionContext
 
 	return { 0 };
 }
-
 ParsedData Tga::Vector4ToFloatNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId aPin) const
 {
 	std::string value = aContext.ParseFromPin(myInputPin);
@@ -517,6 +605,102 @@ ParsedData Tga::Vector4ToFloatNode::ParseInputPin(Tga::ScriptExecutionContext& a
 
 	return ParsedData("float", value);
 }
+
+
+void Tga::Vector2ToFloatNode::Init(const ScriptCreationContext& aContext)
+{
+	ScriptPin inputPin = {};
+	inputPin.dataType = ScriptLinkDataType::Float2;
+	inputPin.node = aContext.GetNodeId();
+	inputPin.role = ScriptPinRole::Input;
+	inputPin.defaultValue = { Vector2f() };
+	{
+		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("In");
+
+		myInputPin = aContext.FindOrCreatePin(inputPin);
+	}
+
+	{
+		ScriptPin outputPin = {};
+		outputPin.dataType = ScriptLinkDataType::Float;
+		outputPin.node = aContext.GetNodeId();
+		outputPin.role = ScriptPinRole::Output;
+		outputPin.defaultValue = { 0.f };
+
+		{
+			outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("X");
+			myOutput_X = aContext.FindOrCreatePin(outputPin);
+		}
+		{
+			outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Y");
+			myOutput_Y = aContext.FindOrCreatePin(outputPin);
+		}
+	}
+}
+Tga::ScriptLinkData Tga::Vector2ToFloatNode::ReadPin(Tga::ScriptExecutionContext& aContext, ScriptPinId aPinId) const
+{
+	Vector2f vector = std::get<Vector2f>(aContext.ReadInputPin(myInputPin).data);
+	if (aPinId == myOutput_X)
+	{
+		return { vector.x };
+	}
+	if (aPinId == myOutput_Y)
+	{
+		return { vector.y };
+	}
+	return { 0 };
+}
+ParsedData Tga::Vector2ToFloatNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId aPin) const
+{
+	std::string value = aContext.ParseFromPin(myInputPin);
+	if (aPin == myOutput_X)
+	{
+		value += ".x";
+	}
+	if (aPin == myOutput_Y)
+	{
+		value += ".y";
+	}
+	return ParsedData("float", value);
+}
+#pragma endregion
+
+
+#pragma region Variables
+
+
+void Tga::FloatNode::Init(const ScriptCreationContext& aContext)
+{
+	{
+		Tga::ScriptPin inputPin = {};
+		inputPin.dataType = ScriptLinkDataType::Float;
+		inputPin.node = aContext.GetNodeId();
+		inputPin.role = ScriptPinRole::Input;
+		inputPin.defaultValue = { 0.f };
+		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString(" ");
+		myInputPin = aContext.FindOrCreatePin(inputPin);
+	}
+	{
+		Tga::ScriptPin outputPin = {};
+		outputPin.dataType = ScriptLinkDataType::Float;
+		outputPin.node = aContext.GetNodeId();
+		outputPin.role = ScriptPinRole::Output;
+		outputPin.defaultValue = { 0.f };
+		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Out");
+		myOutputPin = aContext.FindOrCreatePin(outputPin);
+	}
+}
+Tga::ScriptLinkData Tga::FloatNode::ReadPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
+{
+	return { std::get<float>(aContext.ReadInputPin(myInputPin).data) };
+}
+ParsedData Tga::FloatNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
+{
+	std::string val = aContext.ParseFromPin(myInputPin);
+
+	return ParsedData("float4", val);
+}
+
 
 void Tga::Vector4fNode::Init(const Tga::ScriptCreationContext& aContext)
 {
@@ -557,7 +741,6 @@ void Tga::Vector4fNode::Init(const Tga::ScriptCreationContext& aContext)
 		myOutputPin = aContext.FindOrCreatePin(outputPin);
 	}
 }
-
 Tga::ScriptLinkData Tga::Vector4fNode::ReadPin(Tga::ScriptExecutionContext& aContext, Tga::ScriptPinId) const
 {
 	float x = std::get<float>(aContext.ReadInputPin(myInput_X).data);
@@ -568,7 +751,6 @@ Tga::ScriptLinkData Tga::Vector4fNode::ReadPin(Tga::ScriptExecutionContext& aCon
 
 	return { Vector4f(x,y,z,w) };
 }
-
 ParsedData Tga::Vector4fNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, Tga::ScriptPinId) const
 {
 	std::string x = aContext.ParseFromPin(myInput_X);
@@ -580,3 +762,59 @@ ParsedData Tga::Vector4fNode::ParseInputPin(Tga::ScriptExecutionContext& aContex
 
 	return ParsedData("float4", out);
 }
+
+void Tga::Vector2fNode::Init(const ScriptCreationContext& aContext)
+{
+	// Input
+	{
+		Tga::ScriptPin inputPin = {};
+		inputPin.dataType = ScriptLinkDataType::Float;
+		inputPin.node = aContext.GetNodeId();
+		inputPin.role = ScriptPinRole::Input;
+		inputPin.defaultValue = { 0.f };
+
+		{
+			inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("X");
+			myInput_X = aContext.FindOrCreatePin(inputPin);
+		}
+		{
+			inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Y");
+			myInput_Y = aContext.FindOrCreatePin(inputPin);
+		}
+	}
+	// Output
+	{
+		Tga::ScriptPin outputPin = {};
+		outputPin.dataType = ScriptLinkDataType::Float2;
+		outputPin.node = aContext.GetNodeId();
+		outputPin.role = ScriptPinRole::Output;
+		outputPin.defaultValue = { Vector2f() };
+
+		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Out");
+		myOutputPin = aContext.FindOrCreatePin(outputPin);
+	}
+}
+Tga::ScriptLinkData Tga::Vector2fNode::ReadPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
+{
+	aContext;
+	float x = 0, y = 0;
+	auto dataX = aContext.ReadInputPin(myInput_X).data;
+	auto dataY = aContext.ReadInputPin(myInput_Y).data;
+
+	x = std::get<float>(dataX);
+	y = std::get<float>(dataY);
+
+
+
+	return { Vector2f(x,y) };
+}
+ParsedData Tga::Vector2fNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
+{
+	std::string x = aContext.ParseFromPin(myInput_X);
+	std::string y = aContext.ParseFromPin(myInput_Y);
+
+	std::string out = "float2(" + x + ", " + y + ")";
+
+	return ParsedData("float2", out);
+}
+#pragma endregion

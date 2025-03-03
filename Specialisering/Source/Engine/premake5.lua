@@ -65,7 +65,9 @@ project "Engine"
 			"avformat.lib",
 			"avutil.lib",
 			"swscale.lib",
-			"swresample.lib"
+			"swresample.lib",
+			"DbgHelp.lib"
+
 		}
 
 		defines {

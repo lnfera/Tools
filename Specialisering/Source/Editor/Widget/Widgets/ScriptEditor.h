@@ -33,6 +33,7 @@ namespace Tga
 	private:
 		void RenderTopRow(EditorContext& aContext);
 		void RenderEditor(EditorContext& aContext);
+		void RenderPopups(EditorContext& aContext);
 		void ImGuiShortCuts(EditorContext& aContext);
 		Tga::ScriptNodeBase* GetNode(int aID);
 
