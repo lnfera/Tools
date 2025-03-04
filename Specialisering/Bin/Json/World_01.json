@@ -5,10 +5,11 @@
                 {
                     "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Models/Chest/Particle_Chest_c.dds",
+                    "fx": "none",
                     "material": "none",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
                     "normal": "none",
-                    "shader": "PixelShader"
+                    "shader": ""
                 }
             ],
             "name": "SM_Chest",
@@ -49,6 +50,7 @@
                 {
                     "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Textures/T_Default_BC.dds",
+                    "fx": "none",
                     "material": "none",
                     "model": "../EngineAssets/Models/TGE.fbx",
                     "normal": "none",
@@ -93,10 +95,11 @@
                 {
                     "Type": "Tga::RenderComponent",
                     "albedo": "none",
+                    "fx": "none",
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Sphere.fbx",
                     "normal": "none",
-                    "shader": "AGAGGAGA"
+                    "shader": "Ball_Shader_PS"
                 }
             ],
             "name": "",
@@ -104,7 +107,7 @@
                 null,
                 [
                     null,
-                    0.2999998927116394,
+                    0.5,
                     0.0,
                     0.0,
                     0.0
@@ -112,7 +115,7 @@
                 [
                     null,
                     0.0,
-                    0.2999998927116394,
+                    0.5,
                     0.0,
                     0.0
                 ],
@@ -120,15 +123,15 @@
                     null,
                     0.0,
                     0.0,
-                    0.2999998927116394,
+                    0.5,
                     0.0
                 ],
                 [
                     null,
-                    99.50000762939453,
-                    2.13634230021853e-05,
-                    2.501265525817871,
-                    0.9999997615814209
+                    103.50084686279297,
+                    40.500022888183594,
+                    12.101261138916016,
+                    0.9999998807907104
                 ]
             ]
         },
@@ -137,10 +140,11 @@
                 {
                     "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Sprites/dog.jpg",
+                    "fx": "none",
                     "material": "none",
                     "model": "../EngineAssets/Models/SM_SomeGuy.fbx",
                     "normal": "none",
-                    "shader": "TGA_SIGN"
+                    "shader": ""
                 }
             ],
             "name": "SM_Morris",
@@ -170,7 +174,7 @@
                 [
                     null,
                     -39.735572814941406,
-                    4.7683693082944956e-07,
+                    4.768367034557741e-07,
                     39.71656799316406,
                     0.9999998807907104
                 ]
@@ -180,11 +184,12 @@
             "Components": [
                 {
                     "Type": "Tga::RenderComponent",
-                    "albedo": "none",
+                    "albedo": "../EngineAssets/Models/Chest/Particle_Chest_c.dds",
+                    "fx": "../EngineAssets/Models/Chest/Particle_Chest_fx.dds",
                     "material": "none",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
                     "normal": "none",
-                    "shader": "PixelShader"
+                    "shader": ""
                 }
             ],
             "name": "Magic_Chest",
@@ -192,31 +197,31 @@
                 null,
                 [
                     null,
-                    0.008706513792276382,
+                    0.013059787452220917,
                     0.0,
-                    0.04923614487051964,
+                    0.07385420799255371,
                     0.0
                 ],
                 [
                     null,
                     0.0,
-                    0.049999967217445374,
+                    0.07499997317790985,
                     0.0,
                     0.0
                 ],
                 [
                     null,
-                    -0.049236129969358444,
+                    -0.07385420799255371,
                     0.0,
-                    0.008706512860953808,
+                    0.013059787452220917,
                     0.0
                 ],
                 [
                     null,
-                    9.883362770080566,
-                    -0.5000669360160828,
-                    18.56243324279785,
-                    0.9999998807907104
+                    8.229110717773438,
+                    -6.747223233105615e-05,
+                    9.207558631896973,
+                    0.9999997615814209
                 ]
             ]
         },
@@ -225,6 +230,7 @@
                 {
                     "Type": "Tga::RenderComponent",
                     "albedo": "none",
+                    "fx": "none",
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
                     "normal": "none",

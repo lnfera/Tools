@@ -67,7 +67,7 @@ void Tga::ShaderManager::Recompile()
 		{
 			myShaders[scriptname] = new ModelShader(TGE_I());
 		}
-		myShaders[scriptname]->Init();
+		myShaders[scriptname]->Init(L"shaders/PbrModelShaderVs.cso", L"shaders/PbrModelShaderPs.cso");
 	}
 
 	//Compile all scripts

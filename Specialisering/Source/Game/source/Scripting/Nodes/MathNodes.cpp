@@ -698,7 +698,7 @@ ParsedData Tga::FloatNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, 
 {
 	std::string val = aContext.ParseFromPin(myInputPin);
 
-	return ParsedData("float4", val);
+	return ParsedData("float", val);
 }
 
 

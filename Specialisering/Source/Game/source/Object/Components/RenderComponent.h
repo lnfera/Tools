@@ -23,11 +23,13 @@ namespace Tga
 		NM::json SaveData() const override;
 		void LoadData(NM::json aJsonData)override;
 
+		void Enable() override;
+		void Disable() override;
 
 		Tga::ModelInstance* myModelInstance = nullptr;
 		Tga::ModelShader* myShader = nullptr;
 
 		std::string myShaderName = "none";
-		std::string myTexturePaths[3] = { "none","none","none"};
+		std::string myTexturePaths[4] = { "none","none","none", "none"};
 	};
 }

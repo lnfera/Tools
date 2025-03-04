@@ -18,6 +18,8 @@
 #include <Scene/Scene.h>
 #include <Object/GameObject.h>
 #include <Object/I_AllComponents.h>
+#include <Core/MainSingleton.h>
+#include <Core/MainDrawer.h>
 
 //Editor 
 #include <Tools/Selection.h>
@@ -290,6 +292,7 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 
 			if (auto* comp = obj->GetComponent<Tga::RenderComponent>())
 			{
+				comp->Update(aContext.deltaTime);
 				modelDrawer.Draw(*comp->myModelInstance, *ViewportGlobal::idShader);
 			}
 		}
@@ -297,7 +300,7 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 
 	// Color Target
 	{
-		myDepth.Clear();
+		/*myDepth.Clear();
 		myRenderTargetColor.Clear(TGE_I()->GetClearColor().AsVec4());
 		myRenderTargetColor.SetAsActiveTarget(&myDepth);
 		gss.SetBlendState(Tga::BlendState::AlphaBlend);
@@ -309,11 +312,14 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 				comp->Update(0.1f);
 			}
 		}
-		gss.Pop();
-		myGrid.Render(myCamera->GetTransform().GetPosition());
+		gss.Pop*/
+		//myGrid.Render(myCamera->GetTransform().GetPosition());
+
+		Tga::MainSingleton::GetInstance().GetMainDrawer()->RenderToTarget(&myRenderTargetColor, myCamera);
 
 		myRenderTargetId.SetAsResourceOnSlot(0);
 		ViewportGlobal::renderData.selectionOutlineEffect.Render();
+
 
 		Tga::DX11::BackBuffer->SetAsActiveTarget(nullptr);
 	}

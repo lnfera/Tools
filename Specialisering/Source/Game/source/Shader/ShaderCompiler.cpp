@@ -81,8 +81,6 @@ std::string Tga::ShaderParseCompiler::GetOrRegisterImage(const ShaderSource aSou
 	return myRegisteredVariablesNames[aSource];
 }
 
-
-
 std::string Tga::ShaderParseCompiler::GenerateVariables()
 {
 	std::string output;

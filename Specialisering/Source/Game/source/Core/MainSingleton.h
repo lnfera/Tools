@@ -3,6 +3,7 @@
 namespace Tga
 {
 	class ShaderManager;
+	class MainDrawer;
 }
 
 namespace Tga
@@ -21,6 +22,7 @@ namespace Tga
 		void Init();
 
 		ShaderManager* GetShaderManager() { return myShaderManager.get(); }
+		MainDrawer* GetMainDrawer() { return myMainDrawer.get(); }
 
 	private: // Singleton Pattern
 		// Behind the scenes
@@ -28,6 +30,7 @@ namespace Tga
 		~MainSingleton() {};
 	private:
 		std::shared_ptr<ShaderManager> myShaderManager;
+		std::shared_ptr<MainDrawer> myMainDrawer;
 	};
 }
 

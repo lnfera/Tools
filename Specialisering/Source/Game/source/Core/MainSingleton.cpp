@@ -7,6 +7,7 @@
 #include <Scripting/Nodes/BufferNodes.h>
 #include <Scripting/Nodes/MathNodes.h>
 #include <Scripting/Nodes/InputNodes.h>
+#include "MainDrawer.h"
 void Tga::MainSingleton::Init()
 {
 	Tga::RegisterInputNodes();
@@ -18,5 +19,8 @@ void Tga::MainSingleton::Init()
 
 	myShaderManager = std::make_shared<ShaderManager>();
 	myShaderManager->Init();
+
+	myMainDrawer = std::make_shared<MainDrawer>();
+	myMainDrawer->Init();
 
 }

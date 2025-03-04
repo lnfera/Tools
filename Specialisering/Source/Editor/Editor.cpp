@@ -16,6 +16,8 @@
 #include <tge/model/ModelInstance.h>
 #include <tge/model/ModelFactory.h>
 #include <tge/texture/TextureManager.h>
+#include <Core/MainSingleton.h>
+#include <Core/MainDrawer.h>
 
 #pragma region Commands
 #include <Tools/Commands/AddCommand.h>
@@ -73,6 +75,7 @@ void Tga::Editor::Init()
 	{
 		myScene = new Tga::Scene("empty");
 		myScene->LoadFromJson("World_01");
+		myScene->Enable();
 	}
 	// Sub-Systems
 	{
@@ -335,9 +338,13 @@ void Tga::Editor::UpdateShortcuts(EditorContext& /*aContext*/)
 
 	}
 
-	if (ImGui::IsKeyDown(ImGuiKey_F5))
+	if (ImGui::IsKeyPressed(ImGuiKey_F5))
 	{
 		system("GameLauncher_Debug.exe");
+	}
+	if (ImGui::IsKeyPressed(ImGuiKey_F6))
+	{
+		Tga::MainSingleton::GetInstance().GetMainDrawer()->CyclePassIndex();
 	}
 
 }

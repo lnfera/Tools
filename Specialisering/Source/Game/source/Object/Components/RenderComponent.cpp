@@ -10,6 +10,7 @@
 #include <tge/drawers/ModelDrawer.h>
 #include <imgui/imgui.h>
 #include <Core/MainSingleton.h>
+#include <Core/MainDrawer.h>
 #include <Shader/ShaderManager.h>
 
 #include <tge/util/Asset.h>
@@ -52,6 +53,7 @@ Tga::RenderComponent::RenderComponent(GameObject* aObject) : Component(aObject)
 	myModelInstance->SetTexture(0, 0, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_BC.dds"));
 	myModelInstance->SetTexture(0, 1, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_N.dds"));
 	myModelInstance->SetTexture(0, 2, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_M.dds"));
+	myModelInstance->SetTexture(0, 3, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_N.dds"));
 }
 Tga::RenderComponent::~RenderComponent()
 {
@@ -77,20 +79,21 @@ void Tga::RenderComponent::Update(float aDeltaTime)
 	aDeltaTime;
 	myModelInstance->SetTransform(myGameObject->GetTransform());
 
-	if (myShader)
-	{
-		// Renders with custom shader
-		TGE_I()->GetGraphicsEngine().GetModelDrawer().Draw(*myModelInstance, *myShader);
-	}
-	else
-	{
-		// Renders with default shader
-		TGE_I()->GetGraphicsEngine().GetModelDrawer().Draw(*myModelInstance);
-	}
+	//if (myShader)
+	//{
+	//	// Renders with custom shader
+	//	TGE_I()->GetGraphicsEngine().GetModelDrawer().Draw(*myModelInstance, *myShader);
+	//}
+	//else
+	//{
+	//	// Renders with default shader
+	//	TGE_I()->GetGraphicsEngine().GetModelDrawer().Draw(*myModelInstance);
+	//}
 }
 void Tga::RenderComponent::ImGuiAccess()
 {
 	const auto& shaderList = MSI_().GetShaderManager()->GetShaderList();
+	bool didChangeRenderGroup = false;
 
 	ImGui::Text("Model : %s", myModelInstance->GetModel()->GetMeshName(0));
 
@@ -112,8 +115,10 @@ void Tga::RenderComponent::ImGuiAccess()
 
 			if (asset->assetType == Tga::eAssetType::eFBX)
 			{
+				Disable();
 				std::string modelPath = asset->relativePath.generic_string();
 				myModelInstance->Init(Tga::ModelFactory::GetInstance().GetModel(string_cast<std::wstring>(modelPath)));
+				didChangeRenderGroup = true;
 			}
 		}
 
@@ -145,6 +150,7 @@ void Tga::RenderComponent::ImGuiAccess()
 		ImageDrop("Albedo", myModelInstance, 0, myTexturePaths[0]);
 		ImageDrop("Normal", myModelInstance, 1, myTexturePaths[1]);
 		ImageDrop("Material", myModelInstance, 2, myTexturePaths[2]);
+		ImageDrop("FX", myModelInstance, 3, myTexturePaths[3]);
 	}
 
 
@@ -155,8 +161,11 @@ void Tga::RenderComponent::ImGuiAccess()
 		{
 			if (ImGui::MenuItem(pair.first.c_str()))
 			{
+				Disable();
 				myShader = pair.second;
 				myShaderName = pair.first;
+				didChangeRenderGroup = true;
+
 			}
 		}
 
@@ -164,9 +173,14 @@ void Tga::RenderComponent::ImGuiAccess()
 		{
 			myShader = nullptr;
 			myShaderName = "";
+			didChangeRenderGroup = true;
 		}
 
 		ImGui::EndPopup();
+	}
+	if (didChangeRenderGroup)
+	{
+		Enable();
 	}
 }
 
@@ -176,9 +190,10 @@ NM::json Tga::RenderComponent::SaveData() const
 	result["shader"] = myShaderName;
 	result["model"] = std::filesystem::relative(myModelInstance->GetModel()->GetPath()).generic_string();
 
-	result["albedo"] = myTexturePaths[0];
-	result["normal"] = myTexturePaths[1];
-	result["material"] = myTexturePaths[2];
+	result["albedo"]	= myTexturePaths[0];
+	result["normal"]	= myTexturePaths[1];
+	result["material"]	= myTexturePaths[2];
+	result["fx"]		= myTexturePaths[3];
 
 	return result;
 }
@@ -196,6 +211,8 @@ void Tga::RenderComponent::LoadData(NM::json aJsonData)
 	myTexturePaths[0] = aJsonData["albedo"];
 	myTexturePaths[1] = aJsonData["normal"];
 	myTexturePaths[2] = aJsonData["material"];
+	myTexturePaths[3] = aJsonData["fx"];
+
 
 	auto& tM = TGE_I()->GetTextureManager();
 	
@@ -211,5 +228,18 @@ void Tga::RenderComponent::LoadData(NM::json aJsonData)
 	{
 		myModelInstance->SetTexture(0, 2, tM.GetTexture(string_cast<std::wstring>(myTexturePaths[2]).c_str()));
 	}
+	if (myTexturePaths[3] != "none")
+	{
+		myModelInstance->SetTexture(0, 3, tM.GetTexture(string_cast<std::wstring>(myTexturePaths[3]).c_str()));
+	}
 	myModelInstance->Init(Tga::ModelFactory::GetInstance().GetModel(string_cast<std::wstring>(modelPath)));
+}
+
+void Tga::RenderComponent::Enable()
+{
+	Tga::MainSingleton::GetInstance().GetMainDrawer()->AddModelToRenderGroup(myModelInstance, myShader);
+}
+void Tga::RenderComponent::Disable()
+{
+	Tga::MainSingleton::GetInstance().GetMainDrawer()->RemoveModelFromRenderGroup(myModelInstance, myShader);
 }

@@ -12,6 +12,7 @@
 #include <tge/math/vector4.h>
 #include <tge/sprite/sprite.h>
 #include <tge/shaders/shader.h>
+#include <tge/engine.h>
 
 #include <tge/EngineUtilities.h>
 #include <tge/settings/settings.h>
@@ -25,6 +26,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <cassert>
 
 #include "imgui/imgui.h"
 

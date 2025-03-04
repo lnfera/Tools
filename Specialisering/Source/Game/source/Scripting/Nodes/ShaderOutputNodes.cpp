@@ -29,9 +29,10 @@ void Tga::RegisterShaderOutNodes()
 {
 	Tga::ScriptNodeTypeRegistry::RegisterType<ImageNode>("ShaderOut/Image", "Reads from an image");
 	Tga::ScriptNodeTypeRegistry::RegisterType<ShaderOutputNode>("ShaderOut/AlbedoOnly", "Only uses albedo when rendering");
+	Tga::ScriptNodeTypeRegistry::RegisterType<DeferredOutputNode>("ShaderOut/Deferred", "Splits the images into the defered rednering pipeline");
 }
 
-
+#pragma region ShaderOut
 void Tga::ShaderOutputNode::Init(const ScriptCreationContext& aContext)
 {
 	ScriptPin inputPin = {};
@@ -63,7 +64,7 @@ ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext
 		SHADER::PixelStart +
 		variables +
 		parsedCode +
-		SHADER::PixelEnd;
+		SHADER::ShaderEnd;
 
 	//std::cout << hlslCode;
 
@@ -106,6 +107,78 @@ void Tga::ShaderOutputNode::CustomUiBelow(float /*aSize*/)
 	// @todo add a preview
 	//ImGui::Image(myRTVSOMETINGSOMETHING, ImVec2(100.f * aSize, 100.f * aSize));
 }
+
+void Tga::DeferredOutputNode::Init(const ScriptCreationContext& aContext)
+{
+	ScriptPin inputPin = {};
+	inputPin.dataType = ScriptLinkDataType::Float4;
+	inputPin.node = aContext.GetNodeId();
+	inputPin.role = ScriptPinRole::Input;
+	inputPin.defaultValue = { Vector4f() };
+
+	{
+		inputPin.name = ScriptStringRegistry::RegisterOrGetString("Albedo");
+		myAlbedoIn_Id = aContext.FindOrCreatePin(inputPin);
+	
+		inputPin.name = ScriptStringRegistry::RegisterOrGetString("Normal");
+		myNormalIn_Id = aContext.FindOrCreatePin(inputPin);
+
+		inputPin.name = ScriptStringRegistry::RegisterOrGetString("Material");
+		myMaterialIn_Id = aContext.FindOrCreatePin(inputPin);
+
+		inputPin.name = ScriptStringRegistry::RegisterOrGetString("FX");
+		myFxIn_Id = aContext.FindOrCreatePin(inputPin);
+	}
+}
+ScriptNodeResult Tga::DeferredOutputNode::Execute(ScriptExecutionContext& aContext, ScriptPinId) const
+{
+	// Create parsing context 
+	Tga::ShaderParseCompiler compiler;
+
+	aContext.SetShaderParseCompiler(&compiler);
+
+	std::string parsedCode = 
+		"albedo = " + aContext.ParseFromPin(myAlbedoIn_Id) + ";" +
+		"normal = " + aContext.ParseFromPin(myNormalIn_Id) + ";" +
+		"material = " + aContext.ParseFromPin(myMaterialIn_Id) + ";" +
+		"fx = " + aContext.ParseFromPin(myFxIn_Id) + ";";
+
+	std::string variables = compiler.GenerateVariables();
+
+	std::string hlslCode =
+		SHADER::BuffersHLSLI +
+		SHADER::StructsHLSLI +
+		SHADER::DeferredStructHLSLI +
+		SHADER::START_DEFERRED +
+		variables +
+		parsedCode +
+		SHADER::END_DEFERRED;
+
+	//Assign Shader
+	const ShaderCompileContext& compileContext = static_cast<const ShaderCompileContext&>(aContext.GetUpdateContext());
+	//Set somewhere
+	ID3D11PixelShader* ps = CreatePixelShaderFromString(hlslCode);
+	if (compileContext.compilingModelShader)
+	{
+		compileContext.compilingModelShader->myPixelShader = ps;
+		*compileContext.hlslCode = hlslCode;
+
+		auto images = compiler.GetImages();
+		compileContext.compilingModelShader->ResetTextureResource();
+		for (int i = 0; i < images.size(); i++)
+		{
+			compileContext.compilingModelShader->SetTextureResource(images[i], i);
+		}
+	}
+	else
+	{
+		ps->Release();
+	}
+
+	return ScriptNodeResult::Finished;
+}
+
+#pragma endregion
 
 #pragma region ImageNode
 void Tga::ImageNode::Init(const ScriptCreationContext& aContext)
@@ -204,13 +277,12 @@ ScriptLinkData Tga::ImageNode::ReadPin(Tga::ScriptExecutionContext&, ScriptPinId
 		return { Vector4f() };
 	}
 
-	return {0};
+	return {0.f};
 }
-
 ParsedData Tga::ImageNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId aID) const
 {
 	aContext;
-
+	aID;
 	Vector2f uv = std::get<Vector2f>(aContext.ReadInputPin(myUVIn_ID).data);
 	std::string uvToString;
 	if (uv.x == -1 && uv.y == -1)
@@ -225,28 +297,24 @@ ParsedData Tga::ImageNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, 
 
 	std::string imageVar = aContext.GetShaderParseCompiler()->GetOrRegisterImage((ShaderSource)this, myTextureResource,uvToString);
 
-	//aContext.GetShaderParseCompiler().a
-
 	if (aID == myColOut_ID)
 	{
 		return ParsedData("float4", imageVar);
 	}
-
-	if (aID == myXOut_ID)
+	else if (aID == myXOut_ID)
 	{
 		imageVar += ".x";
 	}
-	if (aID == myYOut_ID)
+	else if (aID == myYOut_ID)
 	{
 		imageVar += ".y";
-
 	}
-	if (aID == myZOut_ID)
+	else if (aID == myZOut_ID)
 	{
 		imageVar += ".z";
 
 	}
-	if (aID == myWOut_ID)
+	else if (aID == myWOut_ID)
 	{
 		imageVar += ".w";
 	}
@@ -268,3 +336,4 @@ void Tga::ImageNode::WriteToJson(ScriptJson& aJson) const
 	aJson.json["imagePath"] = myTexturePath;
 }
 #pragma endregion
+

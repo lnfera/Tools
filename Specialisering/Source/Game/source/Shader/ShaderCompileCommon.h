@@ -4,12 +4,12 @@
 namespace SHADER
 {
 
-//const std::string CommonHLSLI = R"(
-//
-//)";
+	//const std::string CommonHLSLI = R"(
+	//
+	//)";
 #pragma region Common
 
-const std::string BuffersHLSLI = R"(
+	const std::string BuffersHLSLI = R"(
 cbuffer FrameBuffer : register(b0)
 {
 	float4 Resolution; //myResolution.x = screen width, myResolution.y = screen height, myResolution.z = unset, myResolution.w = unset
@@ -72,14 +72,26 @@ cbuffer BoneBuffer : register(b5)
 #pragma endregion
 
 #pragma region Structs
+	const std::string DeferredStructHLSLI = R"(
 
-const std::string StructsHLSLI = R"(
+struct GBufferOutput
+{
+    float4 myWorldPosition				: SV_TARGET0;
+    float4 myAlbedo						: SV_TARGET1;
+    float4 myNormal						: SV_TARGET2;
+    float4 myMaterial					: SV_TARGET3;
+    float4 myAmbientOcclusionAndCustom	: SV_TARGET4;
+};
+)";
+
+
+	const std::string StructsHLSLI = R"(
 struct SpriteVertexToPixel
 {
-	float4 position		:	SV_POSITION;
+	float4 position			:	SV_POSITION;
 	float4 worldPosition	:	POSITION;
-	float2 tex				: TEXCOORD0;
-	float4 color			: TEXCOORD2;
+	float2 tex				:	TEXCOORD0;
+	float4 color			:	TEXCOORD2;
 	float3 normal			:	NORMAL;
 };
 struct ModelVertexInput
@@ -104,7 +116,6 @@ struct ModelVertexToPixel
 {
 	float4 position			:	SV_POSITION;
 	float4 worldPosition	:	POSITION;
-	float  depth		    :	DEPTH;
 	float4 vertexColor0		:	COLOR0;
 	float4 vertexColor1		:	COLOR1;
 	float4 vertexColor2		:	COLOR2;
@@ -116,6 +127,7 @@ struct ModelVertexToPixel
 	float3 normal			:	NORMAL;
 	float3 tangent			:	TANGENT;
 	float3 binormal			:	BINORMAL;
+	float  depth		    :	DEPTH;
 };
 
 struct InstancedPixelInputType
@@ -133,14 +145,14 @@ struct PixelOutput
 	float4 color		:	SV_TARGET;
 };
 )";
-//const std::string PixelHLSLI = R"(
-//
-//)";
+	//const std::string PixelHLSLI = R"(
+	//
+	//)";
 #pragma endregion
 
 #pragma region Functions
 
-const std::string Functions = R"(
+	const std::string Functions = R"(
 
 
 
@@ -148,8 +160,8 @@ const std::string Functions = R"(
 
 #pragma endregion
 
-#pragma region PIXEL_SHADER
-const std::string PixelStart = R"(
+#pragma region START_SHADER
+	const std::string PixelStart = R"(
 SamplerState defaultSampler : register(s0);
 
 Texture2D imageText1z	: register(t1);
@@ -178,8 +190,63 @@ float4 main(ModelVertexToPixel input) : SV_TARGET
 	
 )";
 
+	const std::string START_DEFERRED = R"(
+	SamplerState defaultSampler : register(s0);
 
-	const std::string PixelEnd = R"(
+	Texture2D imageText1z	: register(t1);
+	Texture2D imageText2z	: register(t2);
+	Texture2D imageText3z	: register(t3);
+	Texture2D imageText4z	: register(t4);
+
+GBufferOutput main(ModelVertexToPixel input)
+{
+    float2 scaledUV = input.texCoord0;
+	float3 toEye = normalize(CameraPosition.xyz - input.worldPosition.xyz);
+
+	float4 albedo = float4(0,0,0,0);
+	float4 normal = float4(0,0,0,0);
+	float4 material = float4(0,0,0,0);
+    float4 fx = float4(0,0,0,0);
+
+	
+	GBufferOutput output;
+
+)";
+	const std::string ShaderEnd = R"(
+
+	return output;
+}
+
+)";
+	const std::string END_DEFERRED = R"(
+
+	 float ambientOcclusion = normal.b;
+    
+    normal.xy = 2.0f * normal.xy - 1.0f;
+    normal.z = sqrt(1 - saturate(normal.x * normal.x + normal.y * normal.y));
+    normal = normalize(normal);
+    
+    float3x3 TBN = float3x3(
+        normalize(input.tangent.xyz),
+        normalize(-input.binormal.xyz),
+        normalize(input.normal.xyz)
+        );
+    TBN = transpose(TBN);
+    
+    float3 pixelNormal = normalize(mul(TBN, normal));
+
+	output.myWorldPosition = input.worldPosition;
+    output.myAlbedo = albedo;
+    output.myNormal = float4(0.5f + 0.5f * pixelNormal, 1.0f);
+    output.myMaterial = material;
+    output.myAmbientOcclusionAndCustom = float4(ambientOcclusion, /*Emission*/fx.r, 1.f, 1.f); // gba are unused, put whatever data you want here!
+    
+    if (albedo.w <= alphaTestThreshold)
+    {
+        discard;
+        output.myAlbedo = float4(0.0f, 0.0f, 0.0f, 0.0f);
+        return output;
+    }
 
 	return output;
 }

@@ -22,6 +22,21 @@ namespace Tga
 		void CustomUiBelow(float aSize) override;
 	};
 
+
+	class DeferredOutputNode : public ScriptNodeBase
+	{
+		ScriptPinId myAlbedoIn_Id;
+		ScriptPinId myNormalIn_Id;
+		ScriptPinId myMaterialIn_Id;
+		ScriptPinId myFxIn_Id;
+	public:
+		void Init(const ScriptCreationContext& aContext) override;
+		ScriptNodeResult Execute(ScriptExecutionContext& aContext, ScriptPinId) const override;
+		bool ShouldExecuteAtStart() const override { return true; }
+	};
+
+
+
 	class ImageNode : public ScriptNodeBase
 	{
 		mutable Tga::TextureResource* myTextureResource = nullptr;
