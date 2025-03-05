@@ -14,7 +14,7 @@ GBufferOutput main(ModelVertexToPixel pixel)
     float2 scaledUV = pixel.texCoord0;
     
     float4 albedo = albedoTexture.Sample(defaultSampler, scaledUV).rgba;
-    float3 normal = normalTexture.Sample(defaultSampler, scaledUV).xyz;
+    float3 normal = normalTexture.Sample(defaultSampler, scaledUV).zyx;
     float4 material = materialTexture.Sample(defaultSampler, scaledUV);
     float4 fx = fxTexture.Sample(defaultSampler, scaledUV);
     

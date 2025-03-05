@@ -35,11 +35,14 @@ namespace Tga
 		{ 
 			myRenderPassIndex = ++myRenderPassIndex < (int)GBuffer::GTexture::Count ? myRenderPassIndex : -1;
 		}
+
+		DepthBuffer* GetDepthBuffer() { return &myDepthBuffer; };
 	private:
 		// Render Pipeline
 		void ClearBuffers();
 		void RenderDeferedSplice();
 		void RenderAssembleGBuffer();
+		void RenderForwardRendering();
 
 		void RenderPostProcessing();
 		void CopyToTarget(RenderTarget* aTarget);

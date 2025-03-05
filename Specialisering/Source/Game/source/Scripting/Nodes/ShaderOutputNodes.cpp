@@ -1,10 +1,6 @@
 #include "ShaderOutputNodes.h"
 
 #include <tge/engine.h>
-#include <tge/texture/TextureManager.h>
-#include <tge/util/StringCast.h>
-#include <tge/texture/texture.h>
-#include <tge/util/Asset.h>
 #include <tge/shaders/ModelShader.h>
 
 #include <Shader/DXShader.h>
@@ -27,9 +23,8 @@ using namespace Tga;
 
 void Tga::RegisterShaderOutNodes()
 {
-	Tga::ScriptNodeTypeRegistry::RegisterType<ImageNode>("ShaderOut/Image", "Reads from an image");
 	Tga::ScriptNodeTypeRegistry::RegisterType<ShaderOutputNode>("ShaderOut/AlbedoOnly", "Only uses albedo when rendering");
-	Tga::ScriptNodeTypeRegistry::RegisterType<DeferredOutputNode>("ShaderOut/Deferred", "Splits the images into the defered rednering pipeline");
+	Tga::ScriptNodeTypeRegistry::RegisterType<PBROutputNode>("ShaderOut/PBROutput", "Splits the images into the defered rednering pipeline");
 }
 
 #pragma region ShaderOut
@@ -60,6 +55,7 @@ ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext
 
 	std::string hlslCode =
 		SHADER::BuffersHLSLI +
+		SHADER::ImagesAndSampler +
 		SHADER::StructsHLSLI +
 		SHADER::PixelStart +
 		variables +
@@ -95,20 +91,9 @@ ScriptNodeResult Tga::ShaderOutputNode::Execute(ScriptExecutionContext& aContext
 }
 void Tga::ShaderOutputNode::CustomUiBelow(float /*aSize*/)
 {
-	//ID3D11RenderTargetView* prevRTV = nullptr;
-	//ID3D11DepthStencilView* prevDepth = nullptr;
-	//Tga::DX11::Context->OMGetRenderTargets(1, &prevRTV, &prevDepth);
-
-	//// Do image of render
-
-
-	//Tga::DX11::Context->OMSetRenderTargets(1, &prevRTV, prevDepth);
-
-	// @todo add a preview
-	//ImGui::Image(myRTVSOMETINGSOMETHING, ImVec2(100.f * aSize, 100.f * aSize));
 }
 
-void Tga::DeferredOutputNode::Init(const ScriptCreationContext& aContext)
+void Tga::PBROutputNode::Init(const ScriptCreationContext& aContext)
 {
 	ScriptPin inputPin = {};
 	inputPin.dataType = ScriptLinkDataType::Float4;
@@ -130,32 +115,57 @@ void Tga::DeferredOutputNode::Init(const ScriptCreationContext& aContext)
 		myFxIn_Id = aContext.FindOrCreatePin(inputPin);
 	}
 }
-ScriptNodeResult Tga::DeferredOutputNode::Execute(ScriptExecutionContext& aContext, ScriptPinId) const
+ScriptNodeResult Tga::PBROutputNode::Execute(ScriptExecutionContext& aContext, ScriptPinId) const
 {
 	// Create parsing context 
 	Tga::ShaderParseCompiler compiler;
+	const ShaderCompileContext& compileContext = static_cast<const ShaderCompileContext&>(aContext.GetUpdateContext());
 
 	aContext.SetShaderParseCompiler(&compiler);
 
 	std::string parsedCode = 
-		"albedo = " + aContext.ParseFromPin(myAlbedoIn_Id) + ";" +
-		"normal = " + aContext.ParseFromPin(myNormalIn_Id) + ";" +
-		"material = " + aContext.ParseFromPin(myMaterialIn_Id) + ";" +
-		"fx = " + aContext.ParseFromPin(myFxIn_Id) + ";";
+		"albedo = " + aContext.ParseFromPin(myAlbedoIn_Id) + ";\n" +
+		"normal = " + aContext.ParseFromPin(myNormalIn_Id) + ";\n" +
+		"material = " + aContext.ParseFromPin(myMaterialIn_Id) + ";\n" +
+		"fx = " + aContext.ParseFromPin(myFxIn_Id) + ";\n";
 
 	std::string variables = compiler.GenerateVariables();
 
-	std::string hlslCode =
+	std::string hlslCode = "";
+
+	switch (myRenderMode)
+	{
+	case Tga::RenderMode::Transparent:	// Render to forwardRendering
+		compileContext.compilingModelShader->SetRenderMode(RenderMode::Transparent);
+
+		hlslCode =
+			SHADER::BuffersHLSLI +
+			SHADER::StructsHLSLI +
+			SHADER::ImagesAndSampler +
+			SHADER::Functions +
+			SHADER::PBRStart +
+			variables +
+			parsedCode +
+			SHADER::PBREnd;
+		break;
+	case Tga::RenderMode::Opaque:
+	default:		// Render to Deferred Rendering !
+		compileContext.compilingModelShader->SetRenderMode(RenderMode::Opaque);
+
+	hlslCode =
 		SHADER::BuffersHLSLI +
 		SHADER::StructsHLSLI +
+		SHADER::ImagesAndSampler + 
 		SHADER::DeferredStructHLSLI +
 		SHADER::START_DEFERRED +
 		variables +
 		parsedCode +
 		SHADER::END_DEFERRED;
+		break;
+	}
+
 
 	//Assign Shader
-	const ShaderCompileContext& compileContext = static_cast<const ShaderCompileContext&>(aContext.GetUpdateContext());
 	//Set somewhere
 	ID3D11PixelShader* ps = CreatePixelShaderFromString(hlslCode);
 	if (compileContext.compilingModelShader)
@@ -178,162 +188,33 @@ ScriptNodeResult Tga::DeferredOutputNode::Execute(ScriptExecutionContext& aConte
 	return ScriptNodeResult::Finished;
 }
 
+void Tga::PBROutputNode::CustomUiBelow(float aSizeMod)
+{
+	aSizeMod; 
+	
+	const char* renderItems[(int)RenderMode::COUNT][15] = {
+		"Defered - Opaque",
+		"Forward - Transparency"
+	};
+
+	int currentRenderMode = (int)myRenderMode;
+	ImGui::Text("RenderMode");
+	ImGui::SetNextItemWidth(75 * aSizeMod);
+	if(ImGui::Combo("##RenderMode", &currentRenderMode, renderItems[0], IM_ARRAYSIZE(renderItems)))
+	{
+		myRenderMode = (RenderMode)currentRenderMode;
+	}
+}
+void Tga::PBROutputNode::LoadFromJson(const ScriptJson& aJsonFile)
+{
+	if (aJsonFile.json.contains("RenderMode"))
+	{
+		myRenderMode = (RenderMode)aJsonFile.json["RenderMode"];
+	}
+}
+void Tga::PBROutputNode::WriteToJson(ScriptJson& aJsonFile) const
+{
+	aJsonFile.json["RenderMode"] = (int)myRenderMode;
+}
+
 #pragma endregion
-
-#pragma region ImageNode
-void Tga::ImageNode::Init(const ScriptCreationContext& aContext)
-{
-	// Input
-	{
-		ScriptPin inputPin = {};
-		inputPin.node = aContext.GetNodeId();
-		inputPin.role = ScriptPinRole::Output;
-
-		{
-			inputPin.dataType = ScriptLinkDataType::Float4;
-			inputPin.defaultValue = { 0.f };
-
-			inputPin.name = ScriptStringRegistry::RegisterOrGetString("Col");
-			myColOut_ID = aContext.FindOrCreatePin(inputPin);
-		}
-
-		inputPin.dataType = ScriptLinkDataType::Float;
-		inputPin.defaultValue = { 0.f };
-
-		{
-			inputPin.name = ScriptStringRegistry::RegisterOrGetString("R");
-			myXOut_ID = aContext.FindOrCreatePin(inputPin);
-		}
-		{
-			inputPin.name = ScriptStringRegistry::RegisterOrGetString("G");
-			myYOut_ID = aContext.FindOrCreatePin(inputPin);
-		}
-		{
-			inputPin.name = ScriptStringRegistry::RegisterOrGetString("B");
-			myZOut_ID = aContext.FindOrCreatePin(inputPin);
-		}
-		{
-			inputPin.name = ScriptStringRegistry::RegisterOrGetString("A");
-			myWOut_ID = aContext.FindOrCreatePin(inputPin);
-		}
-	}
-
-	// Output
-	{
-
-		ScriptPin inputPin = {};
-		inputPin.node = aContext.GetNodeId();
-		inputPin.role = ScriptPinRole::Input;
-
-		inputPin.dataType = ScriptLinkDataType::Float2;
-		inputPin.defaultValue = { Vector2f(-1,-1)};
-
-		inputPin.name = ScriptStringRegistry::RegisterOrGetString("UV");
-		myUVIn_ID = aContext.FindOrCreatePin(inputPin);
-	}
-
-}
-ScriptNodeResult Tga::ImageNode::Execute(ScriptExecutionContext& /*aContext*/, ScriptPinId) const
-{
-	return ScriptNodeResult();
-}
-
-void Tga::ImageNode::CustomUiOverlaped(float aSize)
-{
-	float size = 100.f * aSize;
-
-	if (myTextureResource)
-	{
-		ImGui::Image((ImTextureID)myTextureResource->GetShaderResourceView(), ImVec2(size, size));
-	}
-	else
-	{
-		ImGui::Image((ImTextureID)nullptr, ImVec2(size, size));
-	}
-
-	if (ImGui::BeginDragDropTarget())
-	{
-		if (auto p = ImGui::AcceptDragDropPayload("Asset"))
-		{
-			if (Asset* asset = reinterpret_cast<Asset*>(p->Data))
-			{
-				if (asset->assetType == eAssetType::eTexture)
-				{
-					myTextureResource = asset->assetTexture;
-					myTexturePath = asset->relativePath.generic_string();
-				}
-			}
-		}
-
-		ImGui::EndDragDropTarget();
-	}
-
-}
-
-ScriptLinkData Tga::ImageNode::ReadPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
-{
-	if (aPin == myColOut_ID)
-	{
-		return { Vector4f() };
-	}
-
-	return {0.f};
-}
-ParsedData Tga::ImageNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId aID) const
-{
-	aContext;
-	aID;
-	Vector2f uv = std::get<Vector2f>(aContext.ReadInputPin(myUVIn_ID).data);
-	std::string uvToString;
-	if (uv.x == -1 && uv.y == -1)
-	{
-		uvToString = "scaledUV";
-	}
-	else
-	{
-		uvToString = aContext.ParseFromPin(myUVIn_ID);
-	}
-
-
-	std::string imageVar = aContext.GetShaderParseCompiler()->GetOrRegisterImage((ShaderSource)this, myTextureResource,uvToString);
-
-	if (aID == myColOut_ID)
-	{
-		return ParsedData("float4", imageVar);
-	}
-	else if (aID == myXOut_ID)
-	{
-		imageVar += ".x";
-	}
-	else if (aID == myYOut_ID)
-	{
-		imageVar += ".y";
-	}
-	else if (aID == myZOut_ID)
-	{
-		imageVar += ".z";
-
-	}
-	else if (aID == myWOut_ID)
-	{
-		imageVar += ".w";
-	}
-
-	return ParsedData("float", imageVar);
-}
-
-void Tga::ImageNode::LoadFromJson(const ScriptJson& aJson)
-{
-	myTexturePath = aJson.json["imagePath"];
-
-	if (myTexturePath != "")
-	{
-		myTextureResource = TGE_I()->GetTextureManager().GetTexture(string_cast<std::wstring>(myTexturePath).c_str());
-	}
-}
-void Tga::ImageNode::WriteToJson(ScriptJson& aJson) const
-{
-	aJson.json["imagePath"] = myTexturePath;
-}
-#pragma endregion
-

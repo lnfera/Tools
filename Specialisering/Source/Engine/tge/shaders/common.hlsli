@@ -103,7 +103,6 @@ struct ModelVertexToPixel
 {
 	float4 position			:	SV_POSITION;
 	float4 worldPosition	:	POSITION;
-	float  depth		    :	DEPTH;
 	float4 vertexColor0		:	COLOR0;
 	float4 vertexColor1		:	COLOR1;
 	float4 vertexColor2		:	COLOR2;
@@ -115,6 +114,7 @@ struct ModelVertexToPixel
 	float3 normal			:	NORMAL;
 	float3 tangent			:	TANGENT;
 	float3 binormal			:	BINORMAL;
+	float  depth		    :	DEPTH;
 };
 
 struct InstancedPixelInputType

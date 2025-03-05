@@ -313,13 +313,13 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 			}
 		}
 		gss.Pop*/
+
+		auto* mainDrawer = Tga::MainSingleton::GetInstance().GetMainDrawer();
+		mainDrawer->RenderToTarget(&myRenderTargetColor, myCamera);
+
 		//myGrid.Render(myCamera->GetTransform().GetPosition());
-
-		Tga::MainSingleton::GetInstance().GetMainDrawer()->RenderToTarget(&myRenderTargetColor, myCamera);
-
 		myRenderTargetId.SetAsResourceOnSlot(0);
 		ViewportGlobal::renderData.selectionOutlineEffect.Render();
-
 
 		Tga::DX11::BackBuffer->SetAsActiveTarget(nullptr);
 	}

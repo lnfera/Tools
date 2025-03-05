@@ -13,6 +13,8 @@ constexpr int NUM_CUSTOM_SHADER_SLOTS = NUM_SHADER_SLOTS - REG_TEXT_OFFSET;
 
 namespace Tga
 {
+
+
 	class RenderObjectSprite;
 	class ModelShader : public Shader
 	{
@@ -28,7 +30,12 @@ namespace Tga
 
 		void ResetTextureResource();
 		void SetTextureResource(TextureResource* aTexture, int aSlot);
+
+		RenderMode GetRenderMode() { return myRenderMode; }
+		void SetRenderMode(RenderMode aMode) { myRenderMode = aMode; }
 	private:
+		RenderMode myRenderMode = RenderMode::Opaque;
+
 		struct ID3D11Buffer* myBoneBuffer;
 		struct ID3D11Buffer* myObjectBuffer;
 

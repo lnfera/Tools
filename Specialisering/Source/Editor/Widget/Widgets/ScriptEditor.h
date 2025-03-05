@@ -8,6 +8,7 @@
 #include <string_view>
 
 struct ImFont;
+class TextEditor;
 
 namespace Tga
 {
@@ -47,7 +48,7 @@ namespace Tga
 
 		std::string_view myActiveScript;
 		std::shared_ptr<MoveNodesCommand> myInProgressMove;
-
+		TextEditor* myTextEditor = nullptr;
 
 		ImFont* myNodeFont = nullptr;
 	};

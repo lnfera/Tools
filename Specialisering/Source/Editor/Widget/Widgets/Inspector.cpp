@@ -119,6 +119,8 @@ bool Tga::Inspector::Update(EditorContext&)
 				{
 					// Code to remove the component from the object
 					obj->RemoveComponent(comp);
+					comp->Disable();
+					delete comp;
 					// Exit the loop to avoid accessing an invalid iterator after removal
 					ImGui::CloseCurrentPopup();
 				}
@@ -148,12 +150,12 @@ bool Tga::Inspector::Update(EditorContext&)
 
 void Tga::Inspector::DisplayComponentAddList(Tga::GameObject* aObject)
 {
-
 	if (ImGui::BeginMenu("Model"))
 	{
 		if (ImGui::MenuItem("RenderComponent"))
 		{
 			aObject->AddComponent<Tga::RenderComponent>();
+			aObject->GetComponentList().back()->Enable();
 		}
 		ImGui::EndMenu();
 	}

@@ -9,6 +9,7 @@
 #include <imgui/imgui.h>
 #include <imnodes/imnodes.h>
 #include <imnodes/imnodes_internal.h>
+#include <imgui/TextEditor.h>
 // Game
 #include <Scripting/ScriptJson.h>
 #include <Scripting/Script.h>
@@ -59,7 +60,7 @@ void mini_map_node_hovering_callback(int node_id, void* user_data)
 
 Tga::ScriptEditor::ScriptEditor(int aUniqueID) : Widget(aUniqueID)
 {
-
+	myTextEditor = new TextEditor();
 	myNodeFont = ImGui::GetIO().Fonts->AddFontFromFileTTF("../EngineAssets/Font/NotoSans-Medium.ttf", 16);
 
 	if (!myOpenScripts.empty())
@@ -107,6 +108,7 @@ Tga::ScriptEditor::ScriptEditor(int aUniqueID) : Widget(aUniqueID)
 
 Tga::ScriptEditor::~ScriptEditor()
 {
+	delete myTextEditor;
 }
 
 bool Tga::ScriptEditor::Update(EditorContext& aContext)
@@ -269,9 +271,18 @@ void Tga::ScriptEditor::RenderTopRow(EditorContext& /*aContext*/)
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Export"))
+		if (myOpenScripts[myActiveScript].script->IsShaderScript() && ImGui::Button("Export"))
 		{
 			ImGui::OpenPopup("ExportPopup");
+		}
+
+		ImGui::SameLine();
+
+		if (myOpenScripts[myActiveScript].script->IsShaderScript() && ImGui::Button("Inspect Compiled HLSL"))
+		{
+			ImGui::OpenPopup("HlslEditor");
+			myTextEditor->SetText(Tga::MainSingleton::GetInstance().GetShaderManager()->GetHLSLCode(myActiveScript.data()));
+
 		}
 
 		ImGui::SameLine();
@@ -298,6 +309,7 @@ void Tga::ScriptEditor::RenderTopRow(EditorContext& /*aContext*/)
 
 		ImGui::SameLine();
 
+		// Undo & Redo
 		{
 			ImGui::BeginDisabled(!Tga::CommandManager::CanUndo());
 
@@ -307,11 +319,9 @@ void Tga::ScriptEditor::RenderTopRow(EditorContext& /*aContext*/)
 			}
 
 			ImGui::EndDisabled();
-		}
 
-		ImGui::SameLine();
+			ImGui::SameLine();
 
-		{
 			ImGui::BeginDisabled(!Tga::CommandManager::CanRedo());
 
 			if (ImGui::Button("Redo"))
@@ -395,7 +405,7 @@ void Tga::ScriptEditor::RenderEditor(EditorContext& aContext)
 				}
 				ImNodes::EndNodeTitleBar();
 
-				if (ImGui::IsItemHovered() 
+				if (ImGui::IsItemHovered()
 					&& ImGui::IsMouseClicked(ImGuiMouseButton_Middle))
 				{
 					ImGui::OpenPopup("EditNodePresets");
@@ -845,6 +855,18 @@ void Tga::ScriptEditor::RenderPopups(EditorContext& /*aContext*/)
 			MainSingleton::GetInstance().GetShaderManager()->
 				ExportHLSLToFile(myActiveScript.data());
 		}
+
+		ImGui::EndPopup();
+	}
+
+	ImVec2 wndPos = ImGui::GetWindowPos();
+	ImVec2 wndSize = ImGui::GetWindowSize();
+	if (ImGui::BeginPopup("HlslEditor"))
+	{
+		ImGui::Text(myActiveScript.data());
+		ImGui::SetWindowPos(wndPos);
+
+		myTextEditor->Render(myActiveScript.data(), wndSize);
 
 		ImGui::EndPopup();
 	}

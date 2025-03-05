@@ -1,6 +1,7 @@
 #include "VisualGrid.h"
 #include <tge/engine.h>
 #include <tge/graphics/GraphicsEngine.h>
+#include <tge/graphics/GraphicsStateStack.h>
 #include <tge/drawers/LineDrawer.h>
 #include <tge/primitives/LinePrimitive.h>
 Tga::VisualGrid::VisualGrid(int aGridSize, float aCellsize) :
@@ -11,6 +12,12 @@ Tga::VisualGrid::VisualGrid(int aGridSize, float aCellsize) :
 
 void Tga::VisualGrid::Render(Vector3f aCameraPosition)
 {
+	auto& gss = TGE_I()->GetGraphicsEngine().GetGraphicsStateStack();
+
+	gss.Push();
+	gss.SetBlendState(Tga::BlendState::Disabled);
+	
+
 	auto& lineDrawer = Tga::Engine::GetInstance()->GetGraphicsEngine().GetLineDrawer();
 
 	Tga::LinePrimitive line;
@@ -18,6 +25,28 @@ void Tga::VisualGrid::Render(Vector3f aCameraPosition)
 	Vector3f offset = { myCellSize * myGridSize * -0.5f,0,myCellSize * myGridSize * -0.5f };
 	offset.x += myCellSize * ((int)aCameraPosition.x / (int)(myCellSize));
 	offset.z += myCellSize * ((int)aCameraPosition.z / (int)(myCellSize));
+
+	line.color = { 0.8f,1.f,1.f,0.3f };
+	// Render the Grid
+	for (int x = 0; x <= myGridSize; x++)
+	{
+		for (int z = 0; z <= myGridSize; z++)
+		{
+			// First line 
+			line.fromPosition = { myCellSize * x, -0.01f, 0 }; // Start point
+			line.fromPosition += offset;
+			line.toPosition = { myCellSize * x ,-0.01f,myCellSize * myGridSize }; // End point
+			line.toPosition += offset;
+			lineDrawer.Draw(line);
+
+			// Second line 
+			line.fromPosition = { 0, -0.01f, myCellSize * z }; // Start point
+			line.fromPosition += offset;
+			line.toPosition = { myCellSize * myGridSize ,-0.01f,myCellSize * z }; // End point
+			line.toPosition += offset;
+			lineDrawer.Draw(line);
+		}
+	}
 
 
 	// X Axis
@@ -48,27 +77,6 @@ void Tga::VisualGrid::Render(Vector3f aCameraPosition)
 		lineDrawer.Draw(line);
 	}
 
-	line.color = { 1.f,1.f,1.f,0.4f };
-	// Render the Grid
-	for (int x = 0; x <= myGridSize; x++)
-	{
-		for (int z = 0; z <= myGridSize; z++)
-		{
-			// First line 
-			line.fromPosition = { myCellSize * x, -0.01f, 0 }; // Start point
-			line.fromPosition += offset;
-			line.toPosition = { myCellSize * x ,-0.01f,myCellSize * myGridSize }; // End point
-			line.toPosition += offset;
-			lineDrawer.Draw(line);
-
-			// Second line 
-			line.fromPosition = { 0, -0.01f, myCellSize * z }; // Start point
-			line.fromPosition += offset;
-			line.toPosition = { myCellSize * myGridSize ,-0.01f,myCellSize * z }; // End point
-			line.toPosition += offset;
-			lineDrawer.Draw(line);
-		}
-	}
-
-
+	
+	gss.Pop();
 }

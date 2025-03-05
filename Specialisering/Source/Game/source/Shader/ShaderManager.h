@@ -20,6 +20,7 @@ namespace Tga
 
 		void Recompile();
 		ModelShader* GetShader(std::string aName);
+		std::string GetHLSLCode(std::string aShaderName) {	if (myHLSLCode.find(aShaderName) != myHLSLCode.end()) { return myHLSLCode[aShaderName]; } return "";	}
 		
 		void ExportHLSLCodeToConsole(const std::string& aShaderName);
 		void ExportHLSLCodeToClipBoard(const std::string& aShaderName);

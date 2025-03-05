@@ -86,7 +86,6 @@ void Tga::MainDrawer::AddModelToRenderGroup(ModelInstance* aInstance, ModelShade
 	instancedRenderGroup.modelShader = aCustomShader;
 	instancedRenderGroup.modelInstances.push_back(aInstance);
 }
-
 void Tga::MainDrawer::RemoveModelFromRenderGroup(ModelInstance* aInstance, ModelShader* aCustomShader)
 {
 	Model* model = aInstance->GetModel().get();
@@ -114,33 +113,40 @@ void Tga::MainDrawer::RenderToTarget(RenderTarget* aTarget, Camera* aCamera)
 	}
 
 	// Render Pipline here
-	ClearBuffers();
-	RenderDeferedSplice();
-	RenderAssembleGBuffer();
+	myGraphicsStateStack->Push();
+	{
+		ClearBuffers();
 
-	CopyToTarget(aTarget);
-	Cleanup();
+		RenderDeferedSplice();
+		RenderAssembleGBuffer();
+		//Lights
+		RenderForwardRendering();
+		RenderPostProcessing();
+		//Ui
+		CopyToTarget(aTarget);
+		Cleanup();
+	}
+	myGraphicsStateStack->Pop();
 }
 
 
 void Tga::MainDrawer::ClearBuffers()
 {
 	myDepthBuffer.Clear();
-	myRenderTarget.Clear();
+	myRenderTarget.Clear(Tga::Engine::GetInstance()->GetClearColor().AsVec4());
 	myGBuffer.ClearTextures();
 }
-
 void Tga::MainDrawer::RenderDeferedSplice()
 {
+	myGraphicsStateStack->Push();
 	// [GraphicsStateStack Settings]
 	{
 		myGraphicsStateStack->SetCamera(*myActiveCamera);
 		myGraphicsStateStack->SetBlendState(Tga::BlendState::Disabled);
 		myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::WriteLess);
-
 	}
 
-	myGraphicsStateStack->UpdateGpuStates(false);
+	//myGraphicsStateStack->UpdateGpuStates(false);
 
 	//Start Render to GBuffer
 	myGBuffer.SetAsActiveTarget(&myDepthBuffer);
@@ -149,6 +155,8 @@ void Tga::MainDrawer::RenderDeferedSplice()
 	for (auto& renderGroup : mySMRenderGroups)
 	{
 		auto* modelShader = renderGroup.modelShader;
+
+		if (modelShader != nullptr && modelShader->GetRenderMode() != RenderMode::Opaque) continue;
 
 		for (int i = 0; i < renderGroup.modelInstances.size(); i++)
 		{
@@ -162,21 +170,16 @@ void Tga::MainDrawer::RenderDeferedSplice()
 			}
 		}
 	}
+	myGraphicsStateStack->Pop();
 }
-
 void Tga::MainDrawer::RenderAssembleGBuffer()
 {
+	myGraphicsStateStack->Push();
 	// [GraphicsStateStack Settings]
 	{
-		/*	myGraphicsStateStack->SetCamera(*myActiveCamera);
-			myGraphicsStateStack->SetBlendState(Tga::BlendState::Disabled);
-			myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::WriteLess);*/
-
-
-			//myGraphicsStateStack->SetBlendState(AR::BlendState::Disabled);
-			//myGraphicsStateStack->SetRasterizerState(myRasterizerState);
-			//myGraphicsStateStack->SetDepthStenctilState(AR::DepthStencilState::Write);
-			//myGraphicsStateStack->UpdateGpuStates(true);
+		myGraphicsStateStack->SetCamera(*myActiveCamera);
+		myGraphicsStateStack->SetBlendState(Tga::BlendState::Disabled);
+		myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::WriteLess);
 	}
 
 	myRenderTarget.SetAsActiveTarget(nullptr);
@@ -187,16 +190,42 @@ void Tga::MainDrawer::RenderAssembleGBuffer()
 	myGBuffer.SetAsResourceOnSlot(Tga::GBuffer::GTexture::Material, 4);
 	myGBuffer.SetAsResourceOnSlot(Tga::GBuffer::GTexture::AmbientOcclusionAndCustom, 5);
 
+	//Render to RTV
 	myGBufferAssembleEffect.Render();
-}
 
+	myGraphicsStateStack->Pop();
+}
+void Tga::MainDrawer::RenderForwardRendering()
+{
+	myGraphicsStateStack->Push();
+	// [GraphicsStateStack Settings]
+	{
+		myGraphicsStateStack->SetCamera(*myActiveCamera);
+		myGraphicsStateStack->SetBlendState(Tga::BlendState::AlphaBlend);
+		myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::WriteLess);
+		myGraphicsStateStack->SetRasterizerState(Tga::RasterizerState::BackfaceCulling);
+	}
+	myRenderTarget.SetAsActiveTarget(&myDepthBuffer);
+	// Render SM_Objects with Transparency to forward pass
+	for (auto& group : mySMRenderGroups)
+	{
+		auto* modelShader = group.modelShader;
+
+		if (modelShader == nullptr || modelShader->GetRenderMode() == RenderMode::Opaque) continue;
+
+		for (int i = 0; i < group.modelInstances.size(); i++)
+		{
+			myModelDrawer->Draw(*group.modelInstances[i], *group.modelShader);
+		}
+	}
+	myGraphicsStateStack->Pop();
+}
 void Tga::MainDrawer::RenderPostProcessing()
 {
 }
-
 void Tga::MainDrawer::CopyToTarget(RenderTarget* aTarget)
 {
-	aTarget->SetAsActiveTarget(nullptr);
+	aTarget->SetAsActiveTarget();
 
 	if (myRenderPassIndex == -1)
 	{

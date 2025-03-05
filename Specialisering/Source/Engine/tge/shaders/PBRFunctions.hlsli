@@ -1,3 +1,5 @@
+
+#include "common.hlsli"
 #ifndef PBRFUNCTIONS_HLSLI
 #define PBRFUNCTIONS_HLSLI
 
@@ -7,7 +9,14 @@
 #define nMipOffset 3
 #define PI 3.14159265358979323846f
 
-
+int GetNumMips2(TextureCube cubeTex)
+{
+    int iWidth = 0;
+    int iheight = 0;
+    int numMips = 0;
+    cubeTex.GetDimensions(0, iWidth, iheight, numMips);
+    return numMips;
+}
 
 float bias(float value, float b)
 {
@@ -121,7 +130,7 @@ float3 Specular(float3 specularColor, float3 h, float3 v, float a, float NdL, fl
 
 float3 EvaluateAmbiance(TextureCube lysBurleyCube, float3 vN, float3 VNUnit, float3 toEye, float perceptualRoughness, float ao, float3 dfcol, float3 spccol)
 {
-    int numMips = GetNumMips(lysBurleyCube);
+    int numMips = GetNumMips2(lysBurleyCube);
     const int nrBrdMips = numMips - nMipOffset;
     float VdotN = saturate(dot(toEye, vN));//clamp(dot(toEye, vN), 0.0, 1.0f);
     const float3 vRorg = 2 * vN * VdotN - toEye;

@@ -40,15 +40,15 @@ PostProcessPixelOutput main(PostProcessVertexToPixel input)
     float3 specularColor = lerp((float3) 0.04f, albedo.rgb, metalness);
     float3 diffuseColor = lerp((float3) 0.00f, albedo.rgb, 1 - metalness);
 
- //    //[Lights]
- //   float3 ambiance = EvaluateAmbiance(
- //   	environmentTexture, normal.xyz, worldNormal.xyz,
- //   	toEye, roughness,
- //   	ambientOcclusion, diffuseColor, specularColor
- //   );
+     //[Lights]
+    float3 ambiance = EvaluateAmbiance(
+    	environmentTexture, normal.xyz, normal.xyz,
+    	toEye, roughness,
+    	ambientOcclusion, diffuseColor, specularColor
+    );
     
-    
- //   float3 directionalLight = EvaluateDirectionalLight(
+    float3 directionalLight = 0;
+    //  float3 directionalLight = EvaluateDirectionalLight(
 	//	albedo.rgb, specularColor, worldNormal.xyz, roughness,
 	//	DirectionalLightColorAndIntensity.xyz * DirectionalLightColorAndIntensity.w, DirectionalLightDirection.xyz, toEye.xyz
 	//);
@@ -72,9 +72,10 @@ PostProcessPixelOutput main(PostProcessVertexToPixel input)
     //directionalLight *= shadowFactor;
     
     float3 emissiveAlbedo = albedo.rgb + emissive;
-    float3 radiance = /*ambiance + directionalLight + */emissiveAlbedo;
+    float3 radiance = ambiance + directionalLight + emissiveAlbedo;
 
     output.myColor = float4(radiance.xyz, 1.f);
+    output.myColor *= 1.f - aoCustom.r; // Ambient Occlusion
 
     return output;
 }

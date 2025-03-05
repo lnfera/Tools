@@ -2,6 +2,9 @@
 #include "ScriptNodeBase.h"
 namespace Tga
 {
+	class TextureResource;
+
+
 	void RegisterInputNodes();
 
 
@@ -35,5 +38,32 @@ namespace Tga
 		void Init(const Tga::ScriptCreationContext& aContext);
 		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
+	};
+
+
+	class ImageNode : public ScriptNodeBase
+	{
+	private:
+		mutable Tga::TextureResource* myTextureResource = nullptr;
+		mutable std::string myTexturePath = "";
+
+		ScriptPinId myUVIn_ID;
+
+		ScriptPinId myXOut_ID;
+		ScriptPinId myYOut_ID;
+		ScriptPinId myZOut_ID;
+		ScriptPinId myWOut_ID;
+
+		ScriptPinId myColOut_ID;
+
+	public:
+		void Init(const ScriptCreationContext& aContext) override;
+		void CustomUiOverlaped(float aSize) override;
+
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
+
+		void LoadFromJson(const ScriptJson&) override;
+		void WriteToJson(ScriptJson&) const override;
 	};
 }

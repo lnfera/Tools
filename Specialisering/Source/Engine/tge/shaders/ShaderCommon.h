@@ -17,6 +17,13 @@ namespace Tga
 		Count,
 	};
 
+	enum class RenderMode
+	{
+		Opaque = 0,
+		Transparent,
+		COUNT
+	};
+
 	struct SpriteShaderInstanceData
 	{
 		Matrix4x4f myTransform;

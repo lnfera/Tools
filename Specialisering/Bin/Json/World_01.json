@@ -5,10 +5,10 @@
                 {
                     "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Models/Chest/Particle_Chest_c.dds",
-                    "fx": "none",
-                    "material": "none",
+                    "fx": "../EngineAssets/Models/Chest/Particle_Chest_fx.dds",
+                    "material": "../EngineAssets/Textures/T_Default_M.dds",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
-                    "normal": "none",
+                    "normal": "../EngineAssets/Textures/T_Default_BC.dds",
                     "shader": ""
                 }
             ],
@@ -17,31 +17,31 @@
                 null,
                 [
                     null,
-                    0.04924040660262108,
+                    0.06495190411806107,
                     0.0,
-                    -0.00868240837007761,
+                    0.037500012665987015,
                     0.0
                 ],
                 [
                     null,
                     0.0,
-                    0.05000002309679985,
+                    0.07500001788139343,
                     0.0,
                     0.0
                 ],
                 [
                     null,
-                    0.00868240837007761,
+                    -0.037500012665987015,
                     0.0,
-                    0.04924040660262108,
+                    0.06495190411806107,
                     0.0
                 ],
                 [
                     null,
-                    -13.627861976623535,
+                    13.614127159118652,
                     0.0,
-                    -7.601239204406738,
-                    0.9999998807907104
+                    -38.16220474243164,
+                    0.9999996423721313
                 ]
             ]
         },
@@ -83,9 +83,9 @@
                 ],
                 [
                     null,
-                    19.499998092651367,
+                    -0.5000019073486328,
                     0.0,
-                    -28.999971389770508,
+                    -37.99997329711914,
                     0.9999998807907104
                 ]
             ]
@@ -107,7 +107,7 @@
                 null,
                 [
                     null,
-                    0.5,
+                    0.056249991059303284,
                     0.0,
                     0.0,
                     0.0
@@ -115,7 +115,7 @@
                 [
                     null,
                     0.0,
-                    0.5,
+                    0.056249991059303284,
                     0.0,
                     0.0
                 ],
@@ -123,15 +123,15 @@
                     null,
                     0.0,
                     0.0,
-                    0.5,
+                    0.056249991059303284,
                     0.0
                 ],
                 [
                     null,
-                    103.50084686279297,
-                    40.500022888183594,
-                    12.101261138916016,
-                    0.9999998807907104
+                    31.500850677490234,
+                    22.0000057220459,
+                    0.10125705599784851,
+                    1.0
                 ]
             ]
         },
@@ -144,7 +144,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/SM_SomeGuy.fbx",
                     "normal": "none",
-                    "shader": ""
+                    "shader": "Morris_Statue_PS"
                 }
             ],
             "name": "SM_Morris",
@@ -174,7 +174,7 @@
                 [
                     null,
                     -39.735572814941406,
-                    4.768367034557741e-07,
+                    4.7683624870842323e-07,
                     39.71656799316406,
                     0.9999998807907104
                 ]
@@ -188,7 +188,7 @@
                     "fx": "../EngineAssets/Models/Chest/Particle_Chest_fx.dds",
                     "material": "none",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
-                    "normal": "none",
+                    "normal": "../EngineAssets/Textures/T_Default_BC.dds",
                     "shader": ""
                 }
             ],
@@ -197,31 +197,31 @@
                 null,
                 [
                     null,
-                    0.013059787452220917,
+                    -0.01303162518888712,
                     0.0,
-                    0.07385420799255371,
+                    0.07385916262865067,
                     0.0
                 ],
                 [
                     null,
                     0.0,
-                    0.07499997317790985,
+                    0.07499980181455612,
                     0.0,
                     0.0
                 ],
                 [
                     null,
-                    -0.07385420799255371,
+                    -0.07385916262865067,
                     0.0,
-                    0.013059787452220917,
+                    -0.01303162518888712,
                     0.0
                 ],
                 [
                     null,
-                    8.229110717773438,
-                    -6.747223233105615e-05,
-                    9.207558631896973,
-                    0.9999997615814209
+                    32.765533447265625,
+                    -6.747213774360716e-05,
+                    25.795124053955078,
+                    0.9999988079071045
                 ]
             ]
         },
@@ -231,9 +231,9 @@
                     "Type": "Tga::RenderComponent",
                     "albedo": "none",
                     "fx": "none",
-                    "material": "none",
+                    "material": "../EngineAssets/Textures/T_Default_N.dds",
                     "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
-                    "normal": "none",
+                    "normal": "../EngineAssets/Textures/T_Default_N.dds",
                     "shader": ""
                 }
             ],
@@ -267,6 +267,51 @@
                     0.0,
                     0.0,
                     1.0
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "../EngineAssets/Sprites/printable-bricks-coloring-pagen_6503.jpg",
+                    "fx": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/SM_Pillar.fbx",
+                    "normal": "none",
+                    "shader": "Ball_Shader_PS"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    42.000003814697266,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    5.722041805711342e-06,
+                    -41.999996185302734,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    41.999996185302734,
+                    5.722041805711342e-06,
+                    0.0
+                ],
+                [
+                    null,
+                    31.5,
+                    0.0,
+                    0.0,
+                    0.9999992847442627
                 ]
             ]
         }
