@@ -159,4 +159,13 @@ void Tga::Inspector::DisplayComponentAddList(Tga::GameObject* aObject)
 		}
 		ImGui::EndMenu();
 	}
+	else if (ImGui::BeginMenu("Light"))
+	{
+		if (ImGui::MenuItem("PointLight"))
+		{
+			aObject->AddComponent<Tga::PointLightComponent>();
+			aObject->GetComponentList().back()->Enable();
+		}
+		ImGui::EndMenu();
+	}
 }

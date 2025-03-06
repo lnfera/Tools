@@ -11,10 +11,12 @@ namespace Tga
 	class Camera;
 
 	class RenderTarget;
-	class ModelInstance;
 	class ModelDrawer;
 	class SpriteDrawer;
 	class GraphicsStateStack;
+
+	class PointLight;
+	class ModelInstance;
 }
 
 namespace Tga
@@ -30,6 +32,9 @@ namespace Tga
 		void AddModelToRenderGroup(ModelInstance* aInstance, ModelShader* aCustomShader = nullptr);
 		void RemoveModelFromRenderGroup(ModelInstance* aInstance, ModelShader* aCustomShader = nullptr);
 		
+		void AddLight(PointLight* aLight);
+		void RemoveLight(PointLight* aLight);
+
 		void RenderToTarget(RenderTarget* aTarget, Camera* aCamera);
 		void CyclePassIndex() 
 		{ 
@@ -37,11 +42,13 @@ namespace Tga
 		}
 
 		DepthBuffer* GetDepthBuffer() { return &myDepthBuffer; };
+		
 	private:
 		// Render Pipeline
 		void ClearBuffers();
 		void RenderDeferedSplice();
 		void RenderAssembleGBuffer();
+		void RenderLightPass();
 		void RenderForwardRendering();
 
 		void RenderPostProcessing();
@@ -76,5 +83,9 @@ namespace Tga
 		// FullScreen Effects
 		FullscreenEffect myCopyEffect;
 		FullscreenEffect myGBufferAssembleEffect;
+		FullscreenEffect myLightRenderEffect;
+
+		//Lights
+		std::vector<PointLight*> myPointLights;
 	};
 }

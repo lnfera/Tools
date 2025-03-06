@@ -6,6 +6,7 @@
 
 #include <tge/graphics/DX11.h>
 #include <tge/graphics/GraphicsEngine.h>
+#include <tge/graphics/PointLight.h> 
 
 #include <tge/drawers/ModelDrawer.h>
 #include <tge/drawers/SpriteDrawer.h>
@@ -64,6 +65,12 @@ bool Tga::MainDrawer::Init()
 		{
 			assert(false && "Did not init copy fullscreen effect!");
 		}
+
+		didInit = myLightRenderEffect.Init("shaders/lights_to_fullscreen_PS.cso");
+		if (!didInit)
+		{
+			assert(false && "Did not init light fullscreen effect!");
+		}
 	}
 
 	return didInit;
@@ -101,6 +108,21 @@ void Tga::MainDrawer::RemoveModelFromRenderGroup(ModelInstance* aInstance, Model
 				renderGroup.modelInstances.erase(renderGroup.modelInstances.begin() + i);
 				return;
 			}
+		}
+	}
+}
+
+void Tga::MainDrawer::AddLight(PointLight* aLight)
+{
+	myPointLights.push_back(aLight);
+}
+void Tga::MainDrawer::RemoveLight(PointLight* aLight)
+{
+	for (int i = 0; i < myPointLights.size(); i++)
+	{
+		if (myPointLights[i] == aLight) {
+			myPointLights.erase(myPointLights.begin() + i);
+			return;
 		}
 	}
 }
@@ -194,6 +216,33 @@ void Tga::MainDrawer::RenderAssembleGBuffer()
 	myGBufferAssembleEffect.Render();
 
 	myGraphicsStateStack->Pop();
+}
+void Tga::MainDrawer::RenderLightPass()
+{
+	//myGraphicsStateStack->Push();
+	//// [GraphicsStateStack Settings]
+	//{
+	//	myGraphicsStateStack->SetCamera(*myActiveCamera);
+	//	myGraphicsStateStack->SetBlendState(Tga::BlendState::AdditiveBlend);
+	//	//myGraphicsStateStack->SetRasterizerState(Tga::RasterizerState::);
+	//	myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::WriteLess);
+	//}
+
+	//myRenderTarget.SetAsActiveTarget(nullptr);
+
+	//for (int i = 0; i < myPointLights.size(); i++)
+	//{
+	//	myGraphicsStateStack->Push();
+	//	myGraphicsStateStack->AddPointLight(*myPointLights[i]);
+
+
+	//	myGraphicsStateStack->Pop();
+	//}
+
+	////Render to RTV
+	//myGBufferAssembleEffect.Render();
+
+	//myGraphicsStateStack->Pop();
 }
 void Tga::MainDrawer::RenderForwardRendering()
 {

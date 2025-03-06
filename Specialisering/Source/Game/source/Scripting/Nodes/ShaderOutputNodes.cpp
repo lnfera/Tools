@@ -199,7 +199,7 @@ void Tga::PBROutputNode::CustomUiBelow(float aSizeMod)
 
 	int currentRenderMode = (int)myRenderMode;
 	ImGui::Text("RenderMode");
-	ImGui::SetNextItemWidth(75 * aSizeMod);
+	ImGui::SetNextItemWidth(70 * aSizeMod);
 	if(ImGui::Combo("##RenderMode", &currentRenderMode, renderItems[0], IM_ARRAYSIZE(renderItems)))
 	{
 		myRenderMode = (RenderMode)currentRenderMode;
