@@ -9,6 +9,12 @@ namespace Tga
 		ScriptPinId myOutputPin_Id;
 		ScriptPinId myTextIn_Id;
 	public:
+		PrintTextNode* Clone() override
+		{
+			PrintTextNode* clone = new PrintTextNode();
+			return clone;
+		};
+
 		void Init(const ScriptCreationContext& aContext) override;
 		ScriptNodeResult Execute(ScriptExecutionContext& aContext, ScriptPinId) const override;
 	};

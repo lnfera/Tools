@@ -532,11 +532,22 @@ bool GraphicsStateStack::CreateDepthStencilStates()
 	writeLessOrEqual.DepthFunc = D3D11_COMPARISON_LESS;
 	writeLessOrEqual.StencilEnable = false;
 
+	D3D11_DEPTH_STENCIL_DESC readOnlyGreater = {};
+	readOnlyGreater.DepthEnable = true;
+	readOnlyGreater.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	readOnlyGreater.DepthFunc = D3D11_COMPARISON_GREATER;
+	readOnlyGreater.StencilEnable = false;
+
+
 	result = DX11::Device->CreateDepthStencilState(&readOnlyDepthDesc, &myDepthStencilStates[(int)DepthStencilState::WriteLess]);
 	if (FAILED(result))
 		return false;
 
 	result = DX11::Device->CreateDepthStencilState(&writeLessOrEqual, &myDepthStencilStates[(int)DepthStencilState::WriteLessOrEqual]);
+	if (FAILED(result))
+		return false;
+
+	result = DX11::Device->CreateDepthStencilState(&readOnlyGreater, &myDepthStencilStates[(int)DepthStencilState::ReadOnlyGreater]);
 	if (FAILED(result))
 		return false;
 
@@ -581,6 +592,23 @@ bool GraphicsStateStack::CreateRasterizerStates()
 		return false;
 
 	myRasterizerStates[(int)RasterizerState::BackfaceCulling] = nullptr;
+
+
+	rasterizerDesc = {};
+	rasterizerDesc.AntialiasedLineEnable = false;
+	rasterizerDesc.CullMode = D3D11_CULL_FRONT;
+	rasterizerDesc.DepthBias = 0;
+	rasterizerDesc.DepthBiasClamp = 0.0f;
+	rasterizerDesc.DepthClipEnable = true;
+	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerDesc.FrontCounterClockwise = false;
+	rasterizerDesc.MultisampleEnable = true;
+	rasterizerDesc.ScissorEnable = false;
+	rasterizerDesc.SlopeScaledDepthBias = 0.0f;
+	result = DX11::Device->CreateRasterizerState(&rasterizerDesc,
+		&myRasterizerStates[(int)RasterizerState::FrontFaceCulling]);
+	if (FAILED(result))
+		return false;
 
 	return true;
 }

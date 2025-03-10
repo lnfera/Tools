@@ -6,6 +6,7 @@ void Tga::RemoveCommand::Execute()
 	myDidPerformAction = true;
 	for (int i = 0; i < myObjectsToRemove.size(); i++)
 	{
+		myObjectsToRemove[i]->Disable();
 		mySceneToRemoveFrom->RemoveObject(myObjectsToRemove[i]);
 	}
 }
@@ -15,13 +16,14 @@ void Tga::RemoveCommand::Undo()
 	myDidPerformAction = false;
 	for (int i = 0; i < myObjectsToRemove.size(); i++)
 	{
+		myObjectsToRemove[i]->Enable();
 		mySceneToRemoveFrom->AddObject(myObjectsToRemove[i]);
 	}
 }
 
 Tga::RemoveCommand::~RemoveCommand()
 {
-	if (myDidPerformAction == false)
+	if (myDidPerformAction == true)
 	{
 		for (int i = 0; i < myObjectsToRemove.size(); i++)
 		{

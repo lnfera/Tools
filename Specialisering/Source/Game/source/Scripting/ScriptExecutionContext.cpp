@@ -100,8 +100,8 @@ ScriptLinkData ScriptExecutionContext::ReadInputPin(ScriptPinId aPinId)
 
 #ifdef _DEBUG
 	//Debug Only
-	std::string typen = typeid(node).name();
-	typen;
+	//std::string typen = typeid(node).name();
+	//typen;
 #endif
 	return node.ReadPin(executionContext, sourcePinId);
 }

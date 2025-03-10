@@ -8,6 +8,11 @@ namespace Tga
 	class DeltaTimeNode : public ScriptNodeBase
 	{
 	public:
+		DeltaTimeNode* Clone() override
+		{
+			DeltaTimeNode* clone = new DeltaTimeNode();
+			return clone;
+		};
 		void Init(const ScriptCreationContext& aContext) override;
 		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override
@@ -18,6 +23,11 @@ namespace Tga
 	class TotalTimeNode : public ScriptNodeBase
 	{
 	public:
+		TotalTimeNode* Clone() override
+		{
+			TotalTimeNode* clone = new TotalTimeNode();
+			return clone;
+		};
 		void Init(const ScriptCreationContext& aContext) override;
 		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const override

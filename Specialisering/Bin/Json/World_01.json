@@ -6,9 +6,9 @@
                     "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Models/Chest/Particle_Chest_c.dds",
                     "fx": "../EngineAssets/Models/Chest/Particle_Chest_fx.dds",
-                    "material": "../EngineAssets/Textures/T_Default_M.dds",
+                    "material": "../EngineAssets/Models/Chest/Particle_Chest_M.dds",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
-                    "normal": "../EngineAssets/Textures/T_Default_BC.dds",
+                    "normal": "../EngineAssets/Models/Chest/Particle_Chest_N.dds",
                     "shader": ""
                 }
             ],
@@ -38,7 +38,7 @@
                 ],
                 [
                     null,
-                    13.614127159118652,
+                    13.61412525177002,
                     0.0,
                     -38.16220474243164,
                     0.9999996423721313
@@ -173,9 +173,9 @@
                 ],
                 [
                     null,
-                    -39.735572814941406,
-                    4.7683624870842323e-07,
-                    39.71656799316406,
+                    -41.267215728759766,
+                    1.8036163282886264e-06,
+                    41.0026741027832,
                     0.9999998807907104
                 ]
             ]
@@ -186,9 +186,9 @@
                     "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Models/Chest/Particle_Chest_c.dds",
                     "fx": "../EngineAssets/Models/Chest/Particle_Chest_fx.dds",
-                    "material": "none",
+                    "material": "../EngineAssets/Models/Chest/Particle_Chest_M.dds",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
-                    "normal": "../EngineAssets/Textures/T_Default_BC.dds",
+                    "normal": "../EngineAssets/Models/Chest/Particle_Chest_N.dds",
                     "shader": ""
                 }
             ],
@@ -197,31 +197,31 @@
                 null,
                 [
                     null,
-                    -0.01303162518888712,
+                    -0.048187192529439926,
                     0.0,
-                    0.07385916262865067,
+                    0.057471610605716705,
                     0.0
                 ],
                 [
                     null,
                     0.0,
-                    0.07499980181455612,
+                    0.07499974220991135,
                     0.0,
                     0.0
                 ],
                 [
                     null,
-                    -0.07385916262865067,
+                    -0.057471610605716705,
                     0.0,
-                    -0.01303162518888712,
+                    -0.048187192529439926,
                     0.0
                 ],
                 [
                     null,
-                    32.765533447265625,
-                    -6.747213774360716e-05,
-                    25.795124053955078,
-                    0.9999988079071045
+                    32.76549530029297,
+                    -6.74722105031833e-05,
+                    25.7951602935791,
+                    0.9999994039535522
                 ]
             ]
         },
@@ -230,8 +230,8 @@
                 {
                     "Type": "Tga::RenderComponent",
                     "albedo": "none",
-                    "fx": "none",
-                    "material": "../EngineAssets/Textures/T_Default_N.dds",
+                    "fx": "../EngineAssets/Textures/T_Default_M.dds",
+                    "material": "../EngineAssets/Textures/T_Default_M.dds",
                     "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
                     "normal": "../EngineAssets/Textures/T_Default_N.dds",
                     "shader": ""
@@ -282,7 +282,7 @@
                     "shader": "Ball_Shader_PS"
                 }
             ],
-            "name": "",
+            "name": "SM_Pillar",
             "tranform": [
                 null,
                 [
@@ -312,6 +312,53 @@
                     0.0,
                     0.0,
                     0.9999992847442627
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Color": {
+                        "A": 0.0,
+                        "B": 1.0,
+                        "G": 0.9824562072753906,
+                        "R": 0.0
+                    },
+                    "Intensity": 2150.0,
+                    "Range": 32.0,
+                    "Type": "Tga::PointLightComponent"
+                }
+            ],
+            "name": "Pointlight",
+            "tranform": [
+                null,
+                [
+                    null,
+                    3.5,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    3.5,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    3.5,
+                    0.0
+                ],
+                [
+                    null,
+                    16.5,
+                    11.0,
+                    -56.0,
+                    1.0
                 ]
             ]
         }

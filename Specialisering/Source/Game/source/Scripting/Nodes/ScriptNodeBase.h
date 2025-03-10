@@ -24,6 +24,10 @@ namespace Tga
 	{
 	public:
 		virtual ~ScriptNodeBase() {}
+
+		virtual ScriptNodeBase* Clone() = 0;
+
+
 		virtual void Init(const Tga::ScriptCreationContext& aContext) = 0;
 
 		virtual std::unique_ptr<ScriptNodeRuntimeInstanceBase> CreateRuntimeInstanceData() const { return nullptr; }

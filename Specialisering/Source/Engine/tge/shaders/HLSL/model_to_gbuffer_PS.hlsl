@@ -14,7 +14,7 @@ GBufferOutput main(ModelVertexToPixel pixel)
     float2 scaledUV = pixel.texCoord0;
     
     float4 albedo = albedoTexture.Sample(defaultSampler, scaledUV).rgba;
-    float3 normal = normalTexture.Sample(defaultSampler, scaledUV).zyx;
+    float3 normal = normalTexture.Sample(defaultSampler, scaledUV).xyz;
     float4 material = materialTexture.Sample(defaultSampler, scaledUV);
     float4 fx = fxTexture.Sample(defaultSampler, scaledUV);
     
@@ -36,7 +36,7 @@ GBufferOutput main(ModelVertexToPixel pixel)
     GBufferOutput output = (GBufferOutput)0;
     output.myWorldPosition = pixel.worldPosition;
     output.myAlbedo = albedo;
-    output.myNormal = float4(0.5f + 0.5f * pixelNormal, 1.0f);
+    output.myNormal = float4(pixelNormal, 1.0f);
     output.myMaterial = material;
     output.myAmbientOcclusionAndCustom = float4(ambientOcclusion, /*Emission*/fx.r, 1.f, 1.f); // gba are unused, put whatever data you want here!
     

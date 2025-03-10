@@ -25,6 +25,7 @@
 #pragma endregion
 
 #pragma region Tools
+#include <imnodes/imnodes.h>
 #include <tge/util/StringCast.h>
 #include "Tools/ImGuiFunctions.h"
 #include "Tools/Selection.h"
@@ -139,7 +140,13 @@ void Tga::Editor::Update(float aDeltaTime)
 		ImGui::End();
 	}
 
-
+	for (auto* obj : myScene->GetGameObjects())
+	{
+		if (auto* component = obj->GetComponent<PointLightComponent>())
+		{
+			component->Update(aDeltaTime);
+		}
+	}
 }
 
 void Tga::Editor::RenderMenuBar(EditorContext& /*aContext*/)
@@ -305,13 +312,9 @@ void Tga::Editor::RenderWidgets(EditorContext& aContext)
 		}
 	}
 }
-#include <imnodes/imnodes.h>
 void Tga::Editor::UpdateShortcuts(EditorContext& /*aContext*/)
 {
 	// Control Commands
-
-
-
 	if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
 	{
 		// Save Function
@@ -345,6 +348,15 @@ void Tga::Editor::UpdateShortcuts(EditorContext& /*aContext*/)
 	if (ImGui::IsKeyPressed(ImGuiKey_F6))
 	{
 		Tga::MainSingleton::GetInstance().GetMainDrawer()->CyclePassIndex();
+	}
+
+	if (ImGui::IsKeyDown(ImGuiKey_Delete) && !ImNodes::IsEditorHovered())
+	{
+		if (Tga::Selection::GetSelection().empty() == false)
+		{
+			Tga::CommandManager::DoCommand(std::make_shared<RemoveCommand>(myScene, Tga::Selection::GetSelection()));
+			Tga::Selection::ClearSelection();
+		}
 	}
 
 }

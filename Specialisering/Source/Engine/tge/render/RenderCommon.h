@@ -29,10 +29,13 @@ namespace Tga
 
 	enum class DepthStencilState
 	{
-		WriteLess,
+		WriteLess = 0,
 		WriteLessOrEqual,
 		ReadOnlyLess,
-		ReadOnlyLessOrEqual
+		ReadOnlyLessOrEqual,
+		ReadOnlyGreater,
+		Count
+
 	};
 
 	enum class RasterizerState
@@ -41,6 +44,7 @@ namespace Tga
 		NoFaceCulling,
 		Wireframe,
 		WireframeNoCulling,
+		FrontFaceCulling,
 		Count,
 	};
 

@@ -11,6 +11,8 @@ Tga::PointLightComponent::PointLightComponent(GameObject* aObject) :
 	Component(aObject)
 {
 	myPointLight = new PointLight();
+	myPointLight->SetRange(50.f);
+	myPointLight->SetIntensity(1000.f);
 }
 
 Tga::PointLightComponent::~PointLightComponent()
@@ -29,7 +31,12 @@ Tga::Component* Tga::PointLightComponent::Clone(GameObject* aObject)
 
 void Tga::PointLightComponent::Update(float /*aDeltaTime*/)
 {
-	myPointLight->SetTransform(myGameObject->GetTransform());
+	if (myPointLight->GetTransform().GetPosition() != myGameObject->GetTransform().GetPosition())
+	{
+		Matrix4x4f transform;
+		transform.SetPosition(myGameObject->GetTransform().GetPosition());
+		myPointLight->SetTransform(transform);
+	}
 }
 
 void Tga::PointLightComponent::ImGuiAccess()
@@ -45,7 +52,7 @@ void Tga::PointLightComponent::ImGuiAccess()
 		myPointLight->SetRange(range);
 	}
 	float intesity = myPointLight->GetIntensity();
-	if (ImGui::DragFloat("Range", &intesity, 10.f))
+	if (ImGui::DragFloat("Instensity", &intesity, 10.f))
 	{
 		myPointLight->SetIntensity(intesity);
 	}
@@ -62,20 +69,24 @@ NM::json Tga::PointLightComponent::SaveData() const
 
 	json["Intensity"] = myPointLight->GetIntensity();
 	json["Range"] = myPointLight->GetRange();
-	return NM::json();
+	return json;
 }
 
 void Tga::PointLightComponent::LoadData(NM::json aJsonData)
 {
-	Tga::Color color = myPointLight->GetColor();
+	Tga::Color color;
 
 	color.r = aJsonData["Color"]["R"];
 	color.g = aJsonData["Color"]["G"];
 	color.b = aJsonData["Color"]["B"];
 	color.a = aJsonData["Color"]["A"];
 
-	myPointLight->SetIntensity(aJsonData["Intesity"]);
-	myPointLight->SetRange(aJsonData["Range"]);
+	float range = aJsonData["Range"];
+	float intensity = aJsonData["Intensity"];
+
+	myPointLight->SetColor(color);
+	myPointLight->SetIntensity(intensity);
+	myPointLight->SetRange(range);
 }
 
 void Tga::PointLightComponent::Enable()

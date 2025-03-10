@@ -2,6 +2,7 @@
 #include "MainDrawer.h"
 
 #include <tge/model/ModelInstance.h>
+#include <tge/model/ModelFactory.h>
 #include <tge/shaders/ModelShader.h>
 
 #include <tge/graphics/DX11.h>
@@ -18,6 +19,8 @@ Tga::MainDrawer::MainDrawer()
 Tga::MainDrawer::~MainDrawer()
 {
 	delete myModelToDeferedShader;
+	delete myLightShader;
+	delete myLightMesh;
 }
 
 bool Tga::MainDrawer::Init()
@@ -50,6 +53,12 @@ bool Tga::MainDrawer::Init()
 		{
 			assert(false && "Did not init Model to Defered Shader!");
 		}
+		myLightShader = new Tga::ModelShader();
+		didInit = myLightShader->Init(L"shaders/model_shader_VS.cso", L"shaders/lights_to_fullscreen_PS.cso");
+		if (!didInit)
+		{
+			assert(false && "Did not init Model to Light Shader!");
+		}
 	}
 
 	// [ Fullscreen Effects ]
@@ -65,12 +74,12 @@ bool Tga::MainDrawer::Init()
 		{
 			assert(false && "Did not init copy fullscreen effect!");
 		}
+	}
 
-		didInit = myLightRenderEffect.Init("shaders/lights_to_fullscreen_PS.cso");
-		if (!didInit)
-		{
-			assert(false && "Did not init light fullscreen effect!");
-		}
+	// Light
+	{
+		myLightMesh = new Tga::ModelInstance();
+		myLightMesh->Init(Tga::ModelFactory::GetInstance().GetModel(L"../EngineAssets/Models/Basic/SM_Sphere.fbx"));
 	}
 
 	return didInit;
@@ -135,20 +144,18 @@ void Tga::MainDrawer::RenderToTarget(RenderTarget* aTarget, Camera* aCamera)
 	}
 
 	// Render Pipline here
-	myGraphicsStateStack->Push();
 	{
 		ClearBuffers();
 
 		RenderDeferedSplice();
 		RenderAssembleGBuffer();
-		//Lights
+		RenderLightPass();
 		RenderForwardRendering();
 		RenderPostProcessing();
 		//Ui
 		CopyToTarget(aTarget);
 		Cleanup();
 	}
-	myGraphicsStateStack->Pop();
 }
 
 
@@ -219,30 +226,38 @@ void Tga::MainDrawer::RenderAssembleGBuffer()
 }
 void Tga::MainDrawer::RenderLightPass()
 {
-	//myGraphicsStateStack->Push();
-	//// [GraphicsStateStack Settings]
-	//{
-	//	myGraphicsStateStack->SetCamera(*myActiveCamera);
-	//	myGraphicsStateStack->SetBlendState(Tga::BlendState::AdditiveBlend);
-	//	//myGraphicsStateStack->SetRasterizerState(Tga::RasterizerState::);
-	//	myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::WriteLess);
-	//}
+	myGraphicsStateStack->Push();
+	// [GraphicsStateStack Settings]
+	{
+		myGraphicsStateStack->SetCamera(*myActiveCamera);
 
-	//myRenderTarget.SetAsActiveTarget(nullptr);
+		//myGraphicsStateStack->SetBlendState(Tga::BlendState::AdditiveBlend);
+		//myGraphicsStateStack->SetRasterizerState(Tga::RasterizerState::FrontFaceCulling);
+		//myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::ReadOnlyGreater);
 
-	//for (int i = 0; i < myPointLights.size(); i++)
-	//{
-	//	myGraphicsStateStack->Push();
-	//	myGraphicsStateStack->AddPointLight(*myPointLights[i]);
+	}
 
+	myRenderTarget.SetAsActiveTarget(nullptr);
 
-	//	myGraphicsStateStack->Pop();
-	//}
+	for (int i = 0; i < myPointLights.size(); i++)
+	{
+		myGraphicsStateStack->Push();
+		myGraphicsStateStack->AddPointLight(*myPointLights[i]);
+		myGraphicsStateStack->UpdateGpuStates(true);
 
-	////Render to RTV
-	//myGBufferAssembleEffect.Render();
+		float scale = myPointLights[i]->GetRange() * 0.01f;
 
-	//myGraphicsStateStack->Pop();
+		Matrix4x4f transform = Matrix4x4f::CreateFromScale(scale) *
+			Matrix4x4f::CreateIdentityMatrix() *
+			Matrix4x4f::CreateFromTranslation(myPointLights[i]->GetTransform().GetPosition());
+
+		myLightMesh->SetTransform(transform);
+
+		myModelDrawer->Draw(*myLightMesh, *myLightShader);
+		myGraphicsStateStack->Pop();
+	}
+	myGraphicsStateStack->Pop();
+
 }
 void Tga::MainDrawer::RenderForwardRendering()
 {
@@ -264,7 +279,33 @@ void Tga::MainDrawer::RenderForwardRendering()
 
 		for (int i = 0; i < group.modelInstances.size(); i++)
 		{
+			myGraphicsStateStack->Push();
+			int lightCount = 0;
+			for (int p = 0; p < myPointLights.size(); p++)
+			{
+				Vector3f dis = myPointLights[p]->GetTransform().GetPosition() - group.modelInstances[i]->GetTransform().GetPosition();
+
+				float lightRange = myPointLights[p]->GetRange();
+
+				// Used to get to sqrd for performance
+				lightRange *= lightRange * 1.25f;
+
+				if (dis.LengthSqr() <= lightRange)
+				{
+
+					myGraphicsStateStack->AddPointLight(*myPointLights[p]);
+					lightCount++;
+				}
+
+				if (lightCount >= 8) // change for render settings into addative
+				{
+					break;
+				}
+			}
+
 			myModelDrawer->Draw(*group.modelInstances[i], *group.modelShader);
+			myGraphicsStateStack->Pop();
+
 		}
 	}
 	myGraphicsStateStack->Pop();

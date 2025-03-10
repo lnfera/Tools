@@ -24,7 +24,7 @@ void Tga::RegisterMathNodes()
 	Tga::ScriptNodeTypeRegistry::RegisterType<BlendFloatNode>("Math/Functions/Blend", "Lerps between two values");
 	Tga::ScriptNodeTypeRegistry::RegisterType<BlendFloat4Node>("Math/Functions/Blend4", "Lerps between two values of a float4");
 	Tga::ScriptNodeTypeRegistry::RegisterType<CosNode>("Math/Functions/Cosinus", "It does the cosinus on input val");
-	Tga::ScriptNodeTypeRegistry::RegisterType<CosNode>("Math/Functions/Saturate", "Clamps the value between 1 and 0");
+	Tga::ScriptNodeTypeRegistry::RegisterType<SaturateNode>("Math/Functions/Saturate", "Clamps the value between 1 and 0");
 }
 #pragma region Functions
 void Tga::CosNode::Init(const ScriptCreationContext& aContext)
@@ -219,7 +219,7 @@ void Tga::SaturateNode::Init(const ScriptCreationContext& aContext)
 		inputPin.defaultValue = { 0.0f };
 		inputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("");
 
-		myInput_Id = aContext.FindOrCreatePin(inputPin);
+		aContext.FindOrCreatePin(inputPin);
 	}
 }
 

@@ -109,6 +109,7 @@ Tga::ScriptEditor::ScriptEditor(int aUniqueID) : Widget(aUniqueID)
 Tga::ScriptEditor::~ScriptEditor()
 {
 	delete myTextEditor;
+	ClearCopiedSelection();
 }
 
 bool Tga::ScriptEditor::Update(EditorContext& aContext)
@@ -127,6 +128,49 @@ bool Tga::ScriptEditor::Update(EditorContext& aContext)
 	}
 	ImGui::End();
 
+	if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
+	{
+		if (ImGui::IsKeyReleased(ImGuiKey_C))
+		{
+			int selectedNodeCount = ImNodes::NumSelectedNodes();
+			std::vector<int> selectedNodes(selectedNodeCount);
+
+			if (selectedNodeCount > 0)
+			{
+				ClearCopiedSelection();
+				ImNodes::GetSelectedNodes(selectedNodes.data());
+
+				for (int i = 0; i < selectedNodeCount; i++)
+				{
+					ScriptNodeId id; 
+					id.id = selectedNodes[i];
+					ScriptNodeBase& node = myOpenScripts[myActiveScript].script->GetNode(id);
+
+					std::cout << typeid(node).name() << '\n';
+
+					myCopiedSelection.push_back(node.Clone());
+				}
+
+			}
+
+		}
+		if (ImGui::IsKeyReleased(ImGuiKey_V))
+		{
+			// paste nodes
+
+			//for (int i = 0; i < myCopiedSelection.size(); i++)
+			//{
+
+			//	/*Tga::CommandManager::DoCommand(
+			//		std::make_shared<CreateNodeCommand>(
+			//			&myOpenScripts[myActiveScript],
+			//			&myOpenScripts[myActiveScript].selection,
+			//			Tga::ScriptNodeTypeRegistry::GetTypeId(typeid(myCopiedSelection[i]).hash_code()),
+			//			{0,0})
+			//		);*/
+			//}
+		}
+	}
 	return myIsOpen;
 }
 
@@ -801,7 +845,7 @@ void Tga::ScriptEditor::RenderEditor(EditorContext& aContext)
 
 	// on right click show add node UI
 	{
-		bool showAddNodeUI = ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsMouseClicked(1); // right mouse button
+		bool showAddNodeUI = ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows) && (ImGui::IsMouseClicked(1) || ImGui::IsKeyPressed(ImGuiKey_Space)); // right mouse button
 
 		if (showAddNodeUI && !ImGui::IsPopupOpen("EditNodePresets"))
 		{
@@ -947,6 +991,7 @@ void Tga::ScriptEditor::ImGuiShortCuts(EditorContext& /*aContext*/)
 
 			MSI_().GetShaderManager()->Recompile();
 		}
+
 	}
 }
 
@@ -955,5 +1000,15 @@ Tga::ScriptNodeBase* Tga::ScriptEditor::GetNode(int aID)
 	Tga::ScriptNodeId id;
 	id.id = aID;
 	return &myOpenScripts[myActiveScript].script->GetNode(id);
+}
+
+void Tga::ScriptEditor::ClearCopiedSelection()
+{
+	if (myCopiedSelection.empty()) return;
+
+	for (int i = 0; i < myCopiedSelection.size(); i++)
+	{
+		delete myCopiedSelection[i];
+	}
 }
 

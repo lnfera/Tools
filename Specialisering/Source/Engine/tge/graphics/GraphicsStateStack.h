@@ -134,7 +134,7 @@ namespace Tga
 		uint32_t myLatestCameraDataVersion = 0;
 
 		std::array<std::array<ComPtr<ID3D11SamplerState>, (int)SamplerAddressMode::Count>, (int)SamplerFilter::Count> mySamplerStates;
-		std::array<ComPtr<ID3D11DepthStencilState>, (int)DepthStencilState::ReadOnlyLessOrEqual> myDepthStencilStates;
+		std::array<ComPtr<ID3D11DepthStencilState>, (int)DepthStencilState::Count> myDepthStencilStates;
 		std::array<ComPtr<ID3D11RasterizerState>, (int)RasterizerState::Count> myRasterizerStates;
 		std::array<ComPtr<ID3D11BlendState>, (int)BlendState::Count> myBlendStates;
 

@@ -79,13 +79,14 @@ namespace Tga
 
 		// Shaders
 		ModelShader* myModelToDeferedShader = nullptr;
+		ModelShader* myLightShader = nullptr;
 
 		// FullScreen Effects
 		FullscreenEffect myCopyEffect;
 		FullscreenEffect myGBufferAssembleEffect;
-		FullscreenEffect myLightRenderEffect;
 
 		//Lights
 		std::vector<PointLight*> myPointLights;
+		ModelInstance* myLightMesh = nullptr;
 	};
 }

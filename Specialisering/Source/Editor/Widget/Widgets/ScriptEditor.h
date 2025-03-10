@@ -38,6 +38,7 @@ namespace Tga
 		void ImGuiShortCuts(EditorContext& aContext);
 		Tga::ScriptNodeBase* GetNode(int aID);
 
+		void ClearCopiedSelection();
 	private:
 
 		float mySizeMod = 1.f;
@@ -51,5 +52,7 @@ namespace Tga
 		TextEditor* myTextEditor = nullptr;
 
 		ImFont* myNodeFont = nullptr;
+
+		std::vector<ScriptNodeBase*> myCopiedSelection;
 	};
 }

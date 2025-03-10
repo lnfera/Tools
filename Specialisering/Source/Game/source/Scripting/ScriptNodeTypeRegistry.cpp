@@ -21,6 +21,15 @@ ScriptNodeTypeId Tga::ScriptNodeTypeRegistry::GetTypeId(std::string_view aTypeNa
 	return { 0xFFFFFFFF };
 }
 
+ScriptNodeTypeId Tga::ScriptNodeTypeRegistry::GetTypeId(int aTypeHash)
+{
+	size_t typeHash = aTypeHash;
+	for (const auto& entry : myStringToTypeId)
+	{
+	}
+
+}
+
 std::unique_ptr<ScriptNodeBase> Tga::ScriptNodeTypeRegistry::CreateNode(ScriptNodeTypeId aTypeId)
 {
 	assert("Invalid type id" && aTypeId.id < myTypeInfos.size());

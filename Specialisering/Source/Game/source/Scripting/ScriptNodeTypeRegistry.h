@@ -25,6 +25,7 @@ namespace Tga
 			const char* fullName;
 			const char* shortName;
 			const char* toolTip;
+			const size_t dataTypeId;
 			std::vector<ScriptStringId> path;
 			std::unique_ptr<ScriptNodeBase>(*createNodeFunctionPtr)(void);
 		};
@@ -39,6 +40,7 @@ namespace Tga
 		static const CategoryInfo& GetRootCategory() { return myRootCategory; }
 
 		static ScriptNodeTypeId GetTypeId(std::string_view typeName);
+		static ScriptNodeTypeId GetTypeId(int aTypeHash);
 
 		static std::unique_ptr<ScriptNodeBase> CreateNode(ScriptNodeTypeId typeId);
 		static std::string_view GetNodeTypeShortName(ScriptNodeTypeId typeId);
@@ -73,6 +75,7 @@ namespace Tga
 		ScriptNodeTypeId typeId = { (unsigned int)myTypeInfos.size() };
 		TypeInfo& typeInfo = RegisterTypeInternal(fullName, toolTip);
 		typeInfo.createNodeFunctionPtr = &detail::CreateScriptNodeInstance<T>;
+		typeInfo.dataTypeId = typeid(T).hash_code();
 
 		return typeId;
 	}

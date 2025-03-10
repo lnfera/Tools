@@ -142,7 +142,6 @@ ScriptLinkData Tga::TextureCoordinateNode::ReadPin(Tga::ScriptExecutionContext&,
 	aPin;
 	return { Vector2f() };
 }
-
 ParsedData Tga::TextureCoordinateNode::ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
 {
 	if (aPin == myScaledUVOutput)
@@ -238,6 +237,10 @@ void Tga::ImageNode::CustomUiOverlaped(float aSize)
 		}
 
 		ImGui::EndDragDropTarget();
+	}
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::SetTooltip("Drop images from assetbrowser to set image path!");
 	}
 
 }
