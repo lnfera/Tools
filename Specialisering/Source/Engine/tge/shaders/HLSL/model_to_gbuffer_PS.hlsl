@@ -36,7 +36,7 @@ GBufferOutput main(ModelVertexToPixel pixel)
     GBufferOutput output = (GBufferOutput)0;
     output.myWorldPosition = pixel.worldPosition;
     output.myAlbedo = albedo;
-    output.myNormal = float4(pixelNormal, 1.0f);
+    output.myNormal = float4(0.5f + pixelNormal * 0.5f, 1.0f);
     output.myMaterial = material;
     output.myAmbientOcclusionAndCustom = float4(ambientOcclusion, /*Emission*/fx.r, 1.f, 1.f); // gba are unused, put whatever data you want here!
     

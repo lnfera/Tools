@@ -1,15 +1,9 @@
 #pragma once
 #include <unordered_map>
 #include <string>
-
-#define v_Start "@vstart"
-#define v_End "@vend"
-
 #include <d3d11.h>
 
-#define VAR(parsedVar) v_Start + parsedVar + v_End 
- 
-#define SHADER_IMAGE_COUNT 15
+#include <tge/shaders/ModelShader.h>
 namespace Tga 
 {
 	class ScriptNodeBase;
@@ -37,6 +31,7 @@ namespace Tga
 		bool isVariableRegistered(const ShaderSource aSource);
 
 		std::string GetRegisteredVariableName(const ShaderSource aSource);
+		std::string GetOrRegisterTexture(const ShaderSource aSource, int aSlot,std::string aUV);
 		std::string GetOrRegisterImage(const ShaderSource aSource, TextureResource* aTexture, std::string aUV);
 
 		std::string GenerateVariables();
@@ -48,7 +43,8 @@ namespace Tga
 		std::unordered_map<ShaderSource, std::string> myRegisteredVariables;
 		std::unordered_map<ShaderSource, std::string> myRegisteredVariablesNames;
 
-		int myUniqueImageId = 1;
+		//int myUniqueImageId = 1;
+		int myUniqueImageId = REG_TEXT_OFFSET;
 		std::vector<TextureResource*> myImages;
 	};
 }

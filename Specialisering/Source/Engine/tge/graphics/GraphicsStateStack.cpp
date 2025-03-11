@@ -535,7 +535,7 @@ bool GraphicsStateStack::CreateDepthStencilStates()
 	D3D11_DEPTH_STENCIL_DESC readOnlyGreater = {};
 	readOnlyGreater.DepthEnable = true;
 	readOnlyGreater.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	readOnlyGreater.DepthFunc = D3D11_COMPARISON_GREATER;
+	readOnlyGreater.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
 	readOnlyGreater.StencilEnable = false;
 
 

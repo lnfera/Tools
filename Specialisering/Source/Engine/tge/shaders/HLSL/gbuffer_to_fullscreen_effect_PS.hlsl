@@ -17,8 +17,7 @@ PostProcessPixelOutput main(PostProcessVertexToPixel input)
     float2 uv = input.myPosition.xy / Resolution.xy;
     float4 worldPosition = gBufferPositionTexture.Sample(defaultSampler, uv).rgba;
     float4 albedo = gBufferAlbedoTexture.Sample(defaultSampler, uv).rgba;
-    float3 normal = normalize(2.f * gBufferNormalTexture.Sample(defaultSampler, uv).xyz - 1.f);
-    //float3 worldNormal = normalize(2.f * gBufferWorldNormal.Sample(defaultSampler, uv).xyz - 1.f);
+    float3 normal = normalize(2.f * gBufferNormalTexture.Sample(defaultSampler, uv).xyz -1.f);
     float4 material = gBufferMaterialTexture.Sample(defaultSampler, uv);
     float3 aoCustom = gBufferAOAndCustom.Sample(defaultSampler, uv);
     float3 toEye = normalize(CameraPosition.xyz - worldPosition.xyz);
@@ -47,11 +46,10 @@ PostProcessPixelOutput main(PostProcessVertexToPixel input)
     	ambientOcclusion, diffuseColor, specularColor
     );
     
-    float3 directionalLight = 0;
-    //  float3 directionalLight = EvaluateDirectionalLight(
-	//	albedo.rgb, specularColor, worldNormal.xyz, roughness,
-	//	DirectionalLightColorAndIntensity.xyz * DirectionalLightColorAndIntensity.w, DirectionalLightDirection.xyz, toEye.xyz
-	//);
+    float3 directionalLight = EvaluateDirectionalLight(
+		albedo.rgb, specularColor, normal.xyz, roughness,
+		DirectionalLightColorAndIntensity.xyz * DirectionalLightColorAndIntensity.w, DirectionalLightDirection.xyz, toEye.xyz
+	);
     
     //[Shadow]
     //float shadowFactor = 1.0f;
@@ -75,7 +73,5 @@ PostProcessPixelOutput main(PostProcessVertexToPixel input)
     float3 radiance = ambiance + directionalLight + emissiveAlbedo;
 
     output.myColor = float4(radiance.xyz, 1.f);
-    output.myColor *= 1.f - aoCustom.r; // Ambient Occlusion
-
     return output;
 }

@@ -63,13 +63,43 @@ std::string Tga::ShaderParseCompiler::GetRegisteredVariableName(const ShaderSour
 	return myRegisteredVariablesNames[aSource];
 }
 
+std::string Tga::ShaderParseCompiler::GetOrRegisterTexture(const ShaderSource aSource, int aSlot, std::string aUV)
+{
+	if (myRegisteredVariables.find(aSource) == myRegisteredVariables.end())
+	{
+		// create unique name
+		std::string uniqueVarName = "image" + std::to_string(aSlot) + "z";
+		std::string reg = "float4 " + uniqueVarName + " imageText" + std::to_string(aSlot) + "z.Sample(defaultSampler, " + aUV + ".xy).rgba";
+
+		// should create a image text within the 1-4 scale
+		int addedNum = 0;
+		//Check for copies
+		for (int i = 0; i < myVariables.size(); i++)
+		{
+			if (myVariables[i] == uniqueVarName)
+			{
+				addedNum++;
+			}
+		}
+		if (addedNum != 0)
+		{
+			uniqueVarName.insert(uniqueVarName.begin() + 2, (char)addedNum);
+		}
+
+		myVariables.push_back(reg);
+		myRegisteredVariables[aSource] = reg;
+		myRegisteredVariablesNames[aSource] = uniqueVarName;
+	}
+	return myRegisteredVariablesNames[aSource];
+}
+
 std::string Tga::ShaderParseCompiler::GetOrRegisterImage(const ShaderSource aSource, TextureResource* aTexture, std::string aUV)
 {
-	if(myRegisteredVariables.find(aSource) == myRegisteredVariables.end())
+	if (myRegisteredVariables.find(aSource) == myRegisteredVariables.end())
 	{
 		int imgId = myUniqueImageId++;
-		std::string uniqueVarName = "image" + std::to_string(imgId)+"z";
-		std::string reg = "float4 " + uniqueVarName + " imageText" + std::to_string(imgId) + "z.Sample(defaultSampler, "+ aUV +".xy).rgba";
+		std::string uniqueVarName = "image" + std::to_string(imgId) + "z";
+		std::string reg = "float4 " + uniqueVarName + " imageText" + std::to_string(imgId) + "z.Sample(defaultSampler, " + aUV + ".xy).rgba";
 
 		myVariables.push_back(reg);
 		myRegisteredVariables[aSource] = reg;

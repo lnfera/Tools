@@ -19,6 +19,7 @@ void Tga::RegisterInputNodes()
 	Tga::ScriptNodeTypeRegistry::RegisterType<PixelInputNode>("Input/PixelInput", "Reads the input data from the pixel");
 	Tga::ScriptNodeTypeRegistry::RegisterType<TextureCoordinateNode>("Input/TextureCoords", "Reads uv values");
 	Tga::ScriptNodeTypeRegistry::RegisterType<ImageNode>("Input/Image", "Reads Values from an image");
+	Tga::ScriptNodeTypeRegistry::RegisterType<TextureNode>("Input/Texture", "Reads Values from an image on the model");
 }
 
 #pragma region FresnelNode
@@ -167,7 +168,7 @@ void Tga::ImageNode::Init(const ScriptCreationContext& aContext)
 
 		{
 			inputPin.dataType = ScriptLinkDataType::Float4;
-			inputPin.defaultValue = { 0.f };
+			inputPin.defaultValue = { Vector4f() };
 
 			inputPin.name = ScriptStringRegistry::RegisterOrGetString("Col");
 			myColOut_ID = aContext.FindOrCreatePin(inputPin);
@@ -244,7 +245,6 @@ void Tga::ImageNode::CustomUiOverlaped(float aSize)
 	}
 
 }
-
 ScriptLinkData Tga::ImageNode::ReadPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
 {
 	if (aPin == myColOut_ID)
@@ -296,7 +296,6 @@ ParsedData Tga::ImageNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, 
 
 	return ParsedData("float", imageVar);
 }
-
 void Tga::ImageNode::LoadFromJson(const ScriptJson& aJson)
 {
 	myTexturePath = aJson.json["imagePath"];
@@ -312,5 +311,133 @@ void Tga::ImageNode::WriteToJson(ScriptJson& aJson) const
 }
 #pragma endregion
 
+void Tga::TextureNode::Init(const ScriptCreationContext& aContext)
+{
+	// Output
+	{
+		ScriptPin inputPin = {};
+		inputPin.node = aContext.GetNodeId();
+		inputPin.role = ScriptPinRole::Output;
 
+		{
+			inputPin.dataType = ScriptLinkDataType::Float4;
+			inputPin.defaultValue = { Vector4f()};
 
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("Col");
+			myColOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+
+		inputPin.dataType = ScriptLinkDataType::Float;
+		inputPin.defaultValue = { 0.f };
+
+		{
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("R");
+			myXOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+		{
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("G");
+			myYOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+		{
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("B");
+			myZOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+		{
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("A");
+			myWOut_ID = aContext.FindOrCreatePin(inputPin);
+		}
+	}
+
+	// Input
+	{
+
+		ScriptPin inputPin = {};
+		inputPin.node = aContext.GetNodeId();
+		inputPin.role = ScriptPinRole::Input;
+
+		inputPin.dataType = ScriptLinkDataType::Float2;
+		inputPin.defaultValue = { Vector2f(-1,-1) };
+
+		inputPin.name = ScriptStringRegistry::RegisterOrGetString("UV");
+		myUVIn_ID = aContext.FindOrCreatePin(inputPin);
+	}
+
+}
+void Tga::TextureNode::CustomUiBelow(float aSizeMod)
+{
+	ImGui::SetNextItemWidth(aSizeMod * 85.f);
+
+	ImGui::NewLine();
+	int mode = myImageSlot;
+
+	const char* converterModeStr[4][32] = {
+			" AlbedoSlot",
+			" NormalSlot",
+			" MaterialSlot",
+			" FxSlot",
+	};
+
+	if (ImGui::Combo("##slot", &mode, converterModeStr[0], IM_ARRAYSIZE(converterModeStr)))
+	{
+		myImageSlot = mode;
+	}
+}
+
+ScriptLinkData Tga::TextureNode::ReadPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
+{
+	if (aPin == myColOut_ID)
+	{
+		return { Vector4f() };
+	}
+
+	return { 0.f };
+}
+ParsedData Tga::TextureNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId aID) const
+{
+	Vector2f uv = std::get<Vector2f>(aContext.ReadInputPin(myUVIn_ID).data);
+	std::string uvToString;
+	if (uv.x == -1 && uv.y == -1)
+	{
+		uvToString = "scaledUV";
+	}
+	else
+	{
+		uvToString = aContext.ParseFromPin(myUVIn_ID);
+	}
+
+	std::string imageVar = aContext.GetShaderParseCompiler()->GetOrRegisterTexture((ShaderSource)this, myImageSlot+1, uvToString);
+
+	if (aID == myColOut_ID)
+	{
+		return ParsedData("float4", imageVar);
+	}
+	else if (aID == myXOut_ID)
+	{
+		imageVar += ".x";
+	}
+	else if (aID == myYOut_ID)
+	{
+		imageVar += ".y";
+	}
+	else if (aID == myZOut_ID)
+	{
+		imageVar += ".z";
+
+	}
+	else if (aID == myWOut_ID)
+	{
+		imageVar += ".w";
+	}
+
+	return ParsedData("float", imageVar);
+}
+
+void Tga::TextureNode::LoadFromJson(const ScriptJson& aJson)
+{
+	myImageSlot = aJson.json["slot"];
+}
+
+void Tga::TextureNode::WriteToJson(ScriptJson& aJson) const
+{
+	aJson.json["slot"] = myImageSlot;
+}

@@ -231,9 +231,9 @@ void Tga::MainDrawer::RenderLightPass()
 	{
 		myGraphicsStateStack->SetCamera(*myActiveCamera);
 
-		//myGraphicsStateStack->SetBlendState(Tga::BlendState::AdditiveBlend);
-		//myGraphicsStateStack->SetRasterizerState(Tga::RasterizerState::FrontFaceCulling);
-		//myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::ReadOnlyGreater);
+		myGraphicsStateStack->SetBlendState(Tga::BlendState::AdditiveBlend);
+		myGraphicsStateStack->SetRasterizerState(Tga::RasterizerState::FrontFaceCulling);
+		myGraphicsStateStack->SetDepthStencilState(Tga::DepthStencilState::ReadOnlyGreater);
 
 	}
 
@@ -283,14 +283,16 @@ void Tga::MainDrawer::RenderForwardRendering()
 			int lightCount = 0;
 			for (int p = 0; p < myPointLights.size(); p++)
 			{
+				// Distance between pivots
 				Vector3f dis = myPointLights[p]->GetTransform().GetPosition() - group.modelInstances[i]->GetTransform().GetPosition();
 
-				float lightRange = myPointLights[p]->GetRange();
+
+				float maxDistance = myPointLights[p]->GetRange();
 
 				// Used to get to sqrd for performance
-				lightRange *= lightRange * 1.25f;
+				maxDistance *= maxDistance * 1.55f;
 
-				if (dis.LengthSqr() <= lightRange)
+				if (dis.LengthSqr() <= maxDistance)
 				{
 
 					myGraphicsStateStack->AddPointLight(*myPointLights[p]);

@@ -53,7 +53,7 @@ Tga::RenderComponent::RenderComponent(GameObject* aObject) : Component(aObject)
 	myModelInstance->SetTexture(0, 0, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_BC.dds"));
 	myModelInstance->SetTexture(0, 1, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_N.dds"));
 	myModelInstance->SetTexture(0, 2, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_M.dds"));
-	myModelInstance->SetTexture(0, 3, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_N.dds"));
+	myModelInstance->SetTexture(0, 3, TGE_I()->GetTextureManager().GetTexture(L"Textures/T_Default_M.dds"));
 }
 Tga::RenderComponent::~RenderComponent()
 {
@@ -145,7 +145,7 @@ void Tga::RenderComponent::ImGuiAccess()
 			ImGui::OpenPopup("ShaderList");
 		}
 	}
-	if (!myShader)
+	//if (!myShader)
 	{
 		ImageDrop("Albedo", myModelInstance, 0, myTexturePaths[0]);
 		ImageDrop("Normal", myModelInstance, 1, myTexturePaths[1]);

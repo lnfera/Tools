@@ -37,7 +37,7 @@ namespace Tga
 		bool myIsManipulating = false;
 
 		bool myIsSnappingActive = false;
-		Snap mySnap = {0.5f, 10.0f, 0.5f};
+		Snap mySnap = {0.5f, 10.0f, 0.1f};
 
 	};
 }

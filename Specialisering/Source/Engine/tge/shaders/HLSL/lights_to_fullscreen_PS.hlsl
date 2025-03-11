@@ -16,7 +16,7 @@ PostProcessPixelOutput main(ModelVertexToPixel input)
     float2 uv = input.position.xy / Resolution.xy;
     float3 worldPosition = gBufferPositionTexture.Sample(defaultSampler, uv).rgb /** 1000.f*/; //*1000 för att se bättre ut i debug
     float4 albedo = gBufferAlbedoTexture.Sample(defaultSampler, uv).rgba;
-    float3 normal = normalize(gBufferNormalTexture.Sample(defaultSampler, uv).xyz);
+    float3 normal = normalize(2.f * gBufferNormalTexture.Sample(defaultSampler, uv).xyz -1.f);
     float4 material = gBufferMaterialTexture.Sample(defaultSampler, uv);
 	
     float3 toEye = normalize(CameraPosition.xyz - worldPosition.xyz);
@@ -38,6 +38,7 @@ PostProcessPixelOutput main(ModelVertexToPixel input)
     }
     
     output.myColor.rgb = lightCol.rgb;
-    //output.myColor.rgb = float4(1, 0, 0, 1000);
+    output.myColor.a = albedo.a;
+    
     return output;
 }

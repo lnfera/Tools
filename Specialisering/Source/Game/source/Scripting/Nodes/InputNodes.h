@@ -84,4 +84,35 @@ namespace Tga
 		void LoadFromJson(const ScriptJson&) override;
 		void WriteToJson(ScriptJson&) const override;
 	};
+
+	class TextureNode : public ScriptNodeBase
+	{
+	private:
+		mutable int myImageSlot = 0;
+
+		ScriptPinId myUVIn_ID;
+
+		ScriptPinId myXOut_ID;
+		ScriptPinId myYOut_ID;
+		ScriptPinId myZOut_ID;
+		ScriptPinId myWOut_ID;
+
+		ScriptPinId myColOut_ID;
+
+	public:
+		TextureNode* Clone() override
+		{
+			TextureNode* clone = new TextureNode();
+			clone->myImageSlot = myImageSlot;
+			return clone;
+		};
+		void Init(const ScriptCreationContext& aContext) override;
+		void CustomUiBelow(float aSize) override;
+
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const override;
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
+
+		void LoadFromJson(const ScriptJson&) override;
+		void WriteToJson(ScriptJson&) const override;
+	};
 }

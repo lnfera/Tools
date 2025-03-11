@@ -95,7 +95,7 @@ void Tga::ModelShader::Render(const TextureResource* const* someTextures, const 
 			}
 		}
 		// Overrides previous model textures
-		DX11::Context->PSSetShaderResources(1, i, resourceViews);
+		DX11::Context->PSSetShaderResources(REG_TEXT_OFFSET, i, resourceViews);
 	}
 
 	if (!myIsReadyToRender)
