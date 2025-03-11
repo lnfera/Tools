@@ -13,6 +13,7 @@ namespace Tga
 	class DepthBuffer;
 	class RenderTarget;
 	class Camera;
+	class ModelInstance;
 }
 
 namespace Tga
@@ -25,8 +26,8 @@ namespace Tga
 
 		bool Update(EditorContext& aContext) override;
 
-		const bool ViewportNeedsResize();
-		const Vector2ui& GetViewportSize();
+		//const bool ViewportNeedsResize();
+		//const Vector2ui& GetViewportSize();
 	private:
 		void UpdateShortcuts(EditorContext&);
 		void RenderSceneToTarget(EditorContext& aContext);
@@ -42,5 +43,6 @@ namespace Tga
 
 		Vector3f myCameraRotation = { 0,0,0 };
 		Camera* myCamera = nullptr;
+		bool myViewportIsHovered = false;
 	};
 }

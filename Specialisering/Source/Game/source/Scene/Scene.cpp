@@ -147,8 +147,7 @@ void Tga::Scene::LoadFromJson(std::string aFilePath)
 				}
 
 				component->LoadData(objData["Components"][k]);
-
-				//object->AddComponent(component);
+				object->AddComponent(component);
 			}
 
 			for (auto* component : object->GetComponentList())

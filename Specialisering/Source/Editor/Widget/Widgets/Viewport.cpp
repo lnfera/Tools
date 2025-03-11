@@ -13,6 +13,8 @@
 #include <tge/graphics/Camera.h>
 #include <tge/drawers/ModelDrawer.h>
 #include <tge/shaders/ModelShader.h>
+#include <tge/model/ModelInstance.h>
+#include <tge/model/ModelFactory.h>
 
 //Game
 #include <Scene/Scene.h>
@@ -23,8 +25,10 @@
 
 //Editor 
 #include <Tools/Selection.h>
+#include <Tools/Selection/CopyTool.h>
 #include <Tools/ConsoleSystem.h>
 #include <Tools/Commands/RemoveCommand.h>
+#include <Tools/Commands/AddCommand.h>
 #include <Tools/Commands/CommandManager.h>
 
 struct IdConstantBuffer
@@ -46,6 +50,7 @@ namespace ViewportGlobal
 	static int numberOfViewports = 0;
 	static RenderData renderData;
 	Tga::ModelShader* idShader = nullptr;
+	static Tga::ModelInstance* pointLightModel = nullptr;
 }
 static uint32_t MouseOver(Tga::Vector2ui aPos, const Tga::RenderTarget& aTarget);
 
@@ -79,6 +84,9 @@ Tga::Viewport::Viewport(int aUniqueID) :
 		ViewportGlobal::idShader = new Tga::ModelShader(TGE_I());
 		ViewportGlobal::idShader->Init(L"Shaders/model_shader_VS.cso", L"Shaders/Id_Shader_PS.cso");
 		ViewportGlobal::renderData.selectionOutlineEffect.Init("Shaders/PostProcessSelectionOutline_PS.cso");
+		ViewportGlobal::pointLightModel = new Tga::ModelInstance();
+		ViewportGlobal::pointLightModel->Init(Tga::ModelFactory::GetInstance().GetModel(L"Models/Basic/SM_Sphere.fbx"));
+
 	}
 
 	ViewportGlobal::numberOfViewports++;
@@ -92,6 +100,7 @@ Tga::Viewport::~Viewport()
 	if (ViewportGlobal::numberOfViewports <= 0)
 	{
 		delete ViewportGlobal::idShader;
+		delete ViewportGlobal::pointLightModel;
 	}
 }
 
@@ -116,11 +125,20 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 		// Display the render target in ImGui
 		ImGui::Image((ImTextureID)myRenderTargetColor.GetShaderResourceView(), wndSize);
 
+		if (ImGui::IsWindowHovered())
+		{
+			myViewportIsHovered = true;
+		}
+		else
+		{
+			myViewportIsHovered = false;
+		}
+
 		//todo fix on begin over and release
 
 		UpdateShortcuts(aContext);
 
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && myViewportIsHovered)
 		{
 			Vector3f moveDir = 0;
 
@@ -174,9 +192,7 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 
 		}
 		else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)
-			&& ImGui::IsWindowHovered()
-			&& ImGui::IsAnyItemActive() == false
-			&& ImGuizmo::IsOver() == false)
+			&& myViewportIsHovered && ImGui::IsAnyItemActive() == false && ImGuizmo::IsOver() == false)
 
 		{
 			ImVec2 windowPos = ImGui::GetWindowPos();
@@ -224,9 +240,33 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 	return myIsOpen;
 
 }
-
 void Tga::Viewport::UpdateShortcuts(EditorContext& aContext)
 {
+	if (!myViewportIsHovered) return;
+
+	if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
+	{
+		if (ImGui::IsKeyPressed(ImGuiKey_C))
+		{
+			auto selection = Tga::Selection::GetSelection();
+
+			if (selection.empty() == false)
+			{
+				Tga::CopyTool::SetCopyTarget(selection);
+			}
+		}
+		if (ImGui::IsKeyPressed(ImGuiKey_V))
+		{
+			auto selection = Tga::Selection::GetSelection();
+			if (selection.empty() == false)
+			{
+				auto addedObjects = Tga::CopyTool::CloneCopies();
+				Tga::CommandManager::DoCommand(std::make_shared<Tga::AddCommand>(aContext.currentScene, addedObjects));
+				Tga::Selection::SetSelection(addedObjects);
+			}
+		}
+	}
+
 
 	if (ImGui::IsKeyPressed(ImGuiKey_Delete) &&
 		ImGui::IsAnyItemActive() == false &&
@@ -234,7 +274,7 @@ void Tga::Viewport::UpdateShortcuts(EditorContext& aContext)
 		)
 	{
 		auto selection = Tga::Selection::GetSelection();
-		if(!selection.empty())
+		if (!selection.empty())
 		{
 			Tga::CommandManager::DoCommand(std::make_shared<Tga::RemoveCommand>(aContext.currentScene, selection));
 			selection.clear();
@@ -284,6 +324,12 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 				return;
 			}
 
+			// Skip if clicked
+			if (ImGui::IsMouseClicked(0) && Tga::Selection::Contains(obj))
+			{
+				continue;
+			}
+
 			//Map ID buffer
 			dataPtr = (IdConstantBuffer*)mappedResource.pData;
 			dataPtr->objectId = obj->GetID();
@@ -295,25 +341,23 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 				comp->Update(aContext.deltaTime);
 				modelDrawer.Draw(*comp->myModelInstance, *ViewportGlobal::idShader);
 			}
+			if (auto* comp = obj->GetComponent<Tga::PointLightComponent>())
+			{
+				float scale = comp->myPointLight->GetRange()/* * 0.01f*/;
+
+				Matrix4x4f transform = Matrix4x4f::CreateFromScale(scale) *
+					Matrix4x4f::CreateIdentityMatrix() *
+					Matrix4x4f::CreateFromTranslation(comp->myPointLight->GetTransform().GetPosition());
+
+				ViewportGlobal::pointLightModel->SetTransform(transform);
+
+				modelDrawer.Draw(*ViewportGlobal::pointLightModel, *ViewportGlobal::idShader);
+			}
 		}
 	}
 
 	// Color Target
 	{
-		/*myDepth.Clear();
-		myRenderTargetColor.Clear(TGE_I()->GetClearColor().AsVec4());
-		myRenderTargetColor.SetAsActiveTarget(&myDepth);
-		gss.SetBlendState(Tga::BlendState::AlphaBlend);
-		gss.Push();
-		for (auto* obj : aContext.currentScene->GetGameObjects())
-		{
-			if (auto* comp = obj->GetComponent<Tga::RenderComponent>())
-			{
-				comp->Update(0.1f);
-			}
-		}
-		gss.Pop*/
-
 		auto* mainDrawer = Tga::MainSingleton::GetInstance().GetMainDrawer();
 		mainDrawer->RenderToTarget(&myRenderTargetColor, myCamera);
 

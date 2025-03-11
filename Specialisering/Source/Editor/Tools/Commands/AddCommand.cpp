@@ -6,6 +6,7 @@ void Tga::AddCommand::Execute()
 	myDidPerformAction = true;
 	for (int i = 0; i < myObjectsToAdd.size(); i++)
 	{
+		myObjectsToAdd[i]->Enable();
 		mySceneToAddTo->AddObject(myObjectsToAdd[i]);
 	}
 }
@@ -16,6 +17,7 @@ void Tga::AddCommand::Undo()
 
 	for (int i = 0; i < myObjectsToAdd.size(); i++)
 	{
+		myObjectsToAdd[i]->Disable();
 		mySceneToAddTo->RemoveObject(myObjectsToAdd[i]);
 	}
 }

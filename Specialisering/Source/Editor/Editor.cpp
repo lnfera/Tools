@@ -350,7 +350,7 @@ void Tga::Editor::UpdateShortcuts(EditorContext& /*aContext*/)
 		Tga::MainSingleton::GetInstance().GetMainDrawer()->CyclePassIndex();
 	}
 
-	if (ImGui::IsKeyDown(ImGuiKey_Delete) && !ImNodes::IsEditorHovered())
+	if (ImGui::IsKeyDown(ImGuiKey_Delete))
 	{
 		if (Tga::Selection::GetSelection().empty() == false)
 		{

@@ -3,5 +3,5 @@
 Tga::Component::Component(GameObject* aObject) 
 	: myGameObject(aObject) 
 {
-	myGameObject->AddComponent(this);
+	//myGameObject->AddComponent(this);
 };

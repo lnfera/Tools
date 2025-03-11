@@ -79,7 +79,9 @@ namespace Tga
 	inline GameObject::GameObject(const GameObject* aObject):
 		myID(TGE_I()->GetUniqueID())
 	{
+		myObjectTag = aObject->myObjectTag;
 		myTransform = aObject->myTransform;
+
 		for (int i = 0; i < aObject->myComponents.size(); i++)
 		{
 			AddComponent(aObject->myComponents[i]->Clone(this));
@@ -105,7 +107,7 @@ namespace Tga
 	template<typename T>
 	inline void GameObject::AddComponent()
 	{
-		new T(this);
+		myComponents.push_back(new T(this));
 	}
 	template<typename T>
 	inline T* GameObject::GetComponent()

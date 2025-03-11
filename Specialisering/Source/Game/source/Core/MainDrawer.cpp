@@ -245,7 +245,7 @@ void Tga::MainDrawer::RenderLightPass()
 		myGraphicsStateStack->AddPointLight(*myPointLights[i]);
 		myGraphicsStateStack->UpdateGpuStates(true);
 
-		float scale = myPointLights[i]->GetRange() * 0.01f;
+		float scale = myPointLights[i]->GetRange()/* * 1.0f*/;
 
 		Matrix4x4f transform = Matrix4x4f::CreateFromScale(scale) *
 			Matrix4x4f::CreateIdentityMatrix() *

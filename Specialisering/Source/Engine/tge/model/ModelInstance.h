@@ -22,6 +22,7 @@ public:
 
 	void SetTexture(int meshIndex, int textureIndex, TextureResource* texture) { myTextures[meshIndex][textureIndex] = texture; }
 
+	const TextureResource* GetTexture(size_t meshIndex, int aTextureIndex) const { return myTextures[meshIndex][aTextureIndex]; }
 	const TextureResource* const* GetTextures(size_t meshIndex) const { return myTextures[meshIndex]; }
 	bool IsValid() { return myModel ? true : false; }
 	void Render(const ModelShader& shader) const;

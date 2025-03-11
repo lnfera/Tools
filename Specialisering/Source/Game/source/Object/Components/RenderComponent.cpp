@@ -66,10 +66,18 @@ Tga::Component* Tga::RenderComponent::Clone(GameObject* aObj)
 	RenderComponent* comp = new RenderComponent(aObj);
 	comp->myModelInstance = new Tga::ModelInstance();
 
-	comp->myModelInstance->Init(Tga::ModelFactory::GetInstance().GetModel(L"Models/TGE.fbx"));
-	comp->myModelInstance->SetTexture(0, 0, TGE_I()->GetTextureManager().GetTexture(L"Sprites/dog.jpg"));
+	comp->myModelInstance->Init(myModelInstance->GetModel());
+	comp->myModelInstance->SetTexture(0, 0, const_cast<Tga::TextureResource*>(myModelInstance->GetTexture(0,0)));
+	comp->myModelInstance->SetTexture(0, 1, const_cast<Tga::TextureResource*>(myModelInstance->GetTexture(0,1)));
+	comp->myModelInstance->SetTexture(0, 2, const_cast<Tga::TextureResource*>(myModelInstance->GetTexture(0,2)));
+	comp->myModelInstance->SetTexture(0, 3, const_cast<Tga::TextureResource*>(myModelInstance->GetTexture(0,3)));
+	//comp->myModelInstance->SetTexture(0, 0, TGE_I()->GetTextureManager().GetTexture(L"Sprites/dog.jpg"));
 	comp->myShader = myShader;
 	comp->myShaderName = myShaderName;
+	comp->myTexturePaths[0] = myTexturePaths[0];
+	comp->myTexturePaths[1] = myTexturePaths[1];
+	comp->myTexturePaths[2] = myTexturePaths[2];
+	comp->myTexturePaths[3] = myTexturePaths[3];
 
 	return comp;
 }
@@ -78,17 +86,6 @@ void Tga::RenderComponent::Update(float aDeltaTime)
 {
 	aDeltaTime;
 	myModelInstance->SetTransform(myGameObject->GetTransform());
-
-	//if (myShader)
-	//{
-	//	// Renders with custom shader
-	//	TGE_I()->GetGraphicsEngine().GetModelDrawer().Draw(*myModelInstance, *myShader);
-	//}
-	//else
-	//{
-	//	// Renders with default shader
-	//	TGE_I()->GetGraphicsEngine().GetModelDrawer().Draw(*myModelInstance);
-	//}
 }
 void Tga::RenderComponent::ImGuiAccess()
 {
