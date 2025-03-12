@@ -37,6 +37,8 @@ namespace Tga
 		std::string GenerateVariables();
 		std::vector<TextureResource*> GetImages() { return myImages; }
 	private:
+
+		std::string GetUniqueVariableName();
 		std::vector<std::string >myVariables;
 
 		int myUniqueVariableId = 0;

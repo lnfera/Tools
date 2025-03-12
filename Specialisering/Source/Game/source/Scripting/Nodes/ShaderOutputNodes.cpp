@@ -157,6 +157,7 @@ ScriptNodeResult Tga::PBROutputNode::Execute(ScriptExecutionContext& aContext, S
 		SHADER::StructsHLSLI +
 		SHADER::ImagesAndSampler + 
 		SHADER::DeferredStructHLSLI +
+		SHADER::Functions +
 		SHADER::START_DEFERRED +
 		variables +
 		parsedCode +

@@ -343,7 +343,7 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 			}
 			if (auto* comp = obj->GetComponent<Tga::PointLightComponent>())
 			{
-				float scale = comp->myPointLight->GetRange()/* * 0.01f*/;
+				float scale = comp->myPointLight->GetRange() * 0.01f;
 
 				Matrix4x4f transform = Matrix4x4f::CreateFromScale(scale) *
 					Matrix4x4f::CreateIdentityMatrix() *

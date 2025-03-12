@@ -67,24 +67,28 @@ std::string Tga::ShaderParseCompiler::GetOrRegisterTexture(const ShaderSource aS
 {
 	if (myRegisteredVariables.find(aSource) == myRegisteredVariables.end())
 	{
+
 		// create unique name
 		std::string uniqueVarName = "image" + std::to_string(aSlot) + "z";
-		std::string reg = "float4 " + uniqueVarName + " imageText" + std::to_string(aSlot) + "z.Sample(defaultSampler, " + aUV + ".xy).rgba";
 
-		// should create a image text within the 1-4 scale
-		int addedNum = 0;
-		//Check for copies
-		for (int i = 0; i < myVariables.size(); i++)
+		// Check for already existing 
+		for (auto& entry : myRegisteredVariablesNames)
 		{
-			if (myVariables[i] == uniqueVarName)
+			if (entry.second.find(uniqueVarName) != -1)
 			{
-				addedNum++;
+				std::string varName = GetUniqueVariableName();
+				std::string reg = "float4 " + varName + " imageText" + std::to_string(aSlot) + "z.Sample(defaultSampler, " + aUV + ".xy).rgba";
+
+				//Referense old registry
+				myVariables.push_back(reg);
+				myRegisteredVariables[aSource] = reg;
+				myRegisteredVariablesNames[aSource] = varName;
+				return myRegisteredVariablesNames[aSource];
 			}
 		}
-		if (addedNum != 0)
-		{
-			uniqueVarName.insert(uniqueVarName.begin() + 2, (char)addedNum);
-		}
+
+		//Create new registry
+		std::string reg = "float4 " + uniqueVarName + " imageText" + std::to_string(aSlot) + "z.Sample(defaultSampler, " + aUV + ".xy).rgba";
 
 		myVariables.push_back(reg);
 		myRegisteredVariables[aSource] = reg;
@@ -125,4 +129,9 @@ std::string Tga::ShaderParseCompiler::GenerateVariables()
 	}
 
 	return output;
+}
+
+std::string Tga::ShaderParseCompiler::GetUniqueVariableName()
+{
+	return "var" + std::to_string(++myUniqueVariableId) + "z";
 }

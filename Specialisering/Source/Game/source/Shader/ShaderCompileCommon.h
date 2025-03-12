@@ -421,8 +421,6 @@ float3 EvaluateSpotLight(float3 albedoColor, float3 specularColor, float3 normal
     return saturate(lightColor * lightIntensity * lambert * finalAttenuation * ((cDiff * (1.0 - cSpec) + cSpec) * PI));
 }
 
-
-
 )";
 
 #pragma endregion
@@ -433,7 +431,6 @@ float4 main(ModelVertexToPixel input) : SV_TARGET
 {
 	float2 scaledUV = input.texCoord0;
 	float3 toEye = normalize(CameraPosition.xyz - input.worldPosition.xyz);
-
 
 	float4 output = float4(1,1,1,1);
 	
@@ -461,8 +458,7 @@ GBufferOutput main(ModelVertexToPixel input)
     {
 	    PixelOutput result;
         float2 scaledUV = input.texCoord0;
-	float3 toEye = normalize(CameraPosition.xyz - input.worldPosition.xyz);
-
+	    float3 toEye = normalize(CameraPosition.xyz - input.worldPosition.xyz);
 
         float4 albedo   = float4(0,0,0,0);
 	    float4 normal   = float4(0,0,0,0);

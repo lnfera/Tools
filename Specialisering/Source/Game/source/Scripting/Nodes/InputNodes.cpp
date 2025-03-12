@@ -15,7 +15,7 @@
 using namespace Tga;
 void Tga::RegisterInputNodes()
 {
-	//Tga::ScriptNodeTypeRegistry::RegisterType<FresnelNode>("Input/Fresnel", "Creates values using the viewing direction of the object");
+	Tga::ScriptNodeTypeRegistry::RegisterType<FresnelNode>("Input/Fresnel", "Creates values using the viewing direction of the object");
 	Tga::ScriptNodeTypeRegistry::RegisterType<PixelInputNode>("Input/PixelInput", "Reads the input data from the pixel");
 	Tga::ScriptNodeTypeRegistry::RegisterType<TextureCoordinateNode>("Input/TextureCoords", "Reads uv values");
 	Tga::ScriptNodeTypeRegistry::RegisterType<ImageNode>("Input/Image", "Reads Values from an image");
@@ -23,37 +23,67 @@ void Tga::RegisterInputNodes()
 }
 
 #pragma region FresnelNode
-//Tga::FresnelNode::FresnelNode()
-//{
-//}
-//
-//Tga::FresnelNode::~FresnelNode()
-//{
-//}
-//
-//void Tga::FresnelNode::Init(const Tga::ScriptCreationContext& aContext)
-//{
-//	{
-//		ScriptPin outputPin = {};
-//		outputPin.dataType = ScriptLinkDataType::Float;
-//		outputPin.node = aContext.GetNodeId();
-//		outputPin.role = ScriptPinRole::Input;
-//		outputPin.defaultValue = { 0.f };
-//		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("");
-//
-//		aContext.FindOrCreatePin(outputPin);
-//	}
-//}
-//
-//ParsedData Tga::FresnelNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
-//{
-//
-//
-//	return ParsedData();
-//}
+void Tga::FresnelNode::Init(const Tga::ScriptCreationContext& aContext)
+{
+	{
+		ScriptPin outputPin = {};
+		outputPin.dataType = ScriptLinkDataType::Float;
+		outputPin.node = aContext.GetNodeId();
+		outputPin.role = ScriptPinRole::Input;
+		outputPin.defaultValue = { 1.0f };
+		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("IOR");
+
+		myIorIn_Id = aContext.FindOrCreatePin(outputPin);
+	}
+	{
+		ScriptPin outputPin = {};
+		outputPin.dataType = ScriptLinkDataType::Float4;
+		outputPin.node = aContext.GetNodeId();
+		outputPin.role = ScriptPinRole::Input;
+		outputPin.defaultValue = { Vector4f(-100.f,0,0,0) };
+		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Normal");
+
+		myNormalIn_Id = aContext.FindOrCreatePin(outputPin);
+	}
+	{
+		ScriptPin outputPin = {};
+		outputPin.dataType = ScriptLinkDataType::Float;
+		outputPin.node = aContext.GetNodeId();
+		outputPin.role = ScriptPinRole::Output;
+		outputPin.defaultValue = { 0.f };
+		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("Fac");
+
+		aContext.FindOrCreatePin(outputPin);
+	}
+}
+
+ParsedData Tga::FresnelNode::ParseInputPin(Tga::ScriptExecutionContext& aContext, ScriptPinId) const
+{
+	aContext;
+	//auto* compiler = aContext.GetShaderParseCompiler();
+	std::string ior = aContext.ParseFromPin(myIorIn_Id);
+
+	std::string normal;
+
+	if (std::get<Vector4f>(aContext.ReadInputPin(myNormalIn_Id).data) == Vector4f(-100, 0, 0, 0))
+	{
+		normal = "input.normal.xyz";
+	}
+	else
+	{
+		normal = aContext.ParseFromPin(myNormalIn_Id) + ".xyz";
+	}
+
+	//std::string value = ior + "+ (1.0f -"+ ior+") * pow(abs(1.0f - dot("+ normal + ".xyz, toEye.xyz)), 5.f)";
+	std::string value = "Fresnel_Schlick(" + ior + ", " + normal + ", toEye.xyz).x";
+	//std::string value = "Fresnel_Schlick2( " + ior + ", dot(" + normal + ".xyz, toEye.xyz))";
+	//std::string value = "FresnelDielectricDielectric( " + ior + ", dot(" + normal + ".xyz, toEye.xyz))";
+	//std::string value = "Fresnel_Blender( " + ior + ", " + normal + ".xyz" + ", toEye)";
+	return ParsedData("float", value);
+}
 
 #pragma endregion
-
+//Pixel Input
 void Tga::PixelInputNode::Init(const Tga::ScriptCreationContext& aContext)
 {
 	// Out 4
@@ -97,6 +127,28 @@ void Tga::PixelInputNode::Init(const Tga::ScriptCreationContext& aContext)
 		myDepthOut_Id = aContext.FindOrCreatePin(outputPin);
 	}
 }
+ScriptLinkData Tga::PixelInputNode::ReadPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
+{
+	if (aPin.id == myDepthOut_Id.id)
+	{
+		return { 0.5f };
+	}
+	else if (aPin.id == myPositionOut_Id.id)
+	{
+		return { Vector4f() };
+	}
+	else if (aPin.id == myWorldPositionOut_Id.id)
+	{
+		return { Vector4f() };
+	}
+	else if (aPin.id == myNormalOut_Id.id)
+	{
+		return { Vector4f() };
+	}
+
+
+	return ScriptLinkData({ 0.f });
+}
 ParsedData Tga::PixelInputNode::ParseInputPin(Tga::ScriptExecutionContext& /*aContext*/, ScriptPinId aPin) const
 {
 
@@ -128,7 +180,7 @@ void Tga::TextureCoordinateNode::Init(const Tga::ScriptCreationContext& aContext
 		outputPin.dataType = ScriptLinkDataType::Float2;
 		outputPin.node = aContext.GetNodeId();
 		outputPin.role = ScriptPinRole::Output;
-		outputPin.defaultValue = { Vector2f()};
+		outputPin.defaultValue = { Vector2f() };
 
 		outputPin.name = Tga::ScriptStringRegistry::RegisterOrGetString("UV");
 		myScaledUVOutput = aContext.FindOrCreatePin(outputPin);
@@ -137,7 +189,6 @@ void Tga::TextureCoordinateNode::Init(const Tga::ScriptCreationContext& aContext
 		myScreenPosOutput = aContext.FindOrCreatePin(outputPin);
 	}
 }
-
 ScriptLinkData Tga::TextureCoordinateNode::ReadPin(Tga::ScriptExecutionContext&, ScriptPinId aPin) const
 {
 	aPin;
@@ -147,11 +198,11 @@ ParsedData Tga::TextureCoordinateNode::ParseInputPin(Tga::ScriptExecutionContext
 {
 	if (aPin == myScaledUVOutput)
 	{
-		return { "float2", "scaledUV"};
+		return { "float2", "scaledUV" };
 	}
 	if (aPin == myScreenPosOutput)
 	{
-		return { "float2", "float2(input.position.xy / Resolution.xy)"};
+		return { "float2", "float2(input.position.xy / Resolution.xy)" };
 	}
 
 	return ParsedData();
@@ -321,7 +372,7 @@ void Tga::TextureNode::Init(const ScriptCreationContext& aContext)
 
 		{
 			inputPin.dataType = ScriptLinkDataType::Float4;
-			inputPin.defaultValue = { Vector4f()};
+			inputPin.defaultValue = { Vector4f() };
 
 			inputPin.name = ScriptStringRegistry::RegisterOrGetString("Col");
 			myColOut_ID = aContext.FindOrCreatePin(inputPin);
@@ -405,7 +456,7 @@ ParsedData Tga::TextureNode::ParseInputPin(Tga::ScriptExecutionContext& aContext
 		uvToString = aContext.ParseFromPin(myUVIn_ID);
 	}
 
-	std::string imageVar = aContext.GetShaderParseCompiler()->GetOrRegisterTexture((ShaderSource)this, myImageSlot+1, uvToString);
+	std::string imageVar = aContext.GetShaderParseCompiler()->GetOrRegisterTexture((ShaderSource)this, myImageSlot + 1, uvToString);
 
 	if (aID == myColOut_ID)
 	{

@@ -168,6 +168,7 @@ void Tga::RenderComponent::ImGuiAccess()
 
 		if (ImGui::Button("Clear"))
 		{
+			Disable();
 			myShader = nullptr;
 			myShaderName = "";
 			didChangeRenderGroup = true;

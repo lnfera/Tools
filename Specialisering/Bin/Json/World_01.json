@@ -4,51 +4,6 @@
             "Components": [
                 {
                     "Type": "Tga::RenderComponent",
-                    "albedo": "../EngineAssets/Models/Chest/Particle_Chest_c.dds",
-                    "fx": "../EngineAssets/Models/Chest/Particle_Chest_fx.dds",
-                    "material": "../EngineAssets/Models/Chest/Particle_Chest_M.dds",
-                    "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
-                    "normal": "../EngineAssets/Models/Chest/Particle_Chest_N.dds",
-                    "shader": ""
-                }
-            ],
-            "name": "SM_Chest",
-            "tranform": [
-                null,
-                [
-                    null,
-                    0.06495190411806107,
-                    0.0,
-                    0.037500012665987015,
-                    0.0
-                ],
-                [
-                    null,
-                    0.0,
-                    0.07500001788139343,
-                    0.0,
-                    0.0
-                ],
-                [
-                    null,
-                    -0.037500012665987015,
-                    0.0,
-                    0.06495190411806107,
-                    0.0
-                ],
-                [
-                    null,
-                    5.667971611022949,
-                    0.0,
-                    -36.399070739746094,
-                    0.9999996423721313
-                ]
-            ]
-        },
-        {
-            "Components": [
-                {
-                    "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Textures/T_Default_BC.dds",
                     "fx": "none",
                     "material": "none",
@@ -99,7 +54,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/SM_SomeGuy.fbx",
                     "normal": "none",
-                    "shader": "Morris_Statue_PS"
+                    "shader": ""
                 }
             ],
             "name": "SM_Morris",
@@ -107,31 +62,31 @@
                 null,
                 [
                     null,
-                    -0.2871831953525543,
-                    5.226521579970722e-07,
-                    0.24114495515823364,
+                    -0.4169899523258209,
+                    7.588917583234434e-07,
+                    0.35014238953590393,
                     0.0
                 ],
                 [
                     null,
-                    2.4360639372389414e-07,
-                    0.375,
-                    -5.226520443102345e-07,
+                    3.537155635058298e-07,
+                    0.5444997549057007,
+                    -7.588975563521672e-07,
                     0.0
                 ],
                 [
                     null,
-                    -0.24114471673965454,
-                    -2.4360622319363756e-07,
-                    -0.28718292713165283,
+                    -0.3501425087451935,
+                    -3.53717098278139e-07,
+                    -0.41698938608169556,
                     0.0
                 ],
                 [
                     null,
-                    -41.267215728759766,
-                    1.8036163282886264e-06,
-                    41.0026741027832,
-                    1.0
+                    -77.6729965209961,
+                    5.713992868550122e-05,
+                    63.73744583129883,
+                    0.9999986886978149
                 ]
             ]
         },
@@ -144,7 +99,7 @@
                     "material": "../EngineAssets/Models/Chest/Particle_Chest_M.dds",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
                     "normal": "../EngineAssets/Models/Chest/Particle_Chest_N.dds",
-                    "shader": "TransparencyTestingShader_PS"
+                    "shader": ""
                 }
             ],
             "name": "Magic_Chest",
@@ -189,7 +144,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/SM_Pillar.fbx",
                     "normal": "none",
-                    "shader": "Ball_Shader_PS"
+                    "shader": "MS_CalamityShader_PS"
                 }
             ],
             "name": "SM_Pillar",
@@ -234,7 +189,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Sphere.fbx",
                     "normal": "none",
-                    "shader": "Ball_Shader_PS"
+                    "shader": "MS_CalamityShader_PS"
                 }
             ],
             "name": "",
@@ -242,7 +197,7 @@
                 null,
                 [
                     null,
-                    5.0,
+                    0.10000000149011612,
                     0.0,
                     0.0,
                     0.0
@@ -250,7 +205,7 @@
                 [
                     null,
                     0.0,
-                    5.0,
+                    0.10000000149011612,
                     0.0,
                     0.0
                 ],
@@ -258,15 +213,15 @@
                     null,
                     0.0,
                     0.0,
-                    5.0,
+                    0.10000000149011612,
                     0.0
                 ],
                 [
                     null,
-                    31.500822067260742,
-                    21.999998092651367,
-                    0.10125695168972015,
-                    0.9999997615814209
+                    31.50082015991211,
+                    22.0,
+                    0.10125702619552612,
+                    1.0
                 ]
             ]
         },
@@ -280,7 +235,7 @@
                         "R": 1.0
                     },
                     "Intensity": 2150.0,
-                    "Range": 20.0,
+                    "Range": 16.0,
                     "Type": "Tga::PointLightComponent"
                 }
             ],
@@ -310,9 +265,9 @@
                 ],
                 [
                     null,
-                    26.5,
-                    9.0,
-                    20.500001907348633,
+                    24.000001907348633,
+                    2.5,
+                    18.0,
                     1.0
                 ]
             ]
@@ -322,12 +277,12 @@
                 {
                     "Color": {
                         "A": 0.0,
-                        "B": 0.4407857060432434,
-                        "G": 0.45578229427337646,
+                        "B": 0.45578229427337646,
+                        "G": 0.4407857060432434,
                         "R": 0.21083806455135345
                     },
-                    "Intensity": 15240.0,
-                    "Range": 35.0,
+                    "Intensity": 4640.0,
+                    "Range": 23.0,
                     "Type": "Tga::PointLightComponent"
                 }
             ],
@@ -357,9 +312,9 @@
                 ],
                 [
                     null,
-                    8.0,
-                    9.5,
-                    29.0,
+                    8.5,
+                    6.0,
+                    31.0,
                     1.0
                 ]
             ]
@@ -373,7 +328,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
                     "normal": "none",
-                    "shader": "none"
+                    "shader": ""
                 }
             ],
             "name": "SM_Plane",
@@ -447,10 +402,235 @@
                 ],
                 [
                     null,
-                    10.107625961303711,
-                    5.500000476837158,
-                    10.751279830932617,
+                    18.048978805541992,
+                    0.5000004172325134,
+                    23.99646759033203,
                     1.0000001192092896
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "../EngineAssets/Models/Chest/Particle_Chest_c.dds",
+                    "fx": "../EngineAssets/Models/Chest/Particle_Chest_fx.dds",
+                    "material": "../EngineAssets/Models/Chest/Particle_Chest_M.dds",
+                    "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
+                    "normal": "../EngineAssets/Models/Chest/Particle_Chest_N.dds",
+                    "shader": "MS_FresnelOrbShader_PS"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.06496608257293701,
+                    0.0,
+                    0.037475261837244034,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.07499958574771881,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    -0.037475261837244034,
+                    0.0,
+                    0.06496608257293701,
+                    0.0
+                ],
+                [
+                    null,
+                    6.1553874015808105,
+                    -6.747213046764955e-05,
+                    -35.18397521972656,
+                    0.9999986886978149
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "../EngineAssets/Textures/T_Default_BC.dds",
+                    "fx": "../EngineAssets/Textures/T_Default_M.dds",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Cube.fbx",
+                    "normal": "../EngineAssets/Textures/T_Default_n.dds",
+                    "shader": "MS_FresnelOrbShader_PS"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.06999998539686203,
+                    -3.2637367808341367e-10,
+                    3.725290298461914e-09,
+                    0.0
+                ],
+                [
+                    null,
+                    -3.481659058279796e-11,
+                    0.06999997049570084,
+                    -2.832515111350631e-09,
+                    0.0
+                ],
+                [
+                    null,
+                    3.865439235626357e-27,
+                    6.756549486564012e-11,
+                    0.07000000029802322,
+                    0.0
+                ],
+                [
+                    null,
+                    -36.99957275390625,
+                    6.999821662902832,
+                    69.9992446899414,
+                    0.9999881982803345
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "../EngineAssets/Models/SM_ManaOrb/SM_HP_Mana_Orb_m.dds",
+                    "fx": "../EngineAssets/Textures/T_Default_M.dds",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_IcoSphere.fbx",
+                    "normal": "../EngineAssets/Textures/T_Default_n.dds",
+                    "shader": "MS_FresnelOrbShader_PS"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.06999994814395905,
+                    -2.654612085706276e-09,
+                    -2.793966835668016e-08,
+                    0.0
+                ],
+                [
+                    null,
+                    -7.829256132296791e-10,
+                    0.06999983638525009,
+                    -1.1450572934279535e-08,
+                    0.0
+                ],
+                [
+                    null,
+                    -1.1175871783564162e-08,
+                    6.586782674844471e-09,
+                    0.06999989598989487,
+                    0.0
+                ],
+                [
+                    null,
+                    13.00004768371582,
+                    26.999866485595703,
+                    69.99982452392578,
+                    0.9999957084655762
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "../EngineAssets/Models/SM_ManaOrb/SM_HP_Mana_Orb_m.dds",
+                    "fx": "../EngineAssets/Textures/T_Default_M.dds",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Cone.fbx",
+                    "normal": "../EngineAssets/Textures/T_Default_n.dds",
+                    "shader": "MS_FresnelOrbShader_PS"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.06999978423118591,
+                    6.1932405870379625e-09,
+                    1.043081283569336e-07,
+                    0.0
+                ],
+                [
+                    null,
+                    -5.255268220594189e-09,
+                    0.06999979913234711,
+                    -1.253286807667564e-08,
+                    0.0
+                ],
+                [
+                    null,
+                    -2.421438694000244e-08,
+                    5.655507617774447e-09,
+                    0.06999994814395905,
+                    0.0
+                ],
+                [
+                    null,
+                    -12.000070571899414,
+                    21.999855041503906,
+                    73.49977111816406,
+                    0.9999915361404419
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "fx": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Cylinder.fbx",
+                    "normal": "none",
+                    "shader": "MS_FresnelOrbShader_PS"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.07000000029802322,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.07000000029802322,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.07000000029802322,
+                    0.0
+                ],
+                [
+                    null,
+                    -11.999993324279785,
+                    6.500001907348633,
+                    73.5,
+                    1.0
                 ]
             ]
         },
@@ -463,7 +643,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Sphere.fbx",
                     "normal": "../EngineAssets/Textures/T_Default_n.dds",
-                    "shader": "none"
+                    "shader": "MS_FresnelOrbShader_PS"
                 }
             ],
             "name": "",
@@ -471,31 +651,31 @@
                 null,
                 [
                     null,
-                    6.299999237060547,
-                    0.0,
-                    0.0,
+                    0.06000110134482384,
+                    -1.9977063817648293e-30,
+                    -2.1316674672574058e-16,
                     0.0
                 ],
                 [
                     null,
-                    0.0,
-                    6.299999237060547,
-                    0.0,
+                    -1.6758335456296282e-23,
+                    0.060001444071531296,
+                    -4.717044532753789e-09,
                     0.0
                 ],
                 [
                     null,
-                    0.0,
-                    0.0,
-                    6.299999237060547,
+                    2.1316366299641698e-16,
+                    4.716950829930511e-09,
+                    0.06000024825334549,
                     0.0
                 ],
                 [
                     null,
-                    -15.500001907348633,
-                    25.99999237060547,
-                    69.4999771118164,
-                    0.9999999403953552
+                    -36.723201751708984,
+                    27.571319580078125,
+                    70.28276824951172,
+                    1.0
                 ]
             ]
         }

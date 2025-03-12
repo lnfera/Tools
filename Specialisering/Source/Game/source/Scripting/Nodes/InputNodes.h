@@ -8,17 +8,17 @@ namespace Tga
 	void RegisterInputNodes();
 
 
-	//class  FresnelNode : public ScriptNodeBase
-	//{
-	//public:
-	//	FresnelNode();
-	//	~FresnelNode();
+	class  FresnelNode : public ScriptNodeBase
+	{
+		Tga::ScriptPinId myIorIn_Id;
+		Tga::ScriptPinId myNormalIn_Id;
+	public:
+		FresnelNode* Clone() override { return new FresnelNode(); };
 
-	//	void Init(const Tga::ScriptCreationContext& aContext);
+		void Init(const Tga::ScriptCreationContext& aContext);
+		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 
-	//	ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
-
-	//};
+	};
 
 	class PixelInputNode : public ScriptNodeBase
 	{
@@ -33,6 +33,7 @@ namespace Tga
 			return clone;
 		};
 		void Init(const Tga::ScriptCreationContext& aContext);
+		ScriptLinkData ReadPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 		ParsedData ParseInputPin(Tga::ScriptExecutionContext&, ScriptPinId) const;
 	};
 	class TextureCoordinateNode : public ScriptNodeBase
