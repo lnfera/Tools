@@ -66,7 +66,7 @@ static inline ID3D11PixelShader* CreatePixelShaderFromString(const std::string& 
 	ID3DBlob* hlslBlob = CompileShaderFromString(aShaderCode, aEntryPoint, aTarget);
 	if (hlslBlob == nullptr)
 	{
-		std::ofstream file("shader_crash_logs.log");
+		std::ofstream file("shader_crash.log");
 		std::clog.rdbuf(file.rdbuf());
 		file << aShaderCode;
 		file.close();

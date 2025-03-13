@@ -312,16 +312,16 @@ ParsedData Tga::Converter::ParseInputPin(Tga::ScriptExecutionContext& aContext, 
 	switch (myConverterMode)
 	{
 	case Tga::ConverterMode::Add:
-		value = valA + " +" + valB;
+		value = valA + " + " + valB;
 		break;
 	case Tga::ConverterMode::Subtract:
-		value = valA + " -" + valB;
+		value = valA + " - " + valB;
 		break;
 	case Tga::ConverterMode::Multiply:
-		value = valA + " *" + valB;
+		value = valA + " * " + valB;
 		break;
 	case Tga::ConverterMode::Divide:
-		value = valA + " /" + valB;
+		value = valA + " / " + valB;
 		break;
 	case Tga::ConverterMode::Min:
 		value = "min(" + valA + " ," + valB + ")";

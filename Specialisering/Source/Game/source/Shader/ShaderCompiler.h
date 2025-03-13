@@ -36,6 +36,9 @@ namespace Tga
 
 		std::string GenerateVariables();
 		std::vector<TextureResource*> GetImages() { return myImages; }
+
+		void GeneratePBRShader(std::string& aHlslOut, const std::string& aAlbedo, const std::string& aNormal, const std::string& aMaterial, const std::string& aFX);
+		void GenerateDeferredShader(std::string& aHlslOut, const std::string& aAlbedo, const std::string& aNormal, const std::string& aMaterial, const std::string& aFX);
 	private:
 
 		std::string GetUniqueVariableName();

@@ -139,12 +139,12 @@ std::string Tga::ScriptExecutionContext::ParseFromPin(/*ShaderParseCompiler& aCo
 		{
 		case Tga::ScriptLinkData::VariantType::Int:
 			output = std::to_string(std::get<int>(data));
-			myShaderParseCompiler->RegisterVariable((ShaderSource)&pin, "int", output + ".f");
+			myShaderParseCompiler->RegisterVariable((ShaderSource)&pin, "int", "int(" + output + ")");
 
 			break;
 		case Tga::ScriptLinkData::VariantType::Float:
 			output = std::to_string(std::get<float>(data));
-			myShaderParseCompiler->RegisterVariable((ShaderSource)&pin, "float", output);
+			myShaderParseCompiler->RegisterVariable((ShaderSource)&pin, "float", "float(" + output + "f)");
 			break;
 		case Tga::ScriptLinkData::VariantType::Float2:
 		{

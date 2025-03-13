@@ -141,7 +141,7 @@
                     "Type": "Tga::RenderComponent",
                     "albedo": "../EngineAssets/Sprites/printable-bricks-coloring-pagen_6503.jpg",
                     "fx": "none",
-                    "material": "none",
+                    "material": "../EngineAssets/Textures/T_Default_n.dds",
                     "model": "../EngineAssets/Models/SM_Pillar.fbx",
                     "normal": "none",
                     "shader": "MS_CalamityShader_PS"
@@ -230,11 +230,11 @@
                 {
                     "Color": {
                         "A": 0.0,
-                        "B": 0.0,
-                        "G": 0.5714285373687744,
-                        "R": 1.0
+                        "B": 0.3265306055545807,
+                        "G": 0.5208939909934998,
+                        "R": 0.6666666269302368
                     },
-                    "Intensity": 2150.0,
+                    "Intensity": 1350.0,
                     "Range": 16.0,
                     "Type": "Tga::PointLightComponent"
                 }
@@ -265,56 +265,9 @@
                 ],
                 [
                     null,
-                    24.000001907348633,
-                    2.5,
-                    18.0,
-                    1.0
-                ]
-            ]
-        },
-        {
-            "Components": [
-                {
-                    "Color": {
-                        "A": 0.0,
-                        "B": 0.45578229427337646,
-                        "G": 0.4407857060432434,
-                        "R": 0.21083806455135345
-                    },
-                    "Intensity": 4640.0,
-                    "Range": 23.0,
-                    "Type": "Tga::PointLightComponent"
-                }
-            ],
-            "name": "PoointLight2",
-            "tranform": [
-                null,
-                [
-                    null,
-                    0.5,
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                [
-                    null,
-                    0.0,
-                    0.5,
-                    0.0,
-                    0.0
-                ],
-                [
-                    null,
-                    0.0,
-                    0.0,
-                    0.5,
-                    0.0
-                ],
-                [
-                    null,
-                    8.5,
-                    6.0,
-                    31.0,
+                    -20.5,
+                    5.0,
+                    -38.500003814697266,
                     1.0
                 ]
             ]
@@ -373,7 +326,7 @@
                     "material": "../EngineAssets/Models/ShaderTesting/Lantern/SM_lantern_m.dds",
                     "model": "../EngineAssets/Models/ShaderTesting/Lantern/SM_lantern.fbx",
                     "normal": "../EngineAssets/Models/ShaderTesting/Lantern/SM_lantern_n.dds",
-                    "shader": "TransparencyTestingShader_PS"
+                    "shader": "MS_TransparencyTestingShader_PS"
                 }
             ],
             "name": "Lantern",
@@ -418,7 +371,7 @@
                     "material": "../EngineAssets/Models/Chest/Particle_Chest_M.dds",
                     "model": "../EngineAssets/Models/Chest/SM_Particle_Chest.fbx",
                     "normal": "../EngineAssets/Models/Chest/Particle_Chest_N.dds",
-                    "shader": "MS_FresnelOrbShader_PS"
+                    "shader": "MS_TransparencyTestingShader_PS"
                 }
             ],
             "name": "",
@@ -463,7 +416,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Cube.fbx",
                     "normal": "../EngineAssets/Textures/T_Default_n.dds",
-                    "shader": "MS_FresnelOrbShader_PS"
+                    "shader": "MS_TransparencyTestingShader_PS"
                 }
             ],
             "name": "",
@@ -485,16 +438,16 @@
                 ],
                 [
                     null,
-                    3.865439235626357e-27,
+                    3.8654507912060236e-27,
                     6.756549486564012e-11,
                     0.07000000029802322,
                     0.0
                 ],
                 [
                     null,
-                    -36.99957275390625,
-                    6.999821662902832,
-                    69.9992446899414,
+                    -36.999568939208984,
+                    6.999820232391357,
+                    72.49922943115234,
                     0.9999881982803345
                 ]
             ]
@@ -508,7 +461,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_IcoSphere.fbx",
                     "normal": "../EngineAssets/Textures/T_Default_n.dds",
-                    "shader": "MS_FresnelOrbShader_PS"
+                    "shader": "MS_TransparencyTestingShader_PS"
                 }
             ],
             "name": "",
@@ -518,7 +471,7 @@
                     null,
                     0.06999994814395905,
                     -2.654612085706276e-09,
-                    -2.793966835668016e-08,
+                    -2.7939670133036998e-08,
                     0.0
                 ],
                 [
@@ -537,9 +490,9 @@
                 ],
                 [
                     null,
-                    13.00004768371582,
+                    13.000044822692871,
                     26.999866485595703,
-                    69.99982452392578,
+                    69.99980926513672,
                     0.9999957084655762
                 ]
             ]
@@ -553,7 +506,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Cone.fbx",
                     "normal": "../EngineAssets/Textures/T_Default_n.dds",
-                    "shader": "MS_FresnelOrbShader_PS"
+                    "shader": "MS_TransparencyTestingShader_PS"
                 }
             ],
             "name": "",
@@ -598,7 +551,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Cylinder.fbx",
                     "normal": "none",
-                    "shader": "MS_FresnelOrbShader_PS"
+                    "shader": "MS_TransparencyTestingShader_PS"
                 }
             ],
             "name": "",
@@ -643,7 +596,7 @@
                     "material": "none",
                     "model": "../EngineAssets/Models/Basic/SM_Sphere.fbx",
                     "normal": "../EngineAssets/Textures/T_Default_n.dds",
-                    "shader": "MS_FresnelOrbShader_PS"
+                    "shader": "MS_TransparencyTestingShader_PS"
                 }
             ],
             "name": "",
@@ -651,30 +604,302 @@
                 null,
                 [
                     null,
-                    0.06000110134482384,
-                    -1.9977063817648293e-30,
-                    -2.1316674672574058e-16,
+                    0.06999978423118591,
+                    6.1932405870379625e-09,
+                    1.043081283569336e-07,
                     0.0
                 ],
                 [
                     null,
-                    -1.6758335456296282e-23,
-                    0.060001444071531296,
-                    -4.717044532753789e-09,
+                    -5.255268220594189e-09,
+                    0.06999979913234711,
+                    -1.253286807667564e-08,
                     0.0
                 ],
                 [
                     null,
-                    2.1316366299641698e-16,
-                    4.716950829930511e-09,
-                    0.06000024825334549,
+                    -2.421438694000244e-08,
+                    5.655507617774447e-09,
+                    0.06999994814395905,
                     0.0
                 ],
                 [
                     null,
-                    -36.723201751708984,
-                    27.571319580078125,
-                    70.28276824951172,
+                    -37.00008773803711,
+                    24.99986457824707,
+                    73.4997329711914,
+                    0.9999915361404419
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Color": {
+                        "A": 0.0,
+                        "B": 0.45578229427337646,
+                        "G": 0.4407857060432434,
+                        "R": 0.21083806455135345
+                    },
+                    "Intensity": 170240.0,
+                    "Range": 23.0,
+                    "Type": "Tga::PointLightComponent"
+                }
+            ],
+            "name": "PoointLight2",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.5,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.5,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.5,
+                    0.0
+                ],
+                [
+                    null,
+                    -21.0,
+                    23.0,
+                    33.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "fx": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Capsule.fbx",
+                    "normal": "none",
+                    "shader": "MS_TransparencyTestingShader_PS"
+                }
+            ],
+            "name": "Player",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.05000000074505806,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.05000000074505806,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    0.05000000074505806,
+                    0.0
+                ],
+                [
+                    null,
+                    -76.49995422363281,
+                    8.499988555908203,
+                    2.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "fx": "../EngineAssets/Textures/T_Default_M.dds",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
+                    "normal": "none",
+                    "shader": ""
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    -2.0,
+                    -203.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "fx": "../EngineAssets/Textures/T_Default_M.dds",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
+                    "normal": "none",
+                    "shader": "MS_WaterShaderBottom_PS"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    -1.0,
+                    0.0,
+                    2.980232238769531e-07,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0,
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    null,
+                    -2.980232238769531e-07,
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                [
+                    null,
+                    -9.844493433774915e-07,
+                    -0.5,
+                    -203.0000457763672,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "fx": "none",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/ShaderTesting/Boat/SM_Boat.fbx",
+                    "normal": "none",
+                    "shader": "none"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    0.07662652432918549,
+                    -1.5558276444949115e-08,
+                    -0.06425222009420395,
+                    0.0
+                ],
+                [
+                    null,
+                    0.0642523244023323,
+                    1.855466003064521e-08,
+                    0.07662668079137802,
+                    0.0
+                ],
+                [
+                    null,
+                    8.717371713807404e-15,
+                    -0.09999993443489075,
+                    2.4214379834575084e-08,
+                    0.0
+                ],
+                [
+                    null,
+                    -0.00020350259728729725,
+                    9.499937057495117,
+                    -211.9999542236328,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "Components": [
+                {
+                    "Type": "Tga::RenderComponent",
+                    "albedo": "none",
+                    "fx": "../EngineAssets/Textures/T_Default_M.dds",
+                    "material": "none",
+                    "model": "../EngineAssets/Models/Basic/SM_Plane.fbx",
+                    "normal": "none",
+                    "shader": "MS_WaterShader_PS"
+                }
+            ],
+            "name": "",
+            "tranform": [
+                null,
+                [
+                    null,
+                    -1.0,
+                    -3.8941436741879443e-07,
+                    2.9802316703353426e-07,
+                    0.0
+                ],
+                [
+                    null,
+                    -3.8941448110563215e-07,
+                    1.0,
+                    -3.8941436741879443e-07,
+                    0.0
+                ],
+                [
+                    null,
+                    -2.980229965032777e-07,
+                    -3.8941448110563215e-07,
+                    -1.0,
+                    0.0
+                ],
+                [
+                    null,
+                    -1.7632820572544006e-06,
+                    2.0,
+                    -203.0000457763672,
                     1.0
                 ]
             ]

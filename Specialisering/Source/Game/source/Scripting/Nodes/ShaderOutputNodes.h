@@ -11,10 +11,6 @@ namespace Tga
 	class ShaderOutputNode : public ScriptNodeBase
 	{
 		ScriptPinId myColorIdIn_Id;
-		/*ScriptPinId myXIn_ID;
-		ScriptPinId myYIn_ID;
-		ScriptPinId myZIn_ID;
-		ScriptPinId myWIn_ID;*/
 	public:
 		ScriptNodeBase* Clone() override {return new ShaderOutputNode();};
 

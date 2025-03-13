@@ -23,7 +23,7 @@ using namespace Tga;
 
 void Tga::RegisterShaderOutNodes()
 {
-	Tga::ScriptNodeTypeRegistry::RegisterType<ShaderOutputNode>("ShaderOut/AlbedoOnly", "Only uses albedo when rendering");
+	//Tga::ScriptNodeTypeRegistry::RegisterType<ShaderOutputNode>("ShaderOut/AlbedoOnly", "Only uses albedo when rendering");
 	Tga::ScriptNodeTypeRegistry::RegisterType<PBROutputNode>("ShaderOut/PBROutput", "Splits the images into the defered rednering pipeline");
 }
 
@@ -105,8 +105,13 @@ void Tga::PBROutputNode::Init(const ScriptCreationContext& aContext)
 		inputPin.name = ScriptStringRegistry::RegisterOrGetString("Albedo");
 		myAlbedoIn_Id = aContext.FindOrCreatePin(inputPin);
 	
-		inputPin.name = ScriptStringRegistry::RegisterOrGetString("Normal");
-		myNormalIn_Id = aContext.FindOrCreatePin(inputPin);
+		{
+			inputPin.defaultValue = { Vector4f(-1.f, -1.f, -1.f, -1.f) };
+
+			inputPin.name = ScriptStringRegistry::RegisterOrGetString("Normal");
+			myNormalIn_Id = aContext.FindOrCreatePin(inputPin);
+		}
+		inputPin.defaultValue = { Vector4f() };
 
 		inputPin.name = ScriptStringRegistry::RegisterOrGetString("Material");
 		myMaterialIn_Id = aContext.FindOrCreatePin(inputPin);
@@ -123,11 +128,21 @@ ScriptNodeResult Tga::PBROutputNode::Execute(ScriptExecutionContext& aContext, S
 
 	aContext.SetShaderParseCompiler(&compiler);
 
+	std::string albedoResult = aContext.ParseFromPin(myAlbedoIn_Id);
+	std::string normalResult = aContext.ParseFromPin(myNormalIn_Id);
+	std::string materialResult = aContext.ParseFromPin(myMaterialIn_Id);
+	std::string fxResult = aContext.ParseFromPin(myFxIn_Id);
+
+	//if (normalResult == "float4(-1.000000f,-1.000000f,-1.000000f,-1.000000f)")
+	//{
+	//	normalResult = "float4(input.normal.xyz,1)";
+	//}
+
 	std::string parsedCode = 
-		"albedo = " + aContext.ParseFromPin(myAlbedoIn_Id) + ";\n" +
-		"normal = " + aContext.ParseFromPin(myNormalIn_Id) + ";\n" +
-		"material = " + aContext.ParseFromPin(myMaterialIn_Id) + ";\n" +
-		"fx = " + aContext.ParseFromPin(myFxIn_Id) + ";\n";
+		"albedo = " + albedoResult + ";\n" +
+		"normal = " + normalResult + ";\n" +
+		"material = " + materialResult + ";\n" +
+		"fx = " + fxResult + ";\n";
 
 	std::string variables = compiler.GenerateVariables();
 
@@ -137,32 +152,14 @@ ScriptNodeResult Tga::PBROutputNode::Execute(ScriptExecutionContext& aContext, S
 	{
 	case Tga::RenderMode::Transparent:	// Render to forwardRendering
 		compileContext.compilingModelShader->SetRenderMode(RenderMode::Transparent);
+		compiler.GeneratePBRShader(hlslCode, albedoResult, normalResult, materialResult, fxResult);
 
-		hlslCode =
-			SHADER::BuffersHLSLI +
-			SHADER::StructsHLSLI +
-			SHADER::ImagesAndSampler +
-			SHADER::Functions +
-			SHADER::PBRStart +
-			variables +
-			parsedCode +
-			SHADER::PBREnd;
 		break;
 	case Tga::RenderMode::Opaque:
 	default:		// Render to Deferred Rendering !
 		compileContext.compilingModelShader->SetRenderMode(RenderMode::Opaque);
+		compiler.GenerateDeferredShader(hlslCode, albedoResult, normalResult, materialResult, fxResult);
 
-	hlslCode =
-		SHADER::BuffersHLSLI +
-		SHADER::StructsHLSLI +
-		SHADER::ImagesAndSampler + 
-		SHADER::DeferredStructHLSLI +
-		SHADER::Functions +
-		SHADER::START_DEFERRED +
-		variables +
-		parsedCode +
-		SHADER::END_DEFERRED;
-		break;
 	}
 
 
