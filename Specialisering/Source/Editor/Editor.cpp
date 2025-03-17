@@ -160,6 +160,13 @@ void Tga::Editor::RenderMenuBar(EditorContext& /*aContext*/)
 				system("GameLauncher_Debug.exe");
 			}
 
+			if (ImGui::MenuItem("New Scene"))
+			{
+				myScene->Disable();
+				delete myScene;
+				myScene = new Scene("empty");
+				Tga::Console::LogMessage("Created new scene", Tga::Console::Colors::Green);
+			}
 
 			std::string lable = "Save to " + myScene->GetFileName();
 			if (ImGui::MenuItem(lable.data()))
@@ -229,8 +236,10 @@ void Tga::Editor::RenderMenuBar(EditorContext& /*aContext*/)
 							std::wstring msg = L"Would you like to load " + string_cast<std::wstring>(filename) + L"?";
 							if (MessageBox(nullptr, msg.c_str(), L"Load File", MB_YESNO) == IDYES)
 							{
+								myScene->Disable();
 								Tga::Selection::ClearSelection();
 								myScene->LoadFromJson(filename);
+								myScene->Enable();
 
 								std::string msg2 = "Loaded scene : ";
 								msg2 += myScene->GetFileName();

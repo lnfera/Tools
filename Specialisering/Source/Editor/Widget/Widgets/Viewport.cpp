@@ -166,12 +166,13 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 			moveDir.Normalize();
 
 			static float moveSpeed = 10.f;
+			float maxMoveSpeed = 5000.f;
 
 			if (ImGui::GetIO().MouseWheel != 0)
 			{
-				moveSpeed += ImGui::GetIO().MouseWheel * 5.f;
+				moveSpeed += ImGui::GetIO().MouseWheel * 15.f;
 				moveSpeed = moveSpeed < 0.1f ? 0.1f : moveSpeed;
-				moveSpeed = moveSpeed > 200.f ? 200.f : moveSpeed;
+				moveSpeed = moveSpeed > maxMoveSpeed ? maxMoveSpeed : moveSpeed;
 			}
 
 			trans.SetPosition(trans.GetPosition() + (moveDir * aContext.deltaTime * moveSpeed));
@@ -192,8 +193,8 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 
 		}
 		else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)
-			&& myViewportIsHovered && ImGui::IsAnyItemActive() == false && ImGuizmo::IsOver() == false)
-
+			&& myViewportIsHovered && ImGui::IsAnyItemActive() == false 
+			&& ImGuizmo::IsOver() == false)
 		{
 			ImVec2 windowPos = ImGui::GetWindowPos();
 			ImVec2 mousePosScreen = ImGui::GetMousePos();
@@ -208,7 +209,7 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 			Vector2ui targetSize = myRenderTargetColor.CalculateTextureSize();
 			Vector2f scaleFactor = { (float)targetSize.x / viewport_size.x, (float)targetSize.y / viewport_size.y };
 
-			if (ImGui::IsKeyReleased(ImGuiKey_LeftCtrl) == false)
+			if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) == false)
 			{
 				Selection::ClearSelection();
 			}
@@ -222,12 +223,7 @@ bool Tga::Viewport::Update(EditorContext& aContext)
 
 				if (obj)
 				{
-					if (Selection::Contains(obj)) {
-						Selection::RemoveFromSelection(obj);
-					}
-					else {
-						Selection::AddToSelection(obj);
-					}
+					Selection::ToggleSelect(obj);
 				}
 			}
 		}
@@ -316,6 +312,13 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 
 		for (auto* obj : aContext.currentScene->GetGameObjects())
 		{
+			bool selectionContained = Tga::Selection::Contains(obj);
+
+			// Skip if clicked
+			if (ImGui::IsMouseClicked(0) && selectionContained)
+			{
+				continue;
+			}
 			result = DX11::Context->Map(ViewportGlobal::renderData.idConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
 			if (FAILED(result))
@@ -324,16 +327,11 @@ void Tga::Viewport::RenderSceneToTarget(EditorContext& aContext)
 				return;
 			}
 
-			// Skip if clicked
-			if (ImGui::IsMouseClicked(0) && Tga::Selection::Contains(obj))
-			{
-				continue;
-			}
 
 			//Map ID buffer
 			dataPtr = (IdConstantBuffer*)mappedResource.pData;
 			dataPtr->objectId = obj->GetID();
-			dataPtr->selectionId = Selection::Contains(obj) ? dataPtr->objectId : 0;
+			dataPtr->selectionId = selectionContained ? dataPtr->objectId : 0;
 			DX11::Context->Unmap(ViewportGlobal::renderData.idConstantBuffer.Get(), 0);
 
 			if (auto* comp = obj->GetComponent<Tga::RenderComponent>())

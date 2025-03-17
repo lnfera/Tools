@@ -70,6 +70,7 @@ namespace Tga
 		std::string myName = "";
 		std::vector<Component*> myComponents;
 		Matrix4x4f myTransform;
+		GameObject* myParent = nullptr;
 	};
 
 	inline GameObject::GameObject() :
